@@ -7,7 +7,7 @@ import 'number_type.dart';
 
 class StepData {
   final List<List<double>> matrix;
-  final List<double> element;
+  final List<int> element;
   final List<double>? basis;
   final NumberType type;
   StepData({
@@ -19,7 +19,7 @@ class StepData {
 
   StepData copyWith({
     List<List<double>>? matrix,
-    List<double>? element,
+    List<int>? element,
     List<double>? basis,
     NumberType? type,
   }) {
@@ -43,7 +43,7 @@ class StepData {
   factory StepData.fromMap(Map<String, dynamic> map) {
     return StepData(
       matrix: List<List<double>>.from((map['matrix'] as List<List<double>>)),
-      element: List<double>.from((map['element'] as List<double>)),
+      element: List<int>.from((map['element'] as List<int>)),
       basis: map['basis'] != null
           ? List<double>.from((map['basis'] as List<double>))
           : null,
