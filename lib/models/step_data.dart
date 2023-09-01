@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'number_type.dart';
+import 'enums.dart';
 
 class StepData {
   final Map<int, double> func;
