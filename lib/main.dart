@@ -9,7 +9,7 @@ Future<void> main() async {
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(1000, 500));
-    WindowManager.instance.setTitle('Линейное программирование');
+    WindowManager.instance.setTitle('Linear solver');
   }
   runApp(const MainApp());
 }

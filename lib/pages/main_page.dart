@@ -29,93 +29,104 @@ class _MainPageState extends State<MainPage> {
               });
             },
             labelType: NavigationRailLabelType.selected,
-            leading: Column(
-              children: [
-                FloatingActionButton.small(
-                  elevation: 0,
-                  hoverElevation: 0,
-                  focusElevation: 0,
-                  highlightElevation: 0,
-                  onPressed: () {
-                    // Add your onPressed code here!
-                  },
-                  child: const FaIcon(Icons.delete_outline),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                FloatingActionButton.small(
-                  elevation: 0,
-                  hoverElevation: 0,
-                  focusElevation: 0,
-                  highlightElevation: 0,
-                  onPressed: () {
-                    // Add your onPressed code here!
-                  },
-                  child: const Icon(Icons.upload),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                FloatingActionButton.small(
-                  elevation: 0,
-                  hoverElevation: 0,
-                  focusElevation: 0,
-                  highlightElevation: 0,
-                  onPressed: () {
-                    // Add your onPressed code here!
-                  },
-                  child: const Icon(Icons.download),
-                ),
-              ],
-            ),
-            destinations: const <NavigationRailDestination>[
-              NavigationRailDestination(
-                icon: FaIcon(FontAwesomeIcons.f),
-                label: Text('Задача'),
-              ),
-              NavigationRailDestination(
-                icon: FaIcon(FontAwesomeIcons.one),
-                label: Text('Базис'),
-              ),
-              NavigationRailDestination(
-                icon: FaIcon(FontAwesomeIcons.two),
-                label: Text('Симплекс'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.show_chart,
-                  size: 30,
-                ),
-                disabled: true,
-                label: Text('График'),
-              ),
-            ],
+            leading: _buildActionButton(),
+            destinations: _buildNavigationDestinations,
           ),
           const VerticalDivider(thickness: 1, width: 1),
           _buildPageFromIndex()
         ],
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton.small(
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            child: const Icon(Icons.navigate_before),
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          FloatingActionButton.small(
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            child: const Icon(Icons.navigate_next),
-          ),
-        ],
+      floatingActionButton: _buildMoveButtons(),
+    );
+  }
+
+  Row _buildMoveButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton.small(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: const Icon(Icons.navigate_before),
+        ),
+        const SizedBox(
+          width: 16,
+        ),
+        FloatingActionButton.small(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: const Icon(Icons.navigate_next),
+        ),
+      ],
+    );
+  }
+
+  List<NavigationRailDestination> get _buildNavigationDestinations {
+    return const <NavigationRailDestination>[
+      NavigationRailDestination(
+        icon: FaIcon(FontAwesomeIcons.f),
+        label: Text('Задача'),
       ),
+      NavigationRailDestination(
+        icon: FaIcon(FontAwesomeIcons.one),
+        label: Text('Базис'),
+      ),
+      NavigationRailDestination(
+        icon: FaIcon(FontAwesomeIcons.two),
+        label: Text('Симплекс'),
+      ),
+      NavigationRailDestination(
+        icon: Icon(
+          Icons.show_chart,
+          size: 30,
+        ),
+        label: Text('График'),
+      ),
+    ];
+  }
+
+  Column _buildActionButton() {
+    return Column(
+      children: [
+        FloatingActionButton.small(
+          elevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          highlightElevation: 0,
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: const FaIcon(Icons.delete_outline),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        FloatingActionButton.small(
+          elevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          highlightElevation: 0,
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: const Icon(Icons.upload),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        FloatingActionButton.small(
+          elevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          highlightElevation: 0,
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: const Icon(Icons.download),
+        ),
+      ],
     );
   }
 
