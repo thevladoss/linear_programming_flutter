@@ -15,73 +15,174 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          children: [
-            NumberStepper(
-              initialValue: _vars,
-              minValue: 1,
-              maxValue: 16,
-              step: 1,
-              onChanged: (value) {
-                setState(() {
-                  _vars = value;
-                });
-              },
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Введите задачу',
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium!
+                .copyWith(fontWeight: FontWeight.w500),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Переменные',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    NumberStepper(
+                      initialValue: _vars,
+                      minValue: 1,
+                      maxValue: 16,
+                      step: 1,
+                      onChanged: (value) {
+                        setState(() {
+                          _vars = value;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Ограничения',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    NumberStepper(
+                      initialValue: _limits,
+                      minValue: 1,
+                      maxValue: 16,
+                      step: 1,
+                      onChanged: (value) {
+                        setState(() {
+                          _limits = value;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Дроби',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    NumberTypeChoice(),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Функция',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    FuncTypeChoice()
+                  ],
+                ),
+                SizedBox(
+                  width: 40,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Таблица',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Expanded(
+                        child: _buildLimitsInputTable(_limits, _vars + 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            NumberStepper(
-              initialValue: _limits,
-              minValue: 1,
-              maxValue: 16,
-              step: 1,
-              onChanged: (value) {
-                setState(() {
-                  _limits = value;
-                });
-              },
-            ),
-            NumberTypeChoice(),
-            FuncTypeChoice()
-          ],
-        ),
-        Column(
-          children: [
-            _buildLimitsInputTable(_limits + 1, _vars + 2),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
   SingleChildScrollView _buildLimitsInputTable(int rows, int columns) {
+    List<TableRow> table = [
+      TableRow(
+        children: List.generate(
+          columns,
+          (column) => (column == 0)
+              ? Container()
+              : (column == columns - 1)
+                  ? Center(child: Text('c'))
+                  : Center(
+                      child: Text('c$column'),
+                    ),
+        ),
+      ),
+      TableRow(
+        children: List.generate(
+          columns,
+          (column) => (column == 0)
+              ? Center(
+                  child: Text('f(x)'),
+                )
+              : _buildInputMatrixItem(),
+        ),
+      ),
+      TableRow(
+        children: List.generate(
+          columns,
+          (column) => (column == 0)
+              ? Container()
+              : (column == columns - 1)
+                  ? Center(child: Text('b'))
+                  : Center(
+                      child: Text('a$column'),
+                    ),
+        ),
+      )
+    ];
+
+    table.addAll(
+      List.generate(
+        rows,
+        (row) => TableRow(
+          children: List.generate(
+            columns,
+            (column) => (column == 0)
+                ? Center(
+                    child: Text('f${row + 1}(x)'),
+                  )
+                : _buildInputMatrixItem(),
+          ),
+        ),
+      ),
+    );
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         child: Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           defaultColumnWidth: const FixedColumnWidth(66),
-          children: List.generate(
-            rows,
-            (row) => (row == 0)
-                ? TableRow(
-                    children: List.generate(
-                        columns,
-                        (column) => (column == 0)
-                            ? Container()
-                            : (column == columns - 1)
-                                ? Center(child: Text('b'))
-                                : Center(child: Text('a$column'))),
-                  )
-                : TableRow(
-                    children: List.generate(
-                        columns,
-                        (column) => (column == 0)
-                            ? Center(child: Text('f$row(x)'))
-                            : _buildInputMatrixItem()),
-                  ),
-          ),
+          children: table,
         ),
       ),
     );

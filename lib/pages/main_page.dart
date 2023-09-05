@@ -33,7 +33,9 @@ class _MainPageState extends State<MainPage> {
             destinations: _buildNavigationDestinations,
           ),
           const VerticalDivider(thickness: 1, width: 1),
-          _buildPageFromIndex()
+          Expanded(
+            child: _buildPageFromIndex(),
+          )
         ],
       ),
       floatingActionButton: _buildMoveButtons(),
