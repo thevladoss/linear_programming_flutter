@@ -130,9 +130,23 @@ class _TaskPageState extends State<TaskPage> {
           (column) => (column == 0)
               ? Container()
               : (column == columns - 1)
-                  ? Center(child: Text('c'))
+                  ? Center(
+                      child: Text(
+                        'c',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(fontWeight: FontWeight.w500),
+                      ),
+                    )
                   : Center(
-                      child: Text('c$column'),
+                      child: Text(
+                        'c$column',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(fontWeight: FontWeight.w500),
+                      ),
                     ),
         ),
       ),
@@ -141,7 +155,13 @@ class _TaskPageState extends State<TaskPage> {
           columns,
           (column) => (column == 0)
               ? Center(
-                  child: Text('f(x)'),
+                  child: Text(
+                    'f(x)',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontWeight: FontWeight.w500),
+                  ),
                 )
               : _buildInputMatrixItem(),
         ),
@@ -152,9 +172,22 @@ class _TaskPageState extends State<TaskPage> {
           (column) => (column == 0)
               ? Container()
               : (column == columns - 1)
-                  ? Center(child: Text('b'))
+                  ? Center(
+                      child: Text(
+                      'b',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ))
                   : Center(
-                      child: Text('a$column'),
+                      child: Text(
+                        'a$column',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(fontWeight: FontWeight.w500),
+                      ),
                     ),
         ),
       )
@@ -168,7 +201,13 @@ class _TaskPageState extends State<TaskPage> {
             columns,
             (column) => (column == 0)
                 ? Center(
-                    child: Text('f${row + 1}(x)'),
+                    child: Text(
+                      'f${row + 1}(x)',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
                   )
                 : _buildInputMatrixItem(),
           ),
