@@ -46,21 +46,41 @@ class _MainPageState extends State<MainPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        FloatingActionButton.small(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-          child: const Icon(Icons.navigate_before),
-        ),
+        (_selectedIndex != 0)
+            ? FloatingActionButton.small(
+                onPressed: () {
+                  switch (_selectedIndex) {
+                    case 3:
+                      setState(() {
+                        _selectedIndex = 2;
+                      });
+                      break;
+                    default:
+                  }
+                },
+                child: const Icon(Icons.navigate_before),
+              )
+            : const SizedBox(),
         const SizedBox(
           width: 16,
         ),
-        FloatingActionButton.small(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-          child: const Icon(Icons.navigate_next),
-        ),
+        (_selectedIndex != 3)
+            ? FloatingActionButton.small(
+                onPressed: () {
+                  switch (_selectedIndex) {
+                    case 0:
+                      setState(() {
+                        _selectedIndex = 1;
+                      });
+                      break;
+                    default:
+                  }
+                },
+                child: const Icon(Icons.navigate_next),
+              )
+            : const SizedBox(
+                width: 40,
+              ),
       ],
     );
   }
