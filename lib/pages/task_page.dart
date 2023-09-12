@@ -27,7 +27,7 @@ class _TaskPageState extends State<TaskPage> {
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Expanded(
@@ -52,7 +52,7 @@ class _TaskPageState extends State<TaskPage> {
                         });
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Text(
@@ -70,31 +70,37 @@ class _TaskPageState extends State<TaskPage> {
                         });
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Text(
                       'Дроби',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 4,
                     ),
-                    NumberTypeChoice(),
-                    SizedBox(
+                    const NumberTypeChoice(),
+                    const SizedBox(
                       height: 8,
                     ),
                     Text(
                       'Функция',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 4,
                     ),
-                    FuncTypeChoice()
+                    const FuncTypeChoice(),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    const Text(
+                      'Базис заполнять необязательно',
+                    ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 40,
                 ),
                 Expanded(
@@ -105,7 +111,7 @@ class _TaskPageState extends State<TaskPage> {
                         'Таблица',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 4,
                       ),
                       Expanded(
@@ -215,6 +221,48 @@ class _TaskPageState extends State<TaskPage> {
       ),
     );
 
+    table.add(
+      TableRow(
+        children: List.generate(
+            columns,
+            (column) => (column == 0)
+                ? Text(
+                    'Базис',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
+                : const SizedBox()),
+      ),
+    );
+
+    table.add(
+      TableRow(
+        children: List.generate(
+            columns,
+            (column) => (column == 0)
+                ? Center(
+                    child: Text(
+                      '<',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(fontWeight: FontWeight.w500, fontSize: 25),
+                    ),
+                  )
+                : (column == columns - 1)
+                    ? Center(
+                        child: Text(
+                          '>',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 25),
+                        ),
+                      )
+                    : _buildInputMatrixItem()),
+      ),
+    );
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
@@ -227,8 +275,8 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  Padding _buildInputMatrixItem() => Padding(
-        padding: const EdgeInsets.all(8.0),
+  Padding _buildInputMatrixItem() => const Padding(
+        padding: EdgeInsets.all(8.0),
         child: CupertinoTextField(),
       );
 }
