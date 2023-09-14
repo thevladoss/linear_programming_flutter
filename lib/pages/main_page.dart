@@ -100,6 +100,7 @@ class _MainPageState extends State<MainPage> {
         label: Text('Симплекс'),
       ),
       NavigationRailDestination(
+        disabled: true,
         icon: Icon(
           Icons.show_chart,
           size: 30,
