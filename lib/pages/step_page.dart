@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:linear_flutter/models/step_data.dart';
 
-class StepPage extends StatelessWidget {
+class StepPage extends StatefulWidget {
   final StepData step;
 
-  const StepPage({super.key, required this.step});
+  StepPage({super.key, required this.step});
+
+  @override
+  State<StepPage> createState() => _StepPageState();
+}
+
+class _StepPageState extends State<StepPage> {
+  List<int> _activeElement = [1, 1];
+
+  @override
+  void initState() {
+    _activeElement =
+        (widget.step.element != null) ? widget.step.element! : _activeElement;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,18 +28,18 @@ class StepPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Шаг ${step.matrix[0][0].toInt()}',
+            'Шаг ${widget.step.matrix[0][0].toInt()}',
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
           SizedBox(
-            height: (step.basis != null) ? 10 : 0,
+            height: (widget.step.basis != null) ? 10 : 0,
           ),
-          (step.basis != null)
+          (widget.step.basis != null)
               ? Text(
-                  'Базис ${step.basis}',
+                  'Базис ${widget.step.basis}',
                 )
               : const SizedBox(),
           const SizedBox(
@@ -43,13 +57,13 @@ class StepPage extends StatelessWidget {
     List<TableRow> table = [
       TableRow(
         children: List.generate(
-          step.matrix.first.length,
+          widget.step.matrix.first.length,
           (i) => _buildTableItem(
             (i == 0)
-                ? 'x(${step.matrix.first[i].toInt().toString()})'
-                : (i == step.matrix.first.length - 1)
+                ? 'x(${widget.step.matrix.first[i].toInt().toString()})'
+                : (i == widget.step.matrix.first.length - 1)
                     ? ''
-                    : 'x${step.matrix.first[i].toInt().toString()}',
+                    : 'x${widget.step.matrix.first[i].toInt().toString()}',
             context,
             weight: FontWeight.bold,
           ),
@@ -57,27 +71,27 @@ class StepPage extends StatelessWidget {
       )
     ];
 
-    List<List<int>> possibleElements = step.getPossibleElements();
+    List<List<int>> possibleElements = widget.step.getPossibleElements();
 
     table.addAll(
       List.generate(
-        step.matrix.length - 2,
+        widget.step.matrix.length - 2,
         (i) => TableRow(
             children: List.generate(
-          step.matrix[i + 1].length,
+          widget.step.matrix[i + 1].length,
           (j) => _buildTableItem(
             (j == 0)
-                ? 'x${step.matrix[i + 1][j].toInt().toString()}'
-                : step.matrix[i + 1][j].toString(),
+                ? 'x${widget.step.matrix[i + 1][j].toInt().toString()}'
+                : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (step.element != null &&
-                    step.element!.first == i + 1 &&
-                    step.element!.last == j)
+            color: (_activeElement.first == i + 1 && _activeElement.last == j)
                 ? Colors.indigo.shade300
                 : (possibleElements.contains([i + 1, j]))
                     ? Colors.indigo.shade100
                     : Colors.transparent,
+            i: i + 1,
+            j: j,
           ),
         )),
       ),
@@ -86,11 +100,9 @@ class StepPage extends StatelessWidget {
     table.add(
       TableRow(
         children: List.generate(
-          step.matrix.last.length,
+          widget.step.matrix.last.length,
           (i) => _buildTableItem(
-            (i == 0) ? '' : step.matrix.last[i].toString(),
-            context,
-          ),
+              (i == 0) ? '' : widget.step.matrix.last[i].toString(), context),
         ),
       ),
     );
@@ -107,19 +119,34 @@ class StepPage extends StatelessWidget {
     );
   }
 
-  ColoredBox _buildTableItem(String title, BuildContext context,
-      {FontWeight weight = FontWeight.w400, Color color = Colors.transparent}) {
-    return ColoredBox(
-      color: color,
-      child: SizedBox(
-        height: 40,
-        child: Center(
-          child: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: weight),
+  GestureDetector _buildTableItem(String title, BuildContext context,
+      {FontWeight weight = FontWeight.w400,
+      Color color = Colors.transparent,
+      int i = 0,
+      int j = 0}) {
+    return GestureDetector(
+      onTap: () {
+        if (i > 0 &&
+            i < widget.step.matrix.length - 1 &&
+            j > 0 &&
+            j < widget.step.matrix[i].length - 1) {
+          setState(() {
+            _activeElement = [i, j];
+          });
+        }
+      },
+      child: ColoredBox(
+        color: color,
+        child: SizedBox(
+          height: 40,
+          child: Center(
+            child: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(fontWeight: weight),
+            ),
           ),
         ),
       ),
