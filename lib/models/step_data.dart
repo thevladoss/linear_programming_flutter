@@ -9,7 +9,7 @@ class StepData {
   final Map<int, double> func;
   final List<List<double>> matrix;
   final int varsCount;
-  final List<double> element;
+  final List<int>? element;
   final List<double>? basis;
   final double? answer;
   final NumberType type;
@@ -18,7 +18,7 @@ class StepData {
     required this.func,
     required this.matrix,
     required this.varsCount,
-    required this.element,
+    this.element,
     this.basis,
     this.answer,
     required this.type,
@@ -28,7 +28,7 @@ class StepData {
     Map<int, double>? func,
     List<List<double>>? matrix,
     int? varsCount,
-    List<double>? element,
+    List<int>? element,
     List<double>? basis,
     double? answer,
     NumberType? type,
@@ -65,7 +65,7 @@ class StepData {
         ),
       ),
       varsCount: map['varsCount'] as int,
-      element: List<double>.from((map['element'] as List<double>)),
+      element: List<int>.from((map['element'] as List<int>)),
       basis: map['basis'] != null
           ? List<double>.from((map['basis'] as List<double>))
           : null,
@@ -106,5 +106,26 @@ class StepData {
         basis.hashCode ^
         answer.hashCode ^
         type.hashCode;
+  }
+
+  List<List<int>> getPossibleElements() {
+    List<List<int>> ElementList = [];
+    double elementValue = 0;
+    for (int i = element![1]; i < matrix[0].length - 1; i++) {
+      if (matrix[matrix.length - 1][i] < 0) {
+        for (int j = 1; j < matrix.length - 1; j++) {
+          if ((matrix[j][matrix[0].length - 1] / matrix[j][i] < elementValue &&
+                  matrix[j][i] >= 0) ||
+              (elementValue == 0 && matrix[j][i] >= 0)) {
+            elementValue = matrix[j][matrix[0].length - 1] / matrix[j][i];
+            ElementList.add([j, i]);
+          }
+        }
+      }
+    }
+    if (ElementList.length > 0) {
+      ElementList.removeAt(0);
+    }
+    return ElementList;
   }
 }
