@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:linear_flutter/models/step_data.dart';
 
-class BasisPage extends StatelessWidget {
+class StepPage extends StatelessWidget {
   final StepData step;
 
-  const BasisPage({super.key, required this.step});
+  const StepPage({super.key, required this.step});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +20,14 @@ class BasisPage extends StatelessWidget {
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
+          SizedBox(
+            height: (step.basis != null) ? 10 : 0,
+          ),
+          (step.basis != null)
+              ? Text(
+                  'Базис ${step.basis}',
+                )
+              : const SizedBox(),
           const SizedBox(
             height: 20,
           ),

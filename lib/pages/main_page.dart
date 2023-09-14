@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:linear_flutter/pages/basis_page.dart';
+import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
-import 'package:linear_flutter/pages/simplex_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
+
+import '../models/step_data.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -14,6 +15,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  List<StepData> steps = [];
 
   @override
   Widget build(BuildContext context) {
@@ -153,12 +155,25 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Widget _errorPage() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Text(
+        'Базис был задан изначально',
+        style: Theme.of(context)
+            .textTheme
+            .headlineMedium!
+            .copyWith(fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
   Widget _buildPageFromIndex() {
     switch (_selectedIndex) {
       case 1:
-        return BasisPage();
+        return StepPage();
       case 2:
-        return SimplexPage();
+        return StepPage();
       case 3:
         return GraphPage();
       default:

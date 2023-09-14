@@ -95,6 +95,17 @@ class _TaskPageState extends State<TaskPage> {
                     const SizedBox(
                       height: 8,
                     ),
+                    Text(
+                      'Способ решения',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    const AutomaticChoice(),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     const Text(
                       'Базис заполнять необязательно',
                     ),
@@ -403,6 +414,40 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
         ButtonSegment<FuncType>(
           value: FuncType.max,
           label: Text('Максимизировать'),
+        ),
+      ],
+      showSelectedIcon: false,
+      selected: <FuncType>{funcType},
+      onSelectionChanged: (Set<FuncType> newSelection) {
+        setState(() {
+          funcType = newSelection.first;
+        });
+      },
+    );
+  }
+}
+
+class AutomaticChoice extends StatefulWidget {
+  const AutomaticChoice({super.key});
+
+  @override
+  State<AutomaticChoice> createState() => _AutomaticChoiceState();
+}
+
+class _AutomaticChoiceState extends State<AutomaticChoice> {
+  FuncType funcType = FuncType.min;
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<FuncType>(
+      segments: const <ButtonSegment<FuncType>>[
+        ButtonSegment<FuncType>(
+          value: FuncType.min,
+          label: Text('Автоматический'),
+        ),
+        ButtonSegment<FuncType>(
+          value: FuncType.max,
+          label: Text('Пошаговый'),
         ),
       ],
       showSelectedIcon: false,
