@@ -2,12 +2,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:linear_flutter/main_page.dart';
+import 'package:window_manager/window_manager.dart';
 
-import 'models/number_type.dart';
 import 'models/step_data.dart';
+import 'pages/main_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
