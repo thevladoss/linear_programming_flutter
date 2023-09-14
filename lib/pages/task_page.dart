@@ -12,6 +12,13 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   int _vars = 5;
   int _limits = 3;
+  Map<int, int> _func = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+  List<List<int>> _matrix = [
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0]
+  ];
+  List<int> _basis = [0, 0, 0, 0, 0];
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +56,26 @@ class _TaskPageState extends State<TaskPage> {
                       onChanged: (value) {
                         setState(() {
                           _vars = value;
+                          if (_vars > _func.length) {
+                            _func.addAll({_vars: 0});
+                            _basis.add(0);
+                            List<List<int>> newList = [];
+                            for (List<int> list in _matrix) {
+                              list.add(0);
+                              newList.add(list);
+                            }
+                            _matrix = newList;
+                          } else {
+                            _func.removeWhere(
+                                (key, value) => key == _func.length);
+                            _basis.removeLast();
+                            List<List<int>> newList = [];
+                            for (List<int> list in _matrix) {
+                              list.removeLast();
+                              newList.add(list);
+                            }
+                            _matrix = newList;
+                          }
                         });
                       },
                     ),
@@ -67,6 +94,11 @@ class _TaskPageState extends State<TaskPage> {
                       onChanged: (value) {
                         setState(() {
                           _limits = value;
+                          if (_limits > _matrix.length) {
+                            _matrix.add(List.filled(_vars + 1, 0));
+                          } else {
+                            _matrix.removeLast();
+                          }
                         });
                       },
                     ),
@@ -147,15 +179,7 @@ class _TaskPageState extends State<TaskPage> {
           (column) => (column == 0)
               ? Container()
               : (column == columns - 1)
-                  ? Center(
-                      child: Text(
-                        'c',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(fontWeight: FontWeight.w500),
-                      ),
-                    )
+                  ? const SizedBox()
                   : Center(
                       child: Text(
                         'c$column',
@@ -180,7 +204,9 @@ class _TaskPageState extends State<TaskPage> {
                         .copyWith(fontWeight: FontWeight.w500),
                   ),
                 )
-              : _buildInputMatrixItem(),
+              : (column == columns - 1)
+                  ? const SizedBox()
+                  : _buildInputMatrixItem(1, column),
         ),
       ),
       TableRow(
@@ -226,7 +252,7 @@ class _TaskPageState extends State<TaskPage> {
                           .copyWith(fontWeight: FontWeight.w500),
                     ),
                   )
-                : _buildInputMatrixItem(),
+                : _buildInputMatrixItem(row + 3, column),
           ),
         ),
       ),
@@ -270,7 +296,7 @@ class _TaskPageState extends State<TaskPage> {
                                   fontWeight: FontWeight.w500, fontSize: 25),
                         ),
                       )
-                    : _buildInputMatrixItem()),
+                    : _buildInputMatrixItem(_vars + 3, column)),
       ),
     );
 
@@ -286,9 +312,21 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  Padding _buildInputMatrixItem() => const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: CupertinoTextField(),
+  Padding _buildInputMatrixItem(int i, int j) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CupertinoTextField(
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
+          controller: TextEditingController(
+              text: (i == 1)
+                  ? _func[j].toString()
+                  : (i == _vars + 3 && _basis[j - 1] != 0)
+                      ? _basis[j - 1].toString()
+                      : (i == _vars + 3 && _basis[j - 1] == 0)
+                          ? ''
+                          : _matrix[i - 3][j - 1].toString()),
+          onChanged: (value) {},
+        ),
       );
 }
 
