@@ -58,14 +58,16 @@ class _StepPageState extends State<StepPage> {
       TableRow(
         children: List.generate(
           widget.step.matrix.first.length,
-          (i) => _buildTableItem(
-            (i == 0)
-                ? 'x(${widget.step.matrix.first[i].toInt().toString()})'
-                : (i == widget.step.matrix.first.length - 1)
+          (j) => _buildTableItem(
+            (j == 0)
+                ? 'x(${widget.step.matrix.first[j].toInt().toString()})'
+                : (j == widget.step.matrix.first.length - 1)
                     ? ''
-                    : 'x${widget.step.matrix.first[i].toInt().toString()}',
+                    : 'x${widget.step.matrix.first[j].toInt().toString()}',
             context,
             weight: FontWeight.bold,
+            i: 0,
+            j: j,
           ),
         ),
       )
@@ -101,8 +103,9 @@ class _StepPageState extends State<StepPage> {
       TableRow(
         children: List.generate(
           widget.step.matrix.last.length,
-          (i) => _buildTableItem(
-              (i == 0) ? '' : widget.step.matrix.last[i].toString(), context),
+          (j) => _buildTableItem(
+              (j == 0) ? '' : widget.step.matrix.last[j].toString(), context,
+              i: widget.step.matrix.length - 1, j: j),
         ),
       ),
     );
@@ -122,16 +125,13 @@ class _StepPageState extends State<StepPage> {
   GestureDetector _buildTableItem(String title, BuildContext context,
       {FontWeight weight = FontWeight.w400,
       Color color = Colors.transparent,
-      int i = 0,
-      int j = 0}) {
+      required int i,
+      required int j}) {
     return GestureDetector(
       onTap: () {
-        if (i > 0 &&
-            i < widget.step.matrix.length - 1 &&
-            j > 0 &&
-            j < widget.step.matrix[i].length - 1) {
+        if (j > 0 && j < widget.step.matrix[i].length - 1) {
           setState(() {
-            _activeElement = [i, j];
+            _activeElement = [2, j];
           });
         }
       },
