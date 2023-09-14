@@ -4,6 +4,8 @@ import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
+import '../main.dart';
+import '../models/enums.dart';
 import '../models/step_data.dart';
 
 class MainPage extends StatefulWidget {
@@ -171,9 +173,34 @@ class _MainPageState extends State<MainPage> {
   Widget _buildPageFromIndex() {
     switch (_selectedIndex) {
       case 1:
-        return StepPage();
+        return StepPage(
+          step: step(StepData(
+            func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
+            matrix: [
+              [0, 1, 2, 3, 4, 5, 0],
+              [6, 2, 1, 1, 1, -1, 3],
+              [7, 1, -1, 0, 1, 1, 1],
+              [8, -2, -1, -1, 1, 0, 1],
+            ],
+            varsCount: 5,
+            type: NumberType.decimal,
+          )),
+        );
       case 2:
-        return StepPage();
+        return StepPage(
+          step: StepData(func: {
+            1: -5,
+            2: -4,
+            3: -3,
+            4: -2,
+            5: 3
+          }, matrix: [
+            [0, 1, 2, 3, 4, 5, 0],
+            [6, 2, 1, 1, 1, -1, 3],
+            [7, 1, -1, 0, 1, 1, 1],
+            [8, -2, -1, -1, 1, 0, 1],
+          ], varsCount: 5, type: NumberType.decimal),
+        );
       case 3:
         return GraphPage();
       default:

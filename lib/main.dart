@@ -181,9 +181,9 @@ StepData step(StepData previousData) {
   }
   print(nextData.getPossibleElements());
   print(nextData);
-  if (nextData.answer == null) {
-    nextData = step(nextData);
-  }
+  // if (nextData.answer == null) {
+  //   nextData = step(nextData);
+  // }
   return nextData;
 }
 

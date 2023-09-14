@@ -14,7 +14,7 @@ class StepPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Шаг ${step.matrix[0][0]}',
+            'Шаг ${step.matrix[0][0].toInt()}',
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
@@ -40,35 +40,68 @@ class StepPage extends StatelessWidget {
   }
 
   SingleChildScrollView _buildMatrixTable(BuildContext context) {
+    List<TableRow> table = [
+      TableRow(
+        children: List.generate(
+          step.matrix.first.length,
+          (i) => _buildTableItem(
+            (i == 0)
+                ? 'x(${step.matrix.first[i].toInt().toString()})'
+                : (i == step.matrix.first.length - 1)
+                    ? ''
+                    : 'x${step.matrix.first[i].toInt().toString()}',
+            context,
+            weight: FontWeight.bold,
+          ),
+        ),
+      )
+    ];
+
+    List<List<int>> possibleElements = step.getPossibleElements();
+
+    table.addAll(
+      List.generate(
+        step.matrix.length - 2,
+        (i) => TableRow(
+            children: List.generate(
+          step.matrix[i + 1].length,
+          (j) => _buildTableItem(
+            (j == 0)
+                ? 'x${step.matrix[i + 1][j].toInt().toString()}'
+                : step.matrix[i + 1][j].toString(),
+            context,
+            weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
+            color: (step.element != null &&
+                    step.element!.first == i + 1 &&
+                    step.element!.last == j)
+                ? Colors.indigo.shade300
+                : (possibleElements.contains([i + 1, j]))
+                    ? Colors.indigo.shade100
+                    : Colors.transparent,
+          ),
+        )),
+      ),
+    );
+
+    table.add(
+      TableRow(
+        children: List.generate(
+          step.matrix.last.length,
+          (i) => _buildTableItem(
+            (i == 0) ? '' : step.matrix.last[i].toString(),
+            context,
+          ),
+        ),
+      ),
+    );
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         child: Table(
           border: TableBorder.symmetric(inside: BorderSide()),
           defaultColumnWidth: const FixedColumnWidth(66),
-          children: [
-            TableRow(
-              children: [
-                _buildTableItem('gay', context, weight: FontWeight.bold),
-                _buildTableItem('gay', context, weight: FontWeight.bold),
-                _buildTableItem('gay', context, weight: FontWeight.bold),
-              ],
-            ),
-            TableRow(
-              children: [
-                _buildTableItem('gay', context, weight: FontWeight.bold),
-                _buildTableItem('gay', context, color: Colors.indigo.shade100),
-                _buildTableItem('gay', context),
-              ],
-            ),
-            TableRow(
-              children: [
-                _buildTableItem('gay', context, weight: FontWeight.bold),
-                _buildTableItem('gay', context),
-                _buildTableItem('gay', context),
-              ],
-            ),
-          ],
+          children: table,
         ),
       ),
     );
