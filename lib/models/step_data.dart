@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:fraction/fraction.dart';
@@ -109,23 +110,41 @@ class StepData {
         type.hashCode;
   }
 
-  List<List<int>> getPossibleElements() {
-    List<List<int>> ElementList = [];
+  bool isElementSupport(int line, int column) {
     Fraction elementValue = 0.toFraction();
-    for (int i = element![1]; i < matrix[0].length - 1; i++) {
-      if (matrix[matrix.length - 1][i] < 0.toFraction()) {
-        for (int j = 1; j < matrix.length - 1; j++) {
-          if ((matrix[j][matrix[0].length - 1] / matrix[j][i] < elementValue &&
-                  matrix[j][i] >= 0.toFraction()) ||
-              (elementValue == 0 && matrix[j][i] >= 0.toFraction())) {
-            elementValue = matrix[j][matrix[0].length - 1] / matrix[j][i];
-            ElementList.add([j, i]);
+    if (matrix[matrix.length - 1][column] < 0.toFraction()) {
+      for (int j = 1; j < matrix.length - 1; j++) {
+        if (matrix[j][column].toDouble() > 0) {
+          if ((matrix[j][matrix[0].length - 1] / matrix[j][column] <
+                      elementValue ||
+                  elementValue.toDouble() == 0) &&
+              ((basis == null && matrix[j][0].toDouble() > varsCount) ||
+                  basis != null)) {
+            elementValue = matrix[j][matrix[0].length - 1] / matrix[j][column];
           }
         }
       }
+      if (((basis == null && matrix[line][0].toDouble() > varsCount) ||
+              basis != null) &&
+          matrix[line][matrix[0].length - 1] / matrix[line][column] ==
+              elementValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
-    if (ElementList.length > 0) {
-      ElementList.removeAt(0);
+  }
+
+  List<List<int>> getPossibleElements() {
+    List<List<int>> ElementList = [];
+    for (int i = 1; i < matrix.length - 1; i++) {
+      for (int j = 1; j < matrix[0].length - 1; j++) {
+        if (isElementSupport(i, j)) {
+          ElementList.add([i, j]);
+        }
+      }
     }
     return ElementList;
   }

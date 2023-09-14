@@ -221,6 +221,7 @@ StepData step(StepData previousData) {
   }
 
   print(nextData);
+  print(nextData.getPossibleElements());
   if (nextData.answer == null) {
     nextData = step(nextData);
   }
