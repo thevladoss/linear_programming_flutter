@@ -28,7 +28,7 @@ class _StepPageState extends State<StepPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Шаг ${widget.step.matrix[0][0].toInt()}',
+            'Шаг ${widget.step.matrix[0][0]}',
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
@@ -60,10 +60,10 @@ class _StepPageState extends State<StepPage> {
           widget.step.matrix.first.length,
           (j) => _buildTableItem(
             (j == 0)
-                ? 'x(${widget.step.matrix.first[j].toInt().toString()})'
+                ? 'x(${widget.step.matrix.first[j].toString()})'
                 : (j == widget.step.matrix.first.length - 1)
                     ? ''
-                    : 'x${widget.step.matrix.first[j].toInt().toString()}',
+                    : 'x${widget.step.matrix.first[j].toString()}',
             context,
             weight: FontWeight.bold,
             i: 0,
@@ -83,7 +83,7 @@ class _StepPageState extends State<StepPage> {
           widget.step.matrix[i + 1].length,
           (j) => _buildTableItem(
             (j == 0)
-                ? 'x${widget.step.matrix[i + 1][j].toInt().toString()}'
+                ? 'x${widget.step.matrix[i + 1][j].toString()}'
                 : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,

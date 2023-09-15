@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
@@ -174,32 +175,97 @@ class _MainPageState extends State<MainPage> {
     switch (_selectedIndex) {
       case 1:
         return StepPage(
-          step: step(StepData(
-            func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
-            matrix: [
-              [0, 1, 2, 3, 4, 5, 0],
-              [6, 2, 1, 1, 1, -1, 3],
-              [7, 1, -1, 0, 1, 1, 1],
-              [8, -2, -1, -1, 1, 0, 1],
-            ],
-            varsCount: 5,
-            type: NumberType.decimal,
-          )),
-        );
-      case 2:
-        return StepPage(
-          step: StepData(func: {
+          step: step(StepData(func: {
             1: -5,
             2: -4,
             3: -3,
             4: -2,
             5: 3
           }, matrix: [
-            [0, 1, 2, 3, 4, 5, 0],
-            [6, 2, 1, 1, 1, -1, 3],
-            [7, 1, -1, 0, 1, 1, 1],
-            [8, -2, -1, -1, 1, 0, 1],
-          ], varsCount: 5, type: NumberType.decimal),
+            [
+              0.toFraction(),
+              1.toFraction(),
+              2.toFraction(),
+              3.toFraction(),
+              4.toFraction(),
+              5.toFraction(),
+              0.toFraction()
+            ],
+            [
+              6.toFraction(),
+              2.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              3.toFraction()
+            ],
+            [
+              7.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              0.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction()
+            ],
+            [
+              8.toFraction(),
+              (-2).toFraction(),
+              (-1).toFraction(),
+              (-1).toFraction(),
+              1.toFraction(),
+              0.toFraction(),
+              1.toFraction()
+            ],
+          ], varsCount: 5, type: NumberType.fraction)),
+        );
+      case 2:
+        return StepPage(
+          step: step(StepData(func: {
+            1: -5,
+            2: -4,
+            3: -3,
+            4: -2,
+            5: 3
+          }, matrix: [
+            [
+              0.toFraction(),
+              1.toFraction(),
+              2.toFraction(),
+              3.toFraction(),
+              4.toFraction(),
+              5.toFraction(),
+              0.toFraction()
+            ],
+            [
+              6.toFraction(),
+              2.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              3.toFraction()
+            ],
+            [
+              7.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              0.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction()
+            ],
+            [
+              8.toFraction(),
+              (-2).toFraction(),
+              (-1).toFraction(),
+              (-1).toFraction(),
+              1.toFraction(),
+              0.toFraction(),
+              1.toFraction()
+            ],
+          ], varsCount: 5, type: NumberType.fraction)),
         );
       case 3:
         return GraphPage();
