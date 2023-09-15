@@ -15,6 +15,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   ];
   List<String> _basis = ['0', '0', '0', '0', '0'];
 
+  List<StepData> _steps = [];
+
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
