@@ -12,13 +12,13 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   int _vars = 5;
   int _limits = 3;
-  Map<int, int> _func = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-  List<List<int>> _matrix = [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0]
+  Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
+  List<List<String>> _matrix = [
+    ['0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0']
   ];
-  List<int> _basis = [0, 0, 0, 0, 0];
+  List<String> _basis = ['0', '0', '0', '0', '0'];
 
   @override
   Widget build(BuildContext context) {
@@ -59,22 +59,24 @@ class _TaskPageState extends State<TaskPage> {
                           setState(() {
                             _vars = value;
                             if (_vars > _func.length) {
-                              _func.addAll({_vars: 0});
-                              _basis.add(0);
-                              List<List<int>> newList = [];
-                              for (List<int> list in _matrix) {
-                                list.add(0);
-                                newList.add(list);
+                              _func.addAll({_vars: '0'});
+                              _basis.add('0');
+                              List<List<String>> newList = [];
+                              for (List<String> list in _matrix) {
+                                List<String> l = list.toList();
+                                l.add('0');
+                                newList.add(l);
                               }
                               _matrix = newList;
                             } else {
                               _func.removeWhere(
                                   (key, value) => key == _func.length);
                               _basis.removeLast();
-                              List<List<int>> newList = [];
-                              for (List<int> list in _matrix) {
-                                list.removeLast();
-                                newList.add(list);
+                              List<List<String>> newList = [];
+                              for (List<String> list in _matrix) {
+                                List<String> l = list.toList();
+                                l.removeLast();
+                                newList.add(l);
                               }
                               _matrix = newList;
                             }
@@ -99,7 +101,7 @@ class _TaskPageState extends State<TaskPage> {
                           setState(() {
                             _limits = value;
                             if (_limits > _matrix.length) {
-                              _matrix.add(List.filled(_vars + 1, 0));
+                              _matrix.add(List.filled(_vars + 1, '0'));
                             } else {
                               _matrix.removeLast();
                             }
@@ -324,13 +326,17 @@ class _TaskPageState extends State<TaskPage> {
           textInputAction: TextInputAction.next,
           controller: TextEditingController(
               text: (i == 1)
-                  ? _func[j].toString()
-                  : (i == _vars + 3 && _basis[j - 1] != 0)
-                      ? _basis[j - 1].toString()
-                      : (i == _vars + 3 && _basis[j - 1] == 0)
+                  ? _func[j]
+                  : (i == _vars + 3 && _basis[j - 1] != '0')
+                      ? _basis[j - 1]
+                      : (i == _vars + 3 && _basis[j - 1] == '0')
                           ? ''
-                          : _matrix[i - 3][j - 1].toString()),
-          onChanged: (value) {},
+                          : _matrix[i - 3][j - 1]),
+          onChanged: (value) {
+            if (i == 1) {
+              _func[j] = value;
+            }
+          },
         ),
       );
 }
