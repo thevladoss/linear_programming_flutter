@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:linear_flutter/bloc/main_bloc.dart';
 import 'package:linear_flutter/models/enums.dart';
 
 class TaskPage extends StatefulWidget {
@@ -12,17 +14,16 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   int _vars = 5;
   int _limits = 3;
-  Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
-  List<List<String>> _matrix = [
-    ['0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0']
-  ];
-  List<String> _basis = ['0', '0', '0', '0', '0'];
+  Map<int, String> _func = {};
+  List<List<String>> _matrix = [];
+  List<String> _basis = [];
 
   @override
   Widget build(BuildContext context) {
-    print(_matrix);
+    _func = context.read<MainBloc>().func;
+    _matrix = context.read<MainBloc>().matrix;
+    _basis = context.read<MainBloc>().basis;
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(

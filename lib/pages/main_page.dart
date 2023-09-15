@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
+import '../bloc/main_bloc.dart';
 import '../main.dart';
 import '../models/enums.dart';
 import '../models/step_data.dart';
@@ -22,28 +26,31 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            groupAlignment: 0,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            labelType: NavigationRailLabelType.selected,
-            leading: _buildActionButton(),
-            destinations: _buildNavigationDestinations,
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-            child: _buildPageFromIndex(),
-          )
-        ],
+    return BlocProvider(
+      create: (context) => MainBloc(),
+      child: Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _selectedIndex,
+              groupAlignment: 0,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              labelType: NavigationRailLabelType.selected,
+              leading: _buildActionButton(),
+              destinations: _buildNavigationDestinations,
+            ),
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(
+              child: _buildPageFromIndex(),
+            )
+          ],
+        ),
+        floatingActionButton: _buildMoveButtons(),
       ),
-      floatingActionButton: _buildMoveButtons(),
     );
   }
 
