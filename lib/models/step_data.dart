@@ -1,16 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:fraction/fraction.dart';
 
 import 'enums.dart';
 
 class StepData {
   final Map<int, double> func;
-  final List<List<double>> matrix;
+  final List<List<Fraction>> matrix;
   final int varsCount;
   final List<int>? element;
-  final List<double>? basis;
+  final List<Fraction>? basis;
   final double? answer;
   final NumberType type;
 
@@ -26,10 +28,10 @@ class StepData {
 
   StepData copyWith({
     Map<int, double>? func,
-    List<List<double>>? matrix,
+    List<List<Fraction>>? matrix,
     int? varsCount,
     List<int>? element,
-    List<double>? basis,
+    List<Fraction>? basis,
     double? answer,
     NumberType? type,
   }) {
@@ -59,15 +61,15 @@ class StepData {
   factory StepData.fromMap(Map<String, dynamic> map) {
     return StepData(
       func: Map<int, double>.from((map['func'] as Map<int, double>)),
-      matrix: List<List<double>>.from(
-        (map['matrix'] as List<double>).map<double>(
+      matrix: List<List<Fraction>>.from(
+        (map['matrix'] as List<Fraction>).map<Fraction>(
           (x) => x,
         ),
       ),
       varsCount: map['varsCount'] as int,
       element: List<int>.from((map['element'] as List<int>)),
       basis: map['basis'] != null
-          ? List<double>.from((map['basis'] as List<double>))
+          ? List<Fraction>.from((map['basis'] as List<Fraction>))
           : null,
       answer: map['answer'] != null ? map['answer'] as double : null,
       type: NumberType.values.firstWhere((element) => element == map['type']),
@@ -108,23 +110,41 @@ class StepData {
         type.hashCode;
   }
 
-  List<List<int>> getPossibleElements() {
-    List<List<int>> ElementList = [];
-    double elementValue = 0;
-    for (int i = element![1]; i < matrix[0].length - 1; i++) {
-      if (matrix[matrix.length - 1][i] < 0) {
-        for (int j = 1; j < matrix.length - 1; j++) {
-          if ((matrix[j][matrix[0].length - 1] / matrix[j][i] < elementValue &&
-                  matrix[j][i] >= 0) ||
-              (elementValue == 0 && matrix[j][i] >= 0)) {
-            elementValue = matrix[j][matrix[0].length - 1] / matrix[j][i];
-            ElementList.add([j, i]);
+  bool isElementSupport(int line, int column) {
+    Fraction elementValue = 0.toFraction();
+    if (matrix[matrix.length - 1][column] < 0.toFraction()) {
+      for (int j = 1; j < matrix.length - 1; j++) {
+        if (matrix[j][column].toDouble() > 0) {
+          if ((matrix[j][matrix[0].length - 1] / matrix[j][column] <
+                      elementValue ||
+                  elementValue.toDouble() == 0) &&
+              ((basis == null && matrix[j][0].toDouble() > varsCount) ||
+                  basis != null)) {
+            elementValue = matrix[j][matrix[0].length - 1] / matrix[j][column];
           }
         }
       }
+      if (((basis == null && matrix[line][0].toDouble() > varsCount) ||
+              basis != null) &&
+          matrix[line][matrix[0].length - 1] / matrix[line][column] ==
+              elementValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
-    if (ElementList.length > 0) {
-      ElementList.removeAt(0);
+  }
+
+  List<List<int>> getPossibleElements() {
+    List<List<int>> ElementList = [];
+    for (int i = 1; i < matrix.length - 1; i++) {
+      for (int j = 1; j < matrix[0].length - 1; j++) {
+        if (isElementSupport(i, j)) {
+          ElementList.add([i, j]);
+        }
+      }
     }
     return ElementList;
   }
