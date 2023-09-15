@@ -22,6 +22,7 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(_matrix);
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -50,33 +51,35 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     NumberStepper(
                       initialValue: _vars,
-                      minValue: 1,
+                      minValue: _limits + 1,
                       maxValue: 16,
                       step: 1,
                       onChanged: (value) {
-                        setState(() {
-                          _vars = value;
-                          if (_vars > _func.length) {
-                            _func.addAll({_vars: 0});
-                            _basis.add(0);
-                            List<List<int>> newList = [];
-                            for (List<int> list in _matrix) {
-                              list.add(0);
-                              newList.add(list);
+                        if (_vars != value) {
+                          setState(() {
+                            _vars = value;
+                            if (_vars > _func.length) {
+                              _func.addAll({_vars: 0});
+                              _basis.add(0);
+                              List<List<int>> newList = [];
+                              for (List<int> list in _matrix) {
+                                list.add(0);
+                                newList.add(list);
+                              }
+                              _matrix = newList;
+                            } else {
+                              _func.removeWhere(
+                                  (key, value) => key == _func.length);
+                              _basis.removeLast();
+                              List<List<int>> newList = [];
+                              for (List<int> list in _matrix) {
+                                list.removeLast();
+                                newList.add(list);
+                              }
+                              _matrix = newList;
                             }
-                            _matrix = newList;
-                          } else {
-                            _func.removeWhere(
-                                (key, value) => key == _func.length);
-                            _basis.removeLast();
-                            List<List<int>> newList = [];
-                            for (List<int> list in _matrix) {
-                              list.removeLast();
-                              newList.add(list);
-                            }
-                            _matrix = newList;
-                          }
-                        });
+                          });
+                        }
                       },
                     ),
                     const SizedBox(
@@ -89,17 +92,19 @@ class _TaskPageState extends State<TaskPage> {
                     NumberStepper(
                       initialValue: _limits,
                       minValue: 1,
-                      maxValue: 16,
+                      maxValue: _vars - 1,
                       step: 1,
                       onChanged: (value) {
-                        setState(() {
-                          _limits = value;
-                          if (_limits > _matrix.length) {
-                            _matrix.add(List.filled(_vars + 1, 0));
-                          } else {
-                            _matrix.removeLast();
-                          }
-                        });
+                        if (_limits != value) {
+                          setState(() {
+                            _limits = value;
+                            if (_limits > _matrix.length) {
+                              _matrix.add(List.filled(_vars + 1, 0));
+                            } else {
+                              _matrix.removeLast();
+                            }
+                          });
+                        }
                       },
                     ),
                     const SizedBox(
