@@ -325,16 +325,21 @@ class _TaskPageState extends State<TaskPage> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
           controller: TextEditingController(
-              text: (i == 1)
-                  ? _func[j]
-                  : (i == _vars + 3 && _basis[j - 1] != '0')
-                      ? _basis[j - 1]
-                      : (i == _vars + 3 && _basis[j - 1] == '0')
-                          ? ''
-                          : _matrix[i - 3][j - 1]),
+            text: (i == 1)
+                ? _func[j]
+                : (i == _vars + 3 && _basis[j - 1] != '0')
+                    ? _basis[j - 1]
+                    : (i == _vars + 3 && _basis[j - 1] == '0')
+                        ? ''
+                        : _matrix[i - 3][j - 1],
+          ),
           onChanged: (value) {
             if (i == 1) {
               _func[j] = value;
+            } else if (i == _vars + 3) {
+              _basis[j - 1] = value;
+            } else {
+              _matrix[i - 3][j - 1] = value;
             }
           },
         ),
