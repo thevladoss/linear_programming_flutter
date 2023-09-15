@@ -164,50 +164,27 @@ StepData step(StepData previousData) {
   }
   Fraction elementValue = 0.toFraction();
   nextData = nextData.copyWith(element: [0, 0]);
-  if (nextData.basis != null) {
-    for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
-      if (nextData.matrix[nextData.matrix.length - 1][i].toDouble() < 0) {
-        for (int j = 1; j < nextData.matrix.length - 1; j++) {
-          if (nextData.matrix[j][i].toDouble() > 0) {
-            if ((nextData.matrix[j][nextData.matrix[0].length - 1] /
-                            nextData.matrix[j][i] <
-                        elementValue &&
-                    nextData.matrix[j][i] >= 0.toFraction()) ||
-                (elementValue.toDouble() == 0 &&
-                    nextData.matrix[j][i].toDouble() >= 0)) {
-              elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
-                  nextData.matrix[j][i];
-              nextData.element![0] = j;
-              nextData.element![1] = i;
-            }
+  for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
+    if (nextData.matrix[nextData.matrix.length - 1][i].toDouble() < 0) {
+      for (int j = 1; j < nextData.matrix.length - 1; j++) {
+        if (nextData.matrix[j][i].toDouble() > 0) {
+          if ((nextData.matrix[j][nextData.matrix[0].length - 1] /
+                          nextData.matrix[j][i] <
+                      elementValue ||
+                  elementValue.toDouble() == 0) &&
+              ((nextData.basis == null &&
+                      nextData.matrix[j][0].toDouble() > nextData.varsCount) ||
+                  nextData.basis != null)) {
+            elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
+                nextData.matrix[j][i];
+            nextData.element![0] = j;
+            nextData.element![1] = i;
           }
         }
-      }
-    }
-  } else {
-    for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
-      if (nextData.matrix[nextData.matrix.length - 1][i].toDouble() < 0) {
-        for (int j = 1; j < nextData.matrix.length - 1; j++) {
-          if (nextData.matrix[j][i].toDouble() != 0) {
-            if (((nextData.matrix[j][nextData.matrix[0].length - 1] /
-                            nextData.matrix[j][i] <
-                        elementValue &&
-                    nextData.matrix[j][i] >= 0.toFraction() &&
-                    nextData.matrix[j][0].toDouble() > nextData.varsCount) ||
-                (elementValue == 0.toFraction() &&
-                    nextData.matrix[j][i] >= 0.toFraction() &&
-                    nextData.matrix[j][0].toDouble() > nextData.varsCount))) {
-              elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
-                  nextData.matrix[j][i];
-              nextData.element![0] = j;
-              nextData.element![1] = i;
-            }
-          }
-        }
-        break;
       }
     }
   }
+
   for (int i = 1; i < nextData.matrix[0].length; i++) {
     if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction() ||
         nextData.basis == null) {
