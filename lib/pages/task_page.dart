@@ -81,6 +81,9 @@ class _TaskPageState extends State<TaskPage> {
                               }
                               _matrix = newList;
                             }
+                            context.read<MainBloc>().updateFunc(_func);
+                            context.read<MainBloc>().updateMatrix(_matrix);
+                            context.read<MainBloc>().updateBasis(_basis);
                           });
                         }
                       },

@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fraction/fraction.dart';
-import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
+import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
 import '../bloc/main_bloc.dart';
