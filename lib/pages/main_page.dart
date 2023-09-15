@@ -7,7 +7,6 @@ import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
 import '../bloc/main_bloc.dart';
-import '../models/enums.dart';
 import '../models/step_data.dart';
 import 'answer_page.dart';
 
@@ -233,7 +232,7 @@ class _MainPageState extends State<MainPage> {
                   0.toFraction(),
                   1.toFraction()
                 ],
-              ], varsCount: 5, type: NumberType.fraction)),
+              ])),
         );
       case MainSimplexState:
         return StepPage(
@@ -280,7 +279,7 @@ class _MainPageState extends State<MainPage> {
                   0.toFraction(),
                   1.toFraction()
                 ],
-              ], varsCount: 5, type: NumberType.fraction)),
+              ])),
         );
       case MainAnswerState:
         return AnswerPage();

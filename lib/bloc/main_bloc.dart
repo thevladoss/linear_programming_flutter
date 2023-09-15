@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:fraction/fraction.dart';
+import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
 import 'package:meta/meta.dart';
 
@@ -14,12 +15,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     ['0', '0', '0', '0', '0', '0']
   ];
   List<String> _basis = ['0', '0', '0', '0', '0'];
+  NumberType _numberType = NumberType.fraction;
+  FuncType _funcType = FuncType.min;
+  AnswerType _answerType = AnswerType.step;
 
   List<StepData> _steps = [];
 
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
+  get numberType => _numberType;
+  get funcType => _funcType;
+  get answerType => _answerType;
 
   MainBloc() : super(MainTaskState()) {
     on<MainEvent>((event, emit) {
@@ -48,7 +55,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         nextData.matrix[nextData.matrix.length - 1][0].toDouble() == 0) {
       if (nextData.basis == null) {
         nextData = nextData.copyWith(basis: []);
-        for (int i = 1; i <= nextData.varsCount; i++) {
+        for (int i = 1; i <= nextData.func.length; i++) {
           for (int j = 1; j < nextData.matrix.length - 1; j++) {
             if (nextData.matrix[j][0].toDouble() == i) {
               nextData.basis!.add(
@@ -141,7 +148,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               nextData.matrix[i][nextData.element![1]].reduce();
         }
         for (int i = 1; i < nextData.matrix[0].length; i++) {
-          if (nextData.matrix[0][i].toDouble() > nextData.varsCount) {
+          if (nextData.matrix[0][i].toDouble() > nextData.func.length) {
             for (int j = 0; j < nextData.matrix.length; j++) {
               nextData.matrix[j].removeAt(i);
             }
@@ -162,7 +169,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                     elementValue.toDouble() == 0) &&
                 ((nextData.basis == null &&
                         nextData.matrix[j][0].toDouble() >
-                            nextData.varsCount) ||
+                            nextData.func.length) ||
                     nextData.basis != null)) {
               elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
                   nextData.matrix[j][i];
@@ -197,4 +204,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   void updateFunc(Map<int, String> newFunc) => _func = newFunc;
   void updateMatrix(List<List<String>> newMatrix) => _matrix = newMatrix;
   void updateBasis(List<String> newBasis) => _basis = newBasis;
+  void updateNumberType(NumberType newNumberType) =>
+      _numberType = newNumberType;
+  void updateFuncType(FuncType newFuncType) => _funcType = newFuncType;
+  void updateAnswerType(AnswerType newAnswerType) =>
+      _answerType = newAnswerType;
 }

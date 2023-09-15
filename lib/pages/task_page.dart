@@ -425,26 +425,27 @@ class NumberTypeChoice extends StatefulWidget {
 }
 
 class _NumberTypeChoiceState extends State<NumberTypeChoice> {
-  NumberType numberType = NumberType.decimal;
+  NumberType _numberType = NumberType.fraction;
 
   @override
   Widget build(BuildContext context) {
+    _numberType = context.read<MainBloc>().numberType;
     return SegmentedButton<NumberType>(
       segments: const <ButtonSegment<NumberType>>[
-        ButtonSegment<NumberType>(
-          value: NumberType.decimal,
-          label: Text('Десятичные'),
-        ),
         ButtonSegment<NumberType>(
           value: NumberType.fraction,
           label: Text('Обыкновенные'),
         ),
+        ButtonSegment<NumberType>(
+          value: NumberType.decimal,
+          label: Text('Десятичные'),
+        ),
       ],
       showSelectedIcon: false,
-      selected: <NumberType>{numberType},
+      selected: <NumberType>{_numberType},
       onSelectionChanged: (Set<NumberType> newSelection) {
         setState(() {
-          numberType = newSelection.first;
+          context.read<MainBloc>().updateNumberType(newSelection.first);
         });
       },
     );
@@ -459,10 +460,11 @@ class FuncTypeChoice extends StatefulWidget {
 }
 
 class _FuncTypeChoiceState extends State<FuncTypeChoice> {
-  FuncType funcType = FuncType.min;
+  FuncType _funcType = FuncType.min;
 
   @override
   Widget build(BuildContext context) {
+    _funcType = context.read<MainBloc>().funcType;
     return SegmentedButton<FuncType>(
       segments: const <ButtonSegment<FuncType>>[
         ButtonSegment<FuncType>(
@@ -475,10 +477,10 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
         ),
       ],
       showSelectedIcon: false,
-      selected: <FuncType>{funcType},
+      selected: <FuncType>{_funcType},
       onSelectionChanged: (Set<FuncType> newSelection) {
         setState(() {
-          funcType = newSelection.first;
+          context.read<MainBloc>().updateFuncType(newSelection.first);
         });
       },
     );
@@ -493,26 +495,27 @@ class AutomaticChoice extends StatefulWidget {
 }
 
 class _AutomaticChoiceState extends State<AutomaticChoice> {
-  FuncType funcType = FuncType.min;
+  AnswerType _answerType = AnswerType.step;
 
   @override
   Widget build(BuildContext context) {
-    return SegmentedButton<FuncType>(
-      segments: const <ButtonSegment<FuncType>>[
-        ButtonSegment<FuncType>(
-          value: FuncType.min,
-          label: Text('Автоматический'),
-        ),
-        ButtonSegment<FuncType>(
-          value: FuncType.max,
+    _answerType = context.read<MainBloc>().answerType;
+    return SegmentedButton<AnswerType>(
+      segments: const <ButtonSegment<AnswerType>>[
+        ButtonSegment<AnswerType>(
+          value: AnswerType.step,
           label: Text('Пошаговый'),
+        ),
+        ButtonSegment<AnswerType>(
+          value: AnswerType.auto,
+          label: Text('Автоматический'),
         ),
       ],
       showSelectedIcon: false,
-      selected: <FuncType>{funcType},
-      onSelectionChanged: (Set<FuncType> newSelection) {
+      selected: <AnswerType>{_answerType},
+      onSelectionChanged: (Set<AnswerType> newSelection) {
         setState(() {
-          funcType = newSelection.first;
+          context.read<MainBloc>().updateAnswerType(newSelection.first);
         });
       },
     );
