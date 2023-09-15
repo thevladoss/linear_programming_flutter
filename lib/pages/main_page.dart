@@ -9,6 +9,7 @@ import 'package:linear_flutter/pages/task_page.dart';
 import '../bloc/main_bloc.dart';
 import '../models/enums.dart';
 import '../models/step_data.dart';
+import 'answer_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -25,28 +26,35 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MainBloc(),
-      child: Scaffold(
-        body: Row(
-          children: [
-            NavigationRail(
-              selectedIndex: _selectedIndex,
-              groupAlignment: 0,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              labelType: NavigationRailLabelType.selected,
-              leading: _buildActionButton(),
-              destinations: _buildNavigationDestinations,
+      child: BlocBuilder<MainBloc, MainState>(
+        builder: (context, state) {
+          return Scaffold(
+            body: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _selectedIndex,
+                  groupAlignment: 0,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                      context
+                          .read<MainBloc>()
+                          .add(MainSwitchPageEvent(index: _selectedIndex));
+                    });
+                  },
+                  labelType: NavigationRailLabelType.selected,
+                  leading: _buildActionButton(),
+                  destinations: _buildNavigationDestinations,
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: _buildPage(context, state),
+                )
+              ],
             ),
-            const VerticalDivider(thickness: 1, width: 1),
-            Expanded(
-              child: _buildPageFromIndex(),
-            )
-          ],
-        ),
-        floatingActionButton: _buildMoveButtons(),
+            floatingActionButton: _buildMoveButtons(),
+          );
+        },
       ),
     );
   }
@@ -107,6 +115,10 @@ class _MainPageState extends State<MainPage> {
       NavigationRailDestination(
         icon: FaIcon(FontAwesomeIcons.two),
         label: Text('Симплекс'),
+      ),
+      NavigationRailDestination(
+        icon: FaIcon(FontAwesomeIcons.three),
+        label: Text('Решение'),
       ),
       NavigationRailDestination(
         disabled: true,
@@ -175,11 +187,11 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildPageFromIndex() {
-    switch (_selectedIndex) {
-      case 1:
+  Widget _buildPage(BuildContext ctx, MainState state) {
+    switch (state.runtimeType) {
+      case MainBasisState:
         return StepPage(
-          step: context.read<MainBloc>().nextStep(StepData(func: {
+          step: ctx.read<MainBloc>().nextStep(StepData(func: {
                 1: -5,
                 2: -4,
                 3: -3,
@@ -224,9 +236,9 @@ class _MainPageState extends State<MainPage> {
                 ],
               ], varsCount: 5, type: NumberType.fraction)),
         );
-      case 2:
+      case MainSimplexState:
         return StepPage(
-          step: context.read<MainBloc>().nextStep(StepData(func: {
+          step: ctx.read<MainBloc>().nextStep(StepData(func: {
                 1: -5,
                 2: -4,
                 3: -3,
@@ -271,7 +283,9 @@ class _MainPageState extends State<MainPage> {
                 ],
               ], varsCount: 5, type: NumberType.fraction)),
         );
-      case 3:
+      case MainAnswerState:
+        return AnswerPage();
+      case MainGraphState:
         return GraphPage();
       default:
         return TaskPage();

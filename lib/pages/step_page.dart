@@ -73,8 +73,6 @@ class _StepPageState extends State<StepPage> {
       )
     ];
 
-    List<List<int>> possibleElements = widget.step.getPossibleElements();
-
     table.addAll(
       List.generate(
         widget.step.matrix.length - 2,
@@ -89,7 +87,8 @@ class _StepPageState extends State<StepPage> {
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
             color: (_activeElement.first == i + 1 && _activeElement.last == j)
                 ? Colors.indigo.shade300
-                : (possibleElements.contains([i + 1, j]))
+                : (j != widget.step.matrix[i + 1].length - 1 &&
+                        widget.step.isElementSupport(i + 1, j))
                     ? Colors.indigo.shade100
                     : Colors.transparent,
             i: i + 1,
@@ -114,7 +113,7 @@ class _StepPageState extends State<StepPage> {
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         child: Table(
-          border: TableBorder.symmetric(inside: BorderSide()),
+          border: TableBorder.symmetric(inside: const BorderSide()),
           defaultColumnWidth: const FixedColumnWidth(66),
           children: table,
         ),
@@ -129,9 +128,9 @@ class _StepPageState extends State<StepPage> {
       required int j}) {
     return GestureDetector(
       onTap: () {
-        if (j > 0 && j < widget.step.matrix[i].length - 1) {
+        if (color == Colors.indigo.shade100) {
           setState(() {
-            _activeElement = [2, j];
+            _activeElement = [i, j];
           });
         }
       },

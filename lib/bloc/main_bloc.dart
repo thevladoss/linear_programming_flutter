@@ -19,9 +19,21 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   get matrix => _matrix;
   get basis => _basis;
 
-  MainBloc() : super(MainInitial()) {
+  MainBloc() : super(MainTaskState()) {
     on<MainEvent>((event, emit) {
-      // TODO: implement event handler
+      if (event is MainSwitchPageEvent) {
+        if (event.index == 0) {
+          emit(MainTaskState());
+        } else if (event.index == 1) {
+          emit(MainBasisState());
+        } else if (event.index == 2) {
+          emit(MainSimplexState());
+        } else if (event.index == 3) {
+          emit(MainAnswerState());
+        } else {
+          emit(MainGraphState());
+        }
+      }
     });
   }
 
