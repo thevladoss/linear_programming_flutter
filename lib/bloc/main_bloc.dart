@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:fraction/fraction.dart';
+import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
 import 'package:meta/meta.dart';
 
@@ -23,6 +24,38 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<MainEvent>((event, emit) {
       // TODO: implement event handler
     });
+  }
+
+  void toStepData() {
+    try {
+      StepData startData = StepData(func: {}, matrix: [
+        [0.toFraction()]
+      ], varsCount: _func.length, type: NumberType.fraction);
+      for (int i = 1; i <= startData.varsCount; i++) {
+        startData.matrix[0].add(i.toFraction().reduce());
+        if (_func[i - 1] == 0.toString()) {
+          break;
+        }
+        startData.func[i] = Fraction.fromString(_func[i - 1]!).toDouble();
+      }
+      startData.matrix[0].add(0.toFraction().reduce());
+      for (int i = 0; i < _matrix.length; i++) {
+        startData.matrix.add([]);
+        for (int j = 0; j < _matrix[0].length; j++) {
+          startData.matrix[i + 1].add(_matrix[i][j].toFraction().reduce());
+        }
+      }
+      for (int i = 1; i < startData.matrix.length; i++) {
+        if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
+            0) {}
+      }
+      if (startData.basis == null) {
+        for (int i = 1; i < startData.matrix.length; i++) {
+          startData.matrix[i]
+              .insert(0, (_func.length + i).toFraction().reduce());
+        }
+      }
+    } finally {}
   }
 
   StepData nextStep(StepData previousData) {
