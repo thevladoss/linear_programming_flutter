@@ -26,11 +26,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
   }
 
-  void toStepData() {
+  StepData toStepData() {
+    StepData startData = StepData(func: {}, matrix: [
+      [0.toFraction()]
+    ], varsCount: _func.length, type: NumberType.fraction);
     try {
-      StepData startData = StepData(func: {}, matrix: [
-        [0.toFraction()]
-      ], varsCount: _func.length, type: NumberType.fraction);
       for (int i = 1; i <= startData.varsCount; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
         if (_func[i - 1] == 0.toString()) {
@@ -55,7 +55,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               .insert(0, (_func.length + i).toFraction().reduce());
         }
       }
-    } finally {}
+    } finally {
+      return startData;
+    }
   }
 
   StepData nextStep(StepData previousData) {
