@@ -12,7 +12,6 @@ part 'main_state.dart';
 class MainBloc extends Bloc<MainEvent, MainState> {
   int _vars = 5;
   int _limits = 3;
-
   Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
   List<List<String>> _matrix = [
     ['0', '0', '0', '0', '0', '0'],
