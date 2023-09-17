@@ -20,8 +20,8 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    _vars = context.read<MainBloc>().vars;
-    _limits = context.read<MainBloc>().limits;
+    _vars = context.read<MainBloc>().task.vars;
+    _limits = context.read<MainBloc>().task.limits;
     _func = context.read<MainBloc>().func;
     _matrix = context.read<MainBloc>().matrix;
     _basis = context.read<MainBloc>().basis;

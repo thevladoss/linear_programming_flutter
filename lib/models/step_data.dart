@@ -5,52 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:fraction/fraction.dart';
 
 class Task {
+  int vars;
+  int limits;
   final List<StepData> steps;
+
   Task({
+    required this.vars,
+    required this.limits,
     required this.steps,
   });
-
-  Task copyWith({
-    List<StepData>? steps,
-  }) {
-    return Task(
-      steps: steps ?? this.steps,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'steps': steps.map((x) => x.toMap()).toList(),
-    };
-  }
-
-  factory Task.fromMap(Map<String, dynamic> map) {
-    return Task(
-      steps: List<StepData>.from(
-        (map['steps'] as List<int>).map<StepData>(
-          (x) => StepData.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Task.fromJson(String source) =>
-      Task.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'AllSteps(steps: $steps)';
-
-  @override
-  bool operator ==(covariant Task other) {
-    if (identical(this, other)) return true;
-
-    return listEquals(other.steps, steps);
-  }
-
-  @override
-  int get hashCode => steps.hashCode;
 
   addStep(StepData step) {
     steps.add(step);
@@ -73,6 +36,58 @@ class Task {
     }
     return 0;
   }
+
+  Task copyWith({
+    List<StepData>? steps,
+    int? vars,
+    int? limits,
+  }) {
+    return Task(
+      steps: steps ?? this.steps,
+      vars: vars ?? this.vars,
+      limits: limits ?? this.limits,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'steps': steps.map((x) => x.toMap()).toList(),
+      'vars': vars,
+      'limits': limits,
+    };
+  }
+
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task(
+      steps: List<StepData>.from(
+        (map['steps'] as List<int>).map<StepData>(
+          (x) => StepData.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      vars: map['vars'] as int,
+      limits: map['limits'] as int,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Task.fromJson(String source) =>
+      Task.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'Task(steps: $steps, vars: $vars, limits: $limits)';
+
+  @override
+  bool operator ==(covariant Task other) {
+    if (identical(this, other)) return true;
+
+    return listEquals(other.steps, steps) &&
+        other.vars == vars &&
+        other.limits == limits;
+  }
+
+  @override
+  int get hashCode => steps.hashCode ^ vars.hashCode ^ limits.hashCode;
 }
 
 class StepData {

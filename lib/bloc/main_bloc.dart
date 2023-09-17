@@ -9,8 +9,6 @@ part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  int _vars = 5;
-  int _limits = 3;
   Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
   List<List<String>> _matrix = [
     ['0', '0', '0', '0', '0', '0'],
@@ -22,12 +20,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   FuncType _funcType = FuncType.min;
   AnswerType _answerType = AnswerType.step;
 
-  Task _task = Task(steps: []);
+  Task _task = Task(vars: 5, limits: 3, steps: []);
   int _currentStep = 0;
   String _error = '';
 
-  get vars => _vars;
-  get limits => _limits;
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
@@ -244,7 +240,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       [0.toFraction()]
     ]);
     try {
-      for (int i = 1; i <= _vars; i++) {
+      for (int i = 1; i <= _task.vars; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
         if (_func[i] == 0.toString()) {
           _error = 'incorrectTaskData';
@@ -296,10 +292,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           startData.matrix[i].insert(0, 0.toFraction().reduce());
         }
         for (int i = 0; i < basisCount; i++) {
-          startData.matrix[0].insert(_vars + 1, basisVars[i].toFraction());
+          startData.matrix[0].insert(task.vars + 1, basisVars[i].toFraction());
           for (int j = 1; j < startData.matrix.length; j++) {
             startData.matrix[j].insert(
-                _vars + 1,
+                task.vars + 1,
                 startData.matrix[j]
                     [startData.matrix[0].indexOf((basisVars[i].toFraction()))]);
             startData.matrix[j].removeAt(
@@ -309,12 +305,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               startData.matrix[0].indexOf((basisVars[i].toFraction())));
         }
         for (int i = 1; i <= basisCount; i++) {
-          Fraction del = startData.matrix[i][_vars - basisCount + i];
+          Fraction del = startData.matrix[i][task.vars - basisCount + i];
           startData.matrix[i] = [
             for (var e in startData.matrix[i]) (e / del).reduce()
           ];
           for (int j = i + 1; j < startData.matrix.length; j++) {
-            Fraction m = startData.matrix[j][_vars - basisCount + i];
+            Fraction m = startData.matrix[j][task.vars - basisCount + i];
             for (int l = 1; l < startData.matrix[0].length; l++) {
               startData.matrix[j][l] -= startData.matrix[i][l] * m;
               startData.matrix[j][l].reduce();
@@ -323,7 +319,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
         for (int i = basisCount; i > 1; i--) {
           for (int j = 1; j < i; j++) {
-            Fraction m = startData.matrix[j][_vars - basisCount + i];
+            Fraction m = startData.matrix[j][task.vars - basisCount + i];
             for (int l = 1; l < startData.matrix[0].length; l++) {
               startData.matrix[j][l] -= startData.matrix[i][l] * m;
               startData.matrix[j][l] = startData.matrix[j][l].reduce();
@@ -335,9 +331,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           startData.basis![basisVars[i] - 1] =
               startData.matrix[i + 1][startData.matrix[0].length - 1];
         }
-        for (int i = _vars - basisCount + 1; i <= _vars; i++) {
+        for (int i = task.vars - basisCount + 1; i <= task.vars; i++) {
           for (int j = 0; j < startData.matrix.length; j++) {
-            startData.matrix[j].removeAt(_vars - basisCount + 1);
+            startData.matrix[j].removeAt(task.vars - basisCount + 1);
           }
         }
         startData.matrix.add([]);
@@ -559,8 +555,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     return nextData;
   }
 
-  void updateVars(int newVars) => _vars = newVars;
-  void updateLimits(int newLimits) => _limits = newLimits;
+  void updateVars(int newVars) => task.vars = newVars;
+  void updateLimits(int newLimits) => task.limits = newLimits;
   void updateFunc(Map<int, String> newFunc) => _func = newFunc;
   void updateMatrix(List<List<String>> newMatrix) => _matrix = newMatrix;
   void updateBasis(List<bool> newBasis) => _basis = newBasis;
