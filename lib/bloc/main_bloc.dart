@@ -50,7 +50,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           emit(MainGraphState());
         }
       } else if (event is MainCheckTaskEvent) {
-        _showError(event.context);
+        StepData? firstStep = _toStepData();
+
+        if (firstStep == null) {
+          _showError(event.context);
+        } else {}
       } else if (event is MainReloadAppEvent) {
         _showRemoveDialog(event.context);
       } else if (event is MainShowHelpEvent) {
@@ -148,7 +152,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     );
   }
 
-  StepData? toStepData() {
+  StepData? _toStepData() {
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
     ]);
