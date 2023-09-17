@@ -91,12 +91,12 @@ class _StepPageState extends State<StepPage> {
                     : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (_activeElement.first == i + 1 && _activeElement.last == j)
-                ? Colors.indigo.shade300
-                : (j != widget.step.matrix[i + 1].length - 1 &&
-                        widget.step.isElementSupport(i + 1, j))
-                    ? Colors.indigo.shade100
-                    : Colors.transparent,
+            // color: (_activeElement.first == i + 1 && _activeElement.last == j)
+            //     ? Colors.indigo.shade300
+            //     : (j != widget.step.matrix[i + 1].length - 1 &&
+            //             widget.step.isElementSupport(i + 1, j))
+            //         ? Colors.indigo.shade100
+            //         : Colors.transparent,
             i: i + 1,
             j: j,
           ),

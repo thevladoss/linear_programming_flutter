@@ -4,7 +4,58 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/fraction.dart';
 
-import 'enums.dart';
+class Task {
+  final List<StepData> steps;
+  Task({
+    required this.steps,
+  });
+
+  Task copyWith({
+    List<StepData>? steps,
+  }) {
+    return Task(
+      steps: steps ?? this.steps,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'steps': steps.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task(
+      steps: List<StepData>.from(
+        (map['steps'] as List<int>).map<StepData>(
+          (x) => StepData.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Task.fromJson(String source) =>
+      Task.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'AllSteps(steps: $steps)';
+
+  @override
+  bool operator ==(covariant Task other) {
+    if (identical(this, other)) return true;
+
+    return listEquals(other.steps, steps);
+  }
+
+  @override
+  int get hashCode => steps.hashCode;
+
+  addStep(StepData step) {
+    steps.add(step);
+  }
+}
 
 class StepData {
   final Map<int, double> func;
@@ -24,11 +75,9 @@ class StepData {
   StepData copyWith({
     Map<int, double>? func,
     List<List<Fraction>>? matrix,
-    int? varsCount,
     List<int>? element,
     List<Fraction>? basis,
     double? answer,
-    NumberType? type,
   }) {
     return StepData(
       func: func ?? this.func,
@@ -53,11 +102,13 @@ class StepData {
     return StepData(
       func: Map<int, double>.from((map['func'] as Map<int, double>)),
       matrix: List<List<Fraction>>.from(
-        (map['matrix'] as List<Fraction>).map<Fraction>(
+        (map['matrix'] as List<List<Fraction>>).map<List<Fraction>>(
           (x) => x,
         ),
       ),
-      element: List<int>.from((map['element'] as List<int>)),
+      element: map['element'] != null
+          ? List<int>.from((map['element'] as List<int>))
+          : null,
       basis: map['basis'] != null
           ? List<Fraction>.from((map['basis'] as List<Fraction>))
           : null,

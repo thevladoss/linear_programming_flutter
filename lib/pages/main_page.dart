@@ -24,7 +24,11 @@ class _MainPageState extends State<MainPage> {
       create: (context) => MainBloc(),
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
-          if (state is MainBasisState && _selectedIndex != 1) {
+          if (state is MainTaskState && _selectedIndex != 0) {
+            setState(() {
+              _selectedIndex = 0;
+            });
+          } else if (state is MainBasisState && _selectedIndex != 1) {
             setState(() {
               _selectedIndex = 1;
             });
@@ -91,10 +95,20 @@ class _MainPageState extends State<MainPage> {
             ? FloatingActionButton.small(
                 onPressed: () {
                   switch (_selectedIndex) {
+                    case 1:
+                      if (context.read<MainBloc>().currentStep == 0) {
+                        // context
+                        //     .read<MainBloc>()
+                        //     .add(MainSwitchPageEvent(index: 0));
+                      } else {
+                        context.read<MainBloc>().add(MainPrevStepEvent());
+                      }
+                      break;
+                    case 2:
+                      context.read<MainBloc>().add(MainPrevStepEvent());
+                      break;
                     case 3:
-                      // setState(() {
-                      //   _selectedIndex = 2;
-                      // });
+                      context.read<MainBloc>().add(MainPrevStepEvent());
                       break;
                     default:
                   }
@@ -113,9 +127,12 @@ class _MainPageState extends State<MainPage> {
                       context
                           .read<MainBloc>()
                           .add(MainCheckTaskEvent(context: context));
-                      // setState(() {
-                      //   _selectedIndex = 1;
-                      // });
+                      break;
+                    case 1:
+                      context.read<MainBloc>().add(MainNextStepEvent());
+                      break;
+                    case 2:
+                      context.read<MainBloc>().add(MainNextStepEvent());
                       break;
                     default:
                   }

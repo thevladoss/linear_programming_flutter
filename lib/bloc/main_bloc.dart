@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -23,7 +25,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   FuncType _funcType = FuncType.min;
   AnswerType _answerType = AnswerType.step;
 
-  List<StepData> _steps = [];
+  Task _task = Task(steps: []);
+  int _currentStep = 0;
   String _error = '';
 
   get vars => _vars;
@@ -34,6 +37,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   get numberType => _numberType;
   get funcType => _funcType;
   get answerType => _answerType;
+
+  get currentStep => _currentStep;
 
   MainBloc() : super(MainTaskState()) {
     on<MainEvent>((event, emit) {
@@ -55,59 +60,79 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         // if (firstStep == null) {
         //   _showError(event.context);
         // } else {}
-        StepData firstStep = nextStep(
-          StepData(
-            func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
-            matrix: [
-              [
-                0.toFraction(),
-                1.toFraction(),
-                2.toFraction(),
-                3.toFraction(),
-                4.toFraction(),
-                5.toFraction(),
-                0.toFraction()
-              ],
-              [
-                6.toFraction(),
-                2.toFraction(),
-                1.toFraction(),
-                1.toFraction(),
-                1.toFraction(),
-                (-1).toFraction(),
-                3.toFraction()
-              ],
-              [
-                7.toFraction(),
-                1.toFraction(),
-                (-1).toFraction(),
-                0.toFraction(),
-                1.toFraction(),
-                1.toFraction(),
-                1.toFraction()
-              ],
-              [
-                8.toFraction(),
-                (-2).toFraction(),
-                (-1).toFraction(),
-                (-1).toFraction(),
-                1.toFraction(),
-                0.toFraction(),
-                1.toFraction()
-              ],
+        _task.addStep(nextStep(StepData(
+          func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
+          matrix: [
+            [
+              0.toFraction(),
+              1.toFraction(),
+              2.toFraction(),
+              3.toFraction(),
+              4.toFraction(),
+              5.toFraction(),
+              0.toFraction()
             ],
-          ),
-        );
+            [
+              6.toFraction(),
+              2.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              3.toFraction()
+            ],
+            [
+              7.toFraction(),
+              1.toFraction(),
+              (-1).toFraction(),
+              0.toFraction(),
+              1.toFraction(),
+              1.toFraction(),
+              1.toFraction()
+            ],
+            [
+              8.toFraction(),
+              (-2).toFraction(),
+              (-1).toFraction(),
+              (-1).toFraction(),
+              1.toFraction(),
+              0.toFraction(),
+              1.toFraction()
+            ],
+          ],
+        )));
 
-        _steps.add(firstStep);
+        add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+      } else if (event is MainNextStepEvent) {
+        _currentStep++;
 
-        add(MainSwitchPageEvent(index: 1, step: _steps.first));
+        if (_currentStep >= _task.steps.length) {
+          _task.addStep(nextStep(_task.steps[currentStep - 1]));
+        }
+
+        _updateWhenSwitchStep();
+      } else if (event is MainPrevStepEvent) {
+        _currentStep--;
+
+        _updateWhenSwitchStep();
       } else if (event is MainReloadAppEvent) {
         _showRemoveDialog(event.context);
       } else if (event is MainShowHelpEvent) {
         _showHelpBottomSheet(event.context);
       }
     });
+  }
+
+  _updateWhenSwitchStep() {
+    if (_task.steps[_currentStep].basis != null &&
+        _task.steps[_currentStep].answer == null) {
+      add(MainSwitchPageEvent(index: 2, step: _task.steps[_currentStep]));
+    } else if (_task.steps[_currentStep].basis != null &&
+        _task.steps[_currentStep].answer != null) {
+      add(MainSwitchPageEvent(index: 3, step: _task.steps[_currentStep]));
+    } else {
+      add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+    }
   }
 
   _showError(BuildContext context) {
@@ -276,7 +301,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   StepData nextStep(StepData previousData) {
-    StepData nextData = previousData.copyWith();
+    List<List<Fraction>> newMatrix = [];
+    for (List<Fraction> elem in previousData.matrix) {
+      newMatrix.add([...elem]);
+    }
+    StepData nextData = StepData(
+        func: previousData.func,
+        matrix: newMatrix,
+        element: previousData.element,
+        basis: previousData.basis,
+        answer: previousData.answer);
     if (nextData.matrix[nextData.matrix.length - 1]
                     [nextData.matrix[0].length - 1]
                 .toDouble() ==
@@ -421,12 +455,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 -1 * nextData.matrix[nextData.matrix.length - 1][i].toDouble());
       }
     }
-
-    // print(nextData);
-    // print(nextData.getPossibleElements());
-    // if (nextData.answer == null) {
-    //   nextData = step(nextData);
-    // }
     return nextData;
   }
 

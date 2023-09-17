@@ -16,6 +16,10 @@ final class MainCheckTaskEvent extends MainEvent {
   MainCheckTaskEvent({required this.context});
 }
 
+final class MainNextStepEvent extends MainEvent {}
+
+final class MainPrevStepEvent extends MainEvent {}
+
 final class MainReloadAppEvent extends MainEvent {
   final BuildContext context;
 
