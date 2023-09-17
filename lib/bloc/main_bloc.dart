@@ -159,11 +159,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       for (int i = 1; i <= _vars; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
-        if (_func[i - 1] == 0.toString()) {
+        if (_func[i] == 0.toString()) {
           _error = 'incorrectTaskData';
           break;
         }
-        startData.func[i] = Fraction.fromString(_func[i - 1]!).toDouble();
+        startData.func[i] = Fraction.fromString(_func[i]!).toDouble();
       }
       startData.matrix[0].add(0.toFraction().reduce());
       for (int i = 0; i < _matrix.length; i++) {
@@ -179,7 +179,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       }
       if (_basis.contains(true)) {
-        startData.copyWith(basis: []);
+        startData = startData.copyWith(basis: []);
         for (int i = 0; i < _basis.length; i++) {
           if (_basis[i]) {
             startData.basis?.add(1.toFraction());
@@ -202,7 +202,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             basisVars.add(i + 1);
           }
         }
-
+        //print(basisCount);
+        //print(basisVars);
         if (basisCount != startData.matrix.length - 1) {
           _error = 'incorrectBasis';
         }
@@ -210,17 +211,93 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           startData.matrix[i].insert(0, 0.toFraction().reduce());
         }
         for (int i = 0; i < basisCount; i++) {
-          startData.matrix[0].add(basisVars[i].toFraction());
+          startData.matrix[0].insert(_vars + 1, basisVars[i].toFraction());
           for (int j = 1; j < startData.matrix.length; j++) {
-            startData.matrix[j].add(startData.matrix[j]
-                [startData.matrix[0].indexOf((basisVars[i].toFraction()))]);
+            startData.matrix[j].insert(
+                _vars + 1,
+                startData.matrix[j]
+                    [startData.matrix[0].indexOf((basisVars[i].toFraction()))]);
             startData.matrix[j].removeAt(
                 startData.matrix[0].indexOf((basisVars[i].toFraction())));
           }
           startData.matrix[0].removeAt(
               startData.matrix[0].indexOf((basisVars[i].toFraction())));
         }
+        for (int i = 1; i <= basisCount; i++) {
+          Fraction del = startData.matrix[i][_vars - basisCount + i];
+          startData.matrix[i] = [
+            for (var e in startData.matrix[i]) (e / del).reduce()
+          ];
+          for (int j = i + 1; j < startData.matrix.length; j++) {
+            Fraction m = startData.matrix[j][_vars - basisCount + i];
+            for (int l = 1; l < startData.matrix[0].length; l++) {
+              print(startData.matrix[j][_vars - basisCount + i]);
+              startData.matrix[j][l] -= startData.matrix[i][l] * m;
+              startData.matrix[j][l].reduce();
+            }
+          }
+          print(startData);
+        }
+        for (int i = basisCount; i > 1; i--) {
+          for (int j = 1; j < i; j++) {
+            Fraction m = startData.matrix[j][_vars - basisCount + i];
+            for (int l = 1; l < startData.matrix[0].length; l++) {
+              startData.matrix[j][l] -= startData.matrix[i][l] * m;
+              startData.matrix[j][l] = startData.matrix[j][l].reduce();
+            }
+          }
+          print(startData);
+        }
+        for (int i = 0; i < basisCount; i++) {
+          startData.matrix[i + 1][0] = basisVars[i].toFraction();
+          startData.basis![basisVars[i] - 1] =
+              startData.matrix[i + 1][startData.matrix[0].length - 1];
+        }
+        for (int i = _vars - basisCount + 1; i <= _vars; i++) {
+          for (int j = 0; j < startData.matrix.length; j++) {
+            startData.matrix[j].removeAt(_vars - basisCount + 1);
+          }
+        }
+        startData.matrix.add([]);
+        for (int i = 0; i < startData.matrix[0].length; i++) {
+          startData.matrix[startData.matrix.length - 1].add(0.toFraction());
+        }
+        for (int i = 1; i < startData.matrix[0].length - 1; i++) {
+          startData.matrix[startData.matrix.length - 1][i] += startData
+              .func.entries
+              .firstWhere((entry) =>
+                  entry.key == startData.matrix[0][i].toDouble().toInt())
+              .value
+              .toFraction();
+        }
+
+        for (int i = 1; i < startData.matrix[0].length - 1; i++) {
+          for (int j = 1; j < startData.matrix.length - 1; j++) {
+            startData.matrix[startData.matrix.length - 1][i] += (-1)
+                    .toFraction() *
+                startData.matrix[j][i] *
+                startData.func.entries
+                    .firstWhere((entry) =>
+                        entry.key == startData.matrix[j][0].toDouble().toInt())
+                    .value
+                    .toFraction();
+          }
+          startData.matrix[startData.matrix.length - 1][i] =
+              startData.matrix[startData.matrix.length - 1][i].reduce();
+        }
+        for (int i = 1; i < startData.matrix.length - 1; i++) {
+          startData.matrix[startData.matrix.length - 1]
+              [startData.matrix[0].length - 1] += (-1)
+                  .toFraction() *
+              startData.matrix[i][startData.matrix[0].length - 1] *
+              startData.func.entries
+                  .firstWhere((entry) =>
+                      entry.key == startData.matrix[i][0].toDouble().toInt())
+                  .value
+                  .toFraction();
+        }
       }
+      print(startData);
     } catch (e) {
       _error = e.toString();
       return null;
@@ -371,7 +448,20 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       if (i == nextData.matrix[0].length - 1) {
         nextData = nextData.copyWith(
             answer:
-                -1 * nextData.matrix[nextData.matrix.length - 1][i].toDouble());
+                -1 * nextData.matrix[nextData.matrix.length - 1][i].toDouble(),
+            basis: []);
+        for (int i = 1; i <= nextData.func.length; i++) {
+          for (int j = 1; j < nextData.matrix.length - 1; j++) {
+            if (nextData.matrix[j][0].toDouble() == i) {
+              nextData.basis!.add(
+                  nextData.matrix[j][nextData.matrix[0].length - 1].reduce());
+              break;
+            }
+            if (j == nextData.matrix.length - 2) {
+              nextData.basis!.add(0.toFraction());
+            }
+          }
+        }
       }
     }
 
