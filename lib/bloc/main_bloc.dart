@@ -68,7 +68,34 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           startData.matrix[i]
               .insert(0, (_func.length + i).toFraction().reduce());
         }
-      } else {}
+      } else {
+        int basisCount = 0;
+        List<int> basisVars = [];
+        for (int i = 0; i < _basis.length; i++) {
+          if (_basis[i]) {
+            basisCount += 1;
+            basisVars.add(i + 1);
+          }
+        }
+
+        if (basisCount != startData.matrix.length - 1) {
+          _error = 'incorrectBasis';
+        }
+        for (int i = 1; i < startData.matrix.length; i++) {
+          startData.matrix[i].insert(0, 0.toFraction().reduce());
+        }
+        for (int i = 0; i < basisCount; i++) {
+          startData.matrix[0].add(basisVars[i].toFraction());
+          for (int j = 1; j < startData.matrix.length; j++) {
+            startData.matrix[j].add(startData.matrix[j]
+                [startData.matrix[0].indexOf((basisVars[i].toFraction()))]);
+            startData.matrix[j].removeAt(
+                startData.matrix[0].indexOf((basisVars[i].toFraction())));
+          }
+          startData.matrix[0].removeAt(
+              startData.matrix[0].indexOf((basisVars[i].toFraction())));
+        }
+      }
     } catch (e) {
       _error = e;
       return null;
