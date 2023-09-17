@@ -202,8 +202,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             basisVars.add(i + 1);
           }
         }
-        //print(basisCount);
-        //print(basisVars);
         if (basisCount != startData.matrix.length - 1) {
           _error = 'incorrectBasis';
         }
@@ -231,12 +229,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           for (int j = i + 1; j < startData.matrix.length; j++) {
             Fraction m = startData.matrix[j][_vars - basisCount + i];
             for (int l = 1; l < startData.matrix[0].length; l++) {
-              print(startData.matrix[j][_vars - basisCount + i]);
               startData.matrix[j][l] -= startData.matrix[i][l] * m;
               startData.matrix[j][l].reduce();
             }
           }
-          print(startData);
         }
         for (int i = basisCount; i > 1; i--) {
           for (int j = 1; j < i; j++) {
@@ -246,7 +242,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               startData.matrix[j][l] = startData.matrix[j][l].reduce();
             }
           }
-          print(startData);
         }
         for (int i = 0; i < basisCount; i++) {
           startData.matrix[i + 1][0] = basisVars[i].toFraction();
@@ -296,6 +291,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                   .value
                   .toFraction();
         }
+        startData =
+            startData.copyWith(element: startData.getPossibleElements()[0]);
       }
       print(startData);
     } catch (e) {
@@ -464,12 +461,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       }
     }
-
-    // print(nextData);
-    // print(nextData.getPossibleElements());
-    // if (nextData.answer == null) {
-    //   nextData = step(nextData);
-    // }
     return nextData;
   }
 
