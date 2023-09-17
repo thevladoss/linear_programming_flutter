@@ -31,6 +31,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
+  String _error = '';
   get numberType => _numberType;
   get funcType => _funcType;
   get answerType => _answerType;
