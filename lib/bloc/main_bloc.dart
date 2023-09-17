@@ -53,12 +53,22 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           _error = 'incorrectTaskData';
         }
       }
+      if (_basis.contains(true)) {
+        startData.copyWith(basis: []);
+        for (int i = 0; i < _basis.length; i++) {
+          if (_basis[i]) {
+            startData.basis?.add(1.toFraction());
+          } else {
+            startData.basis?.add(0.toFraction());
+          }
+        }
+      }
       if (startData.basis == null) {
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i]
               .insert(0, (_func.length + i).toFraction().reduce());
         }
-      }
+      } else {}
     } catch (e) {
       _error = e;
       return null;
@@ -224,5 +234,5 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
   void updateFunc(Map<int, String> newFunc) => _func = newFunc;
   void updateMatrix(List<List<String>> newMatrix) => _matrix = newMatrix;
-  void updateBasis(List<String> newBasis) => _basis = newBasis;
+  void updateBasis(List<bool> newBasis) => _basis = newBasis;
 }
