@@ -25,13 +25,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   AnswerType _answerType = AnswerType.step;
 
   List<StepData> _steps = [];
+  String _error = '';
 
   get vars => _vars;
   get limits => _limits;
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
-  String _error = '';
   get numberType => _numberType;
   get funcType => _funcType;
   get answerType => _answerType;
@@ -63,8 +63,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   _showError(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
-        content: Text('Yay! A SnackBar!'),
+        margin: const EdgeInsets.only(right: 60, left: 145, bottom: 15),
+        content: Text(_error),
         behavior: SnackBarBehavior.floating,
       ),
     );
