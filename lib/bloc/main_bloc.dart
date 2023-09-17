@@ -148,37 +148,82 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     );
   }
 
-  // void toStepData() {
-  //   try {
-  //     StepData startData = StepData(func: {}, matrix: [
-  //       [0.toFraction()]
-  //     ]);
-  //     for (int i = 1; i <= startData.varsCount; i++) {
-  //       startData.matrix[0].add(i.toFraction().reduce());
-  //       if (_func[i - 1] == 0.toString()) {
-  //         break;
-  //       }
-  //       startData.func[i] = Fraction.fromString(_func[i - 1]!).toDouble();
-  //     }
-  //     startData.matrix[0].add(0.toFraction().reduce());
-  //     for (int i = 0; i < _matrix.length; i++) {
-  //       startData.matrix.add([]);
-  //       for (int j = 0; j < _matrix[0].length; j++) {
-  //         startData.matrix[i + 1].add(_matrix[i][j].toFraction().reduce());
-  //       }
-  //     }
-  //     for (int i = 1; i < startData.matrix.length; i++) {
-  //       if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
-  //           0) {}
-  //     }
-  //     if (startData.basis == null) {
-  //       for (int i = 1; i < startData.matrix.length; i++) {
-  //         startData.matrix[i]
-  //             .insert(0, (_func.length + i).toFraction().reduce());
-  //       }
-  //     }
-  //   } finally {}
-  // }
+  StepData? toStepData() {
+    StepData startData = StepData(func: {}, matrix: [
+      [0.toFraction()]
+    ]);
+    try {
+      for (int i = 1; i <= _vars; i++) {
+        startData.matrix[0].add(i.toFraction().reduce());
+        if (_func[i - 1] == 0.toString()) {
+          _error = 'incorrectTaskData';
+          break;
+        }
+        startData.func[i] = Fraction.fromString(_func[i - 1]!).toDouble();
+      }
+      startData.matrix[0].add(0.toFraction().reduce());
+      for (int i = 0; i < _matrix.length; i++) {
+        startData.matrix.add([]);
+        for (int j = 0; j < _matrix[0].length; j++) {
+          startData.matrix[i + 1].add(_matrix[i][j].toFraction().reduce());
+        }
+      }
+      for (int i = 1; i < startData.matrix.length; i++) {
+        if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
+            0) {
+          _error = 'incorrectTaskData';
+        }
+      }
+      if (_basis.contains(true)) {
+        startData.copyWith(basis: []);
+        for (int i = 0; i < _basis.length; i++) {
+          if (_basis[i]) {
+            startData.basis?.add(1.toFraction());
+          } else {
+            startData.basis?.add(0.toFraction());
+          }
+        }
+      }
+      if (startData.basis == null) {
+        for (int i = 1; i < startData.matrix.length; i++) {
+          startData.matrix[i]
+              .insert(0, (_func.length + i).toFraction().reduce());
+        }
+      } else {
+        int basisCount = 0;
+        List<int> basisVars = [];
+        for (int i = 0; i < _basis.length; i++) {
+          if (_basis[i]) {
+            basisCount += 1;
+            basisVars.add(i + 1);
+          }
+        }
+
+        if (basisCount != startData.matrix.length - 1) {
+          _error = 'incorrectBasis';
+        }
+        for (int i = 1; i < startData.matrix.length; i++) {
+          startData.matrix[i].insert(0, 0.toFraction().reduce());
+        }
+        for (int i = 0; i < basisCount; i++) {
+          startData.matrix[0].add(basisVars[i].toFraction());
+          for (int j = 1; j < startData.matrix.length; j++) {
+            startData.matrix[j].add(startData.matrix[j]
+                [startData.matrix[0].indexOf((basisVars[i].toFraction()))]);
+            startData.matrix[j].removeAt(
+                startData.matrix[0].indexOf((basisVars[i].toFraction())));
+          }
+          startData.matrix[0].removeAt(
+              startData.matrix[0].indexOf((basisVars[i].toFraction())));
+        }
+      }
+    } catch (e) {
+      _error = e.toString();
+      return null;
+    } finally {
+      return startData;
+    }
+  }
 
   StepData nextStep(StepData previousData) {
     StepData nextData = previousData.copyWith();
