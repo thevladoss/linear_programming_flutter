@@ -70,7 +70,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         //   _showError(event.context);
         // } else {}
         _task.addStep(nextStep(StepData(
-          func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
+          func: {
+            1: (-5).toFraction(),
+            2: (-4).toFraction(),
+            3: (-3).toFraction(),
+            4: (-2).toFraction(),
+            5: 3.toFraction()
+          },
           matrix: [
             [
               0.toFraction(),
