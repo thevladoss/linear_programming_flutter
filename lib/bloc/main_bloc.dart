@@ -50,14 +50,19 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           emit(MainGraphState());
         }
       } else if (event is MainCheckTaskEvent) {
-        // StepData? firstStep = _toStepData();
-
-        // if (firstStep == null) {
-        //   _showError(event.context);
-        // } else {}
-        StepData firstStep = nextStep(
+        StepData? firstStep = _toStepData();
+        if (firstStep == null) {
+          _showError(event.context);
+        } else {}
+        firstStep = nextStep(
           StepData(
-            func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
+            func: {
+              1: (-5).toFraction(),
+              2: (-4).toFraction(),
+              3: (-3).toFraction(),
+              4: (-2).toFraction(),
+              5: 3.toFraction()
+            },
             matrix: [
               [
                 0.toFraction(),
@@ -144,7 +149,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
-                        'Количество перменных не превышает 16.\nKоличество ограничений строго меньше числа переменных.\nВводимые данные имеют следущие ограничения: все c <> 0, все b >= 0.\n\nИспользуйте боковые клавиши сверху для очистки, записи в файл и чтения из файла.\nИспользуйте боковые клавиши снизу для перемещения между этапами решения:\n   1 - для метода искусственного базиса\n   2 - основное решение\n   3 - финальный ответ\n\nЕсли поля базиса останутся не заполненными, то задача будет решена методом искусственного базиса.\nПри введении базиса решение перейдёт сразу на 2 этап.\nИспользуйте автоматический режим для перехода сразу на 3 этап.\n\nИспользуйте стрелки для перемещения между шагами решения.',
+                        'Количество перменных не превышает 16.\nKоличество ограничений строго меньше числа переменных.\nВводимые данные имеют следущие ограничения: все c <> 0, все b >= 0.\n\nИспользуйте боковые клавиши сверху для очистки, записи в файл и чтения из файла.\nИспользуйте боковые клавиши снизу для перемещения между этапами решения:\n   1 - для метода искусственного базиса\n   2 - основное решение\n   3 - финальный ответ\n\nВы можете выбрать зависимые переменные базиса.\nЕсли поля базиса останутся не заполненными, то задача будет решена методом искусственного базиса.\nПри введении базиса решение перейдёт сразу на 2 этап.\nИспользуйте автоматический режим для перехода сразу на 3 этап.\n\nИспользуйте стрелки для перемещения между шагами решения.',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
@@ -210,7 +215,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           _error = 'incorrectTaskData';
           break;
         }
-        startData.func[i] = Fraction.fromString(_func[i]!).toDouble();
+        startData.func[i] = Fraction.fromString(_func[i]!);
+        if (_funcType == FuncType.max) {
+          startData.func[i] = (-1).toFraction() * startData.func[i]!;
+        }
       }
       startData.matrix[0].add(0.toFraction().reduce());
       for (int i = 0; i < _matrix.length; i++) {
@@ -309,8 +317,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               .func.entries
               .firstWhere((entry) =>
                   entry.key == startData.matrix[0][i].toDouble().toInt())
-              .value
-              .toFraction();
+              .value;
         }
 
         for (int i = 1; i < startData.matrix[0].length - 1; i++) {
@@ -321,8 +328,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 startData.func.entries
                     .firstWhere((entry) =>
                         entry.key == startData.matrix[j][0].toDouble().toInt())
-                    .value
-                    .toFraction();
+                    .value;
           }
           startData.matrix[startData.matrix.length - 1][i] =
               startData.matrix[startData.matrix.length - 1][i].reduce();
@@ -335,12 +341,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               startData.func.entries
                   .firstWhere((entry) =>
                       entry.key == startData.matrix[i][0].toDouble().toInt())
-                  .value
-                  .toFraction();
+                  .value;
         }
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
       }
+      print(startData);
     } catch (e) {
       _error = e.toString();
       return null;
@@ -374,8 +380,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         nextData.matrix[nextData.matrix.length - 1][i] += nextData.func.entries
             .firstWhere((entry) =>
                 entry.key == nextData.matrix[0][i].toDouble().toInt())
-            .value
-            .toFraction();
+            .value;
       }
 
       for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
@@ -385,8 +390,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               nextData.func.entries
                   .firstWhere((entry) =>
                       entry.key == nextData.matrix[j][0].toDouble().toInt())
-                  .value
-                  .toFraction();
+                  .value;
         }
         nextData.matrix[nextData.matrix.length - 1][i] =
             nextData.matrix[nextData.matrix.length - 1][i].reduce();
@@ -399,8 +403,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 nextData.func.entries
                     .firstWhere((entry) =>
                         entry.key == nextData.matrix[i][0].toDouble().toInt())
-                    .value
-                    .toFraction();
+                    .value;
       }
       nextData.matrix[0][0] = 0.toFraction();
     } else {

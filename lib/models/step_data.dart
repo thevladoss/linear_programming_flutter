@@ -7,7 +7,7 @@ import 'package:fraction/fraction.dart';
 import 'enums.dart';
 
 class StepData {
-  final Map<int, double> func;
+  final Map<int, Fraction> func;
   final List<List<Fraction>> matrix;
   final List<int>? element;
   final List<Fraction>? basis;
@@ -22,7 +22,7 @@ class StepData {
   });
 
   StepData copyWith({
-    Map<int, double>? func,
+    Map<int, Fraction>? func,
     List<List<Fraction>>? matrix,
     int? varsCount,
     List<int>? element,
@@ -51,7 +51,7 @@ class StepData {
 
   factory StepData.fromMap(Map<String, dynamic> map) {
     return StepData(
-      func: Map<int, double>.from((map['func'] as Map<int, double>)),
+      func: Map<int, Fraction>.from((map['func'] as Map<int, double>)),
       matrix: List<List<Fraction>>.from(
         (map['matrix'] as List<Fraction>).map<Fraction>(
           (x) => x,
