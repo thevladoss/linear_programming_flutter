@@ -92,7 +92,8 @@ class _StepPageState extends State<StepPage> {
                     : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (_activeElement.first == i + 1 && _activeElement.last == j)
+            color: (_activeElement.first == i + 1 &&
+                    _activeElement.last == j) //TODO fix when page switching
                 ? Colors.indigo.shade300
                 : (j != widget.step.matrix[i + 1].length - 1 &&
                         widget.step.isElementSupport(i + 1, j))
@@ -144,6 +145,7 @@ class _StepPageState extends State<StepPage> {
       onTap: () {
         if (color == Colors.indigo.shade100) {
           setState(() {
+            // TODO add functionality and changing step
             _activeElement = [i, j];
           });
         }
