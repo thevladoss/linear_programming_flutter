@@ -55,6 +55,24 @@ class Task {
   addStep(StepData step) {
     steps.add(step);
   }
+
+  clear() {
+    steps.clear();
+  }
+
+  int getIndexOfBasis() {
+    for (StepData step in steps) {
+      if (step.basis != null) return steps.indexOf(step);
+    }
+    return 0;
+  }
+
+  int getIndexOfAnswer() {
+    for (StepData step in steps) {
+      if (step.answer != null) return steps.indexOf(step);
+    }
+    return 0;
+  }
 }
 
 class StepData {

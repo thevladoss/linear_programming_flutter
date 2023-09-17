@@ -1,12 +1,9 @@
-import 'dart:collection';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
-import 'package:meta/meta.dart';
 
 part 'main_event.dart';
 part 'main_state.dart';
@@ -39,18 +36,36 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   get answerType => _answerType;
 
   get currentStep => _currentStep;
+  get task => _task;
 
   MainBloc() : super(MainTaskState()) {
     on<MainEvent>((event, emit) {
       if (event is MainSwitchPageEvent) {
         if (event.index == 0) {
+          _currentStep = 0;
+          _task.clear();
           emit(MainTaskState());
         } else if (event.index == 1) {
-          emit(MainBasisState(step: event.step!));
+          if (event.step == null) {
+            _currentStep = 0;
+            emit(MainBasisState(step: _task.steps.first));
+          } else {
+            emit(MainBasisState(step: event.step!));
+          }
         } else if (event.index == 2) {
-          emit(MainSimplexState(step: event.step!));
+          if (event.step == null) {
+            _currentStep = _task.getIndexOfBasis();
+            emit(MainSimplexState(step: _task.steps[_currentStep]));
+          } else {
+            emit(MainSimplexState(step: event.step!));
+          }
         } else if (event.index == 3) {
-          emit(MainAnswerState(step: event.step!));
+          if (event.step == null) {
+            _currentStep = _task.getIndexOfAnswer();
+            emit(MainAnswerState(step: _task.steps[_currentStep]));
+          } else {
+            emit(MainAnswerState(step: event.step!));
+          }
         } else {
           emit(MainGraphState());
         }
@@ -150,7 +165,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         context: context,
         builder: (BuildContext context) {
           return SizedBox(
-            height: 400,
+            height: 500,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(

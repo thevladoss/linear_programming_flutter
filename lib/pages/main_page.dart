@@ -59,7 +59,7 @@ class _MainPageState extends State<MainPage> {
                   },
                   labelType: NavigationRailLabelType.selected,
                   leading: _buildActionButton(context),
-                  destinations: _buildNavigationDestinations,
+                  destinations: _buildNavigationDestinations(context),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
                 Expanded(
@@ -97,9 +97,6 @@ class _MainPageState extends State<MainPage> {
                   switch (_selectedIndex) {
                     case 1:
                       if (context.read<MainBloc>().currentStep == 0) {
-                        // context
-                        //     .read<MainBloc>()
-                        //     .add(MainSwitchPageEvent(index: 0));
                       } else {
                         context.read<MainBloc>().add(MainPrevStepEvent());
                       }
@@ -146,25 +143,29 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  List<NavigationRailDestination> get _buildNavigationDestinations {
-    return const <NavigationRailDestination>[
-      NavigationRailDestination(
+  List<NavigationRailDestination> _buildNavigationDestinations(
+      BuildContext context) {
+    return <NavigationRailDestination>[
+      const NavigationRailDestination(
         icon: FaIcon(FontAwesomeIcons.f),
         label: Text('Задача'),
       ),
       NavigationRailDestination(
-        icon: FaIcon(FontAwesomeIcons.one),
-        label: Text('Базис'),
+        icon: const FaIcon(FontAwesomeIcons.one),
+        disabled: (context.read<MainBloc>().task.steps.isEmpty),
+        label: const Text('Базис'),
       ),
       NavigationRailDestination(
-        icon: FaIcon(FontAwesomeIcons.two),
-        label: Text('Симплекс'),
+        icon: const FaIcon(FontAwesomeIcons.two),
+        disabled: (context.read<MainBloc>().task.getIndexOfBasis() == 0),
+        label: const Text('Симплекс'),
       ),
       NavigationRailDestination(
-        icon: FaIcon(FontAwesomeIcons.three),
-        label: Text('Решение'),
+        icon: const FaIcon(FontAwesomeIcons.three),
+        disabled: (context.read<MainBloc>().task.getIndexOfAnswer() == 0),
+        label: const Text('Решение'),
       ),
-      NavigationRailDestination(
+      const NavigationRailDestination(
         disabled: true,
         icon: Icon(
           Icons.show_chart,
@@ -241,9 +242,9 @@ class _MainPageState extends State<MainPage> {
     } else if (state is MainAnswerState) {
       return AnswerPage(step: state.step);
     } else if (state is MainGraphState) {
-      return GraphPage();
+      return const GraphPage();
     } else {
-      return TaskPage();
+      return const TaskPage();
     }
   }
 }
