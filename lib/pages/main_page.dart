@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
                     });
                   },
                   labelType: NavigationRailLabelType.selected,
-                  leading: _buildActionButton(),
+                  leading: _buildActionButton(context),
                   destinations: _buildNavigationDestinations,
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
@@ -129,7 +129,7 @@ class _MainPageState extends State<MainPage> {
     ];
   }
 
-  Column _buildActionButton() {
+  Column _buildActionButton(BuildContext context) {
     return Column(
       children: [
         FloatingActionButton.small(
@@ -138,7 +138,7 @@ class _MainPageState extends State<MainPage> {
           focusElevation: 0,
           highlightElevation: 0,
           onPressed: () {
-            // Add your onPressed code here!
+            context.read<MainBloc>().add(MainReloadAppEvent(context: context));
           },
           child: const FaIcon(Icons.delete_outline),
         ),

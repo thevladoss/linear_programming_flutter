@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
@@ -47,8 +49,43 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           emit(MainGraphState());
         }
+      } else if (event is MainReloadAppEvent) {
+        _showMyDialog(event.context);
       }
     });
+  }
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Предупреждение'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Вы уверены, что хотите очистить все поля и текущее решение задачи?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Нет'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FilledButton(
+              child: const Text('Да'),
+              onPressed: () {
+                Phoenix.rebirth(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // void toStepData() {

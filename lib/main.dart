@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'pages/main_page.dart';
@@ -13,7 +14,11 @@ Future<void> main() async {
     WindowManager.instance.setMinimumSize(const Size(1000, 500));
     WindowManager.instance.setTitle('Linear solver');
   }
-  runApp(const MainApp());
+  runApp(
+    Phoenix(
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
