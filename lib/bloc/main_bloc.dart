@@ -49,12 +49,24 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           emit(MainGraphState());
         }
+      } else if (event is MainCheckTaskEvent) {
+        _showError(event.context);
       } else if (event is MainReloadAppEvent) {
         _showRemoveDialog(event.context);
       } else if (event is MainShowHelpEvent) {
         _showHelpBottomSheet(event.context);
       }
     });
+  }
+
+  _showError(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+        content: Text('Yay! A SnackBar!'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   _showHelpBottomSheet(BuildContext context) {

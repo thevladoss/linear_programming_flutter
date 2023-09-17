@@ -9,6 +9,12 @@ final class MainSwitchPageEvent extends MainEvent {
   MainSwitchPageEvent({required this.index});
 }
 
+final class MainCheckTaskEvent extends MainEvent {
+  final BuildContext context;
+
+  MainCheckTaskEvent({required this.context});
+}
+
 final class MainReloadAppEvent extends MainEvent {
   final BuildContext context;
 

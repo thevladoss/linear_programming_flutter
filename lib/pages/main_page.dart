@@ -79,9 +79,9 @@ class _MainPageState extends State<MainPage> {
                 onPressed: () {
                   switch (_selectedIndex) {
                     case 3:
-                      setState(() {
-                        _selectedIndex = 2;
-                      });
+                      // setState(() {
+                      //   _selectedIndex = 2;
+                      // });
                       break;
                     default:
                   }
@@ -97,9 +97,12 @@ class _MainPageState extends State<MainPage> {
                 onPressed: () {
                   switch (_selectedIndex) {
                     case 0:
-                      setState(() {
-                        _selectedIndex = 1;
-                      });
+                      context
+                          .read<MainBloc>()
+                          .add(MainCheckTaskEvent(context: context));
+                      // setState(() {
+                      //   _selectedIndex = 1;
+                      // });
                       break;
                     default:
                   }
