@@ -8,19 +8,24 @@ part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
+  int _vars = 5;
+  int _limits = 3;
+
   Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
   List<List<String>> _matrix = [
     ['0', '0', '0', '0', '0', '0'],
     ['0', '0', '0', '0', '0', '0'],
     ['0', '0', '0', '0', '0', '0']
   ];
-  List<String> _basis = ['0', '0', '0', '0', '0'];
+  List<bool> _basis = [false, false, false, false, false];
   NumberType _numberType = NumberType.fraction;
   FuncType _funcType = FuncType.min;
   AnswerType _answerType = AnswerType.step;
 
   List<StepData> _steps = [];
 
+  get vars => _vars;
+  get limits => _limits;
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
@@ -233,9 +238,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     return nextData;
   }
 
+  void updateVars(int newVars) => _vars = newVars;
+  void updateLimits(int newLimits) => _limits = newLimits;
   void updateFunc(Map<int, String> newFunc) => _func = newFunc;
   void updateMatrix(List<List<String>> newMatrix) => _matrix = newMatrix;
-  void updateBasis(List<String> newBasis) => _basis = newBasis;
+  void updateBasis(List<bool> newBasis) => _basis = newBasis;
   void updateNumberType(NumberType newNumberType) =>
       _numberType = newNumberType;
   void updateFuncType(FuncType newFuncType) => _funcType = newFuncType;

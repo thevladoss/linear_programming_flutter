@@ -12,14 +12,16 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-  int _vars = 5;
-  int _limits = 3;
+  int _vars = 1;
+  int _limits = 1;
   Map<int, String> _func = {};
   List<List<String>> _matrix = [];
-  List<String> _basis = [];
+  List<bool> _basis = [];
 
   @override
   Widget build(BuildContext context) {
+    _vars = context.read<MainBloc>().vars;
+    _limits = context.read<MainBloc>().limits;
     _func = context.read<MainBloc>().func;
     _matrix = context.read<MainBloc>().matrix;
     _basis = context.read<MainBloc>().basis;
@@ -61,7 +63,7 @@ class _TaskPageState extends State<TaskPage> {
                             _vars = value;
                             if (_vars > _func.length) {
                               _func.addAll({_vars: '0'});
-                              _basis.add('0');
+                              _basis.add(false);
                               List<List<String>> newList = [];
                               for (List<String> list in _matrix) {
                                 List<String> l = list.toList();
@@ -81,6 +83,7 @@ class _TaskPageState extends State<TaskPage> {
                               }
                               _matrix = newList;
                             }
+                            context.read<MainBloc>().updateVars(_vars);
                             context.read<MainBloc>().updateFunc(_func);
                             context.read<MainBloc>().updateMatrix(_matrix);
                             context.read<MainBloc>().updateBasis(_basis);
@@ -109,6 +112,8 @@ class _TaskPageState extends State<TaskPage> {
                             } else {
                               _matrix.removeLast();
                             }
+                            context.read<MainBloc>().updateLimits(_limits);
+                            context.read<MainBloc>().updateMatrix(_matrix);
                           });
                         }
                       },
@@ -285,29 +290,36 @@ class _TaskPageState extends State<TaskPage> {
     table.add(
       TableRow(
         children: List.generate(
-            columns,
-            (column) => (column == 0)
-                ? Center(
-                    child: Text(
-                      '<',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.w500, fontSize: 25),
+          columns,
+          (column) => (column == 0)
+              ? Center(
+                  child: Text(
+                    '<',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontWeight: FontWeight.w500, fontSize: 25),
+                  ),
+                )
+              : (column == columns - 1)
+                  ? Center(
+                      child: Text(
+                        '>',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 25),
+                      ),
+                    )
+                  : Checkbox(
+                      value: _basis[column - 1],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _basis[column - 1] = value!;
+
+                          context.read<MainBloc>().updateBasis(_basis);
+                        });
+                      },
                     ),
-                  )
-                : (column == columns - 1)
-                    ? Center(
-                        child: Text(
-                          '>',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 25),
-                        ),
-                      )
-                    : _buildInputMatrixItem(_vars + 3, column)),
+        ),
       ),
     );
 
@@ -329,21 +341,15 @@ class _TaskPageState extends State<TaskPage> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
           controller: TextEditingController(
-            text: (i == 1)
-                ? _func[j]
-                : (i == _vars + 3 && _basis[j - 1] != '0')
-                    ? _basis[j - 1]
-                    : (i == _vars + 3 && _basis[j - 1] == '0')
-                        ? ''
-                        : _matrix[i - 3][j - 1],
+            text: (i == 1) ? _func[j] : _matrix[i - 3][j - 1],
           ),
           onChanged: (value) {
             if (i == 1) {
               _func[j] = value;
-            } else if (i == _vars + 3) {
-              _basis[j - 1] = value;
+              context.read<MainBloc>().updateFunc(_func);
             } else {
               _matrix[i - 3][j - 1] = value;
+              context.read<MainBloc>().updateMatrix(_matrix);
             }
           },
         ),
