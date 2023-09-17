@@ -50,13 +50,61 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           emit(MainGraphState());
         }
       } else if (event is MainReloadAppEvent) {
-        _showMyDialog(event.context);
+        _showRemoveDialog(event.context);
+      } else if (event is MainShowHelpEvent) {
+        _showHelpBottomSheet(event.context);
       }
     });
   }
 
-  Future<void> _showMyDialog(BuildContext context) async {
-    return showDialog<void>(
+  _showHelpBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Справка',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        'Текст с помощью тупым',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: FilledButton.tonal(
+                      child: const Text('Закрыть'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _showRemoveDialog(BuildContext context) {
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

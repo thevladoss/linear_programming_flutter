@@ -50,17 +50,30 @@ class _MainPageState extends State<MainPage> {
                 )
               ],
             ),
-            floatingActionButton: _buildMoveButtons(),
+            floatingActionButton: _buildMoveButtons(context),
           );
         },
       ),
     );
   }
 
-  Row _buildMoveButtons() {
+  Row _buildMoveButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        const SizedBox(
+          width: 115,
+        ),
+        FloatingActionButton.small(
+          onPressed: () {
+            context.read<MainBloc>().add(MainShowHelpEvent(context: context));
+          },
+          child: const Icon(
+            Icons.question_mark,
+            size: 20,
+          ),
+        ),
+        const Spacer(),
         (_selectedIndex != 0)
             ? FloatingActionButton.small(
                 onPressed: () {

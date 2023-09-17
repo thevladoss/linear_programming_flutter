@@ -14,3 +14,9 @@ final class MainReloadAppEvent extends MainEvent {
 
   MainReloadAppEvent({required this.context});
 }
+
+final class MainShowHelpEvent extends MainEvent {
+  final BuildContext context;
+
+  MainShowHelpEvent({required this.context});
+}
