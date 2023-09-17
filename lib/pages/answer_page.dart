@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/step_data.dart';
+
 class AnswerPage extends StatelessWidget {
-  const AnswerPage({super.key});
+  final StepData step;
+
+  const AnswerPage({super.key, required this.step});
 
   @override
   Widget build(BuildContext context) {

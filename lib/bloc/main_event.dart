@@ -5,8 +5,9 @@ sealed class MainEvent {}
 
 final class MainSwitchPageEvent extends MainEvent {
   final int index;
+  final StepData? step;
 
-  MainSwitchPageEvent({required this.index});
+  MainSwitchPageEvent({required this.index, this.step});
 }
 
 final class MainCheckTaskEvent extends MainEvent {

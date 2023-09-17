@@ -8,7 +8,7 @@ import '../bloc/main_bloc.dart';
 class StepPage extends StatefulWidget {
   final StepData step;
 
-  StepPage({super.key, required this.step});
+  const StepPage({super.key, required this.step});
 
   @override
   State<StepPage> createState() => _StepPageState();
