@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
 import '../bloc/main_bloc.dart';
-import '../models/step_data.dart';
 import 'answer_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -24,7 +22,22 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MainBloc(),
-      child: BlocBuilder<MainBloc, MainState>(
+      child: BlocConsumer<MainBloc, MainState>(
+        listener: (context, state) {
+          if (state is MainBasisState && _selectedIndex != 1) {
+            setState(() {
+              _selectedIndex = 1;
+            });
+          } else if (state is MainSimplexState && _selectedIndex != 2) {
+            setState(() {
+              _selectedIndex = 2;
+            });
+          } else if (state is MainAnswerState && _selectedIndex != 3) {
+            setState(() {
+              _selectedIndex = 3;
+            });
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             body: Row(
@@ -202,107 +215,18 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _buildPage(BuildContext ctx, MainState state) {
-    switch (state.runtimeType) {
-      case MainBasisState:
-        return StepPage(
-          step: ctx.read<MainBloc>().nextStep(StepData(func: {
-                1: -5,
-                2: -4,
-                3: -3,
-                4: -2,
-                5: 3
-              }, matrix: [
-                [
-                  0.toFraction(),
-                  1.toFraction(),
-                  2.toFraction(),
-                  3.toFraction(),
-                  4.toFraction(),
-                  5.toFraction(),
-                  0.toFraction()
-                ],
-                [
-                  6.toFraction(),
-                  2.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  3.toFraction()
-                ],
-                [
-                  7.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  0.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction()
-                ],
-                [
-                  8.toFraction(),
-                  (-2).toFraction(),
-                  (-1).toFraction(),
-                  (-1).toFraction(),
-                  1.toFraction(),
-                  0.toFraction(),
-                  1.toFraction()
-                ],
-              ])),
-        );
-      case MainSimplexState:
-        return StepPage(
-          step: ctx.read<MainBloc>().nextStep(StepData(func: {
-                1: -5,
-                2: -4,
-                3: -3,
-                4: -2,
-                5: 3
-              }, matrix: [
-                [
-                  0.toFraction(),
-                  1.toFraction(),
-                  2.toFraction(),
-                  3.toFraction(),
-                  4.toFraction(),
-                  5.toFraction(),
-                  0.toFraction()
-                ],
-                [
-                  6.toFraction(),
-                  2.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  3.toFraction()
-                ],
-                [
-                  7.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  0.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction()
-                ],
-                [
-                  8.toFraction(),
-                  (-2).toFraction(),
-                  (-1).toFraction(),
-                  (-1).toFraction(),
-                  1.toFraction(),
-                  0.toFraction(),
-                  1.toFraction()
-                ],
-              ])),
-        );
-      case MainAnswerState:
-        return AnswerPage();
-      case MainGraphState:
-        return GraphPage();
-      default:
-        return TaskPage();
+    if (state is MainBasisState) {
+      return StepPage(
+        step: state.step,
+      );
+    } else if (state is MainSimplexState) {
+      return StepPage(step: state.step);
+    } else if (state is MainAnswerState) {
+      return AnswerPage(step: state.step);
+    } else if (state is MainGraphState) {
+      return GraphPage();
+    } else {
+      return TaskPage();
     }
   }
 }

@@ -41,20 +41,67 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (event.index == 0) {
           emit(MainTaskState());
         } else if (event.index == 1) {
-          emit(MainBasisState());
+          emit(MainBasisState(step: event.step!));
         } else if (event.index == 2) {
-          emit(MainSimplexState());
+          emit(MainSimplexState(step: event.step!));
         } else if (event.index == 3) {
-          emit(MainAnswerState());
+          emit(MainAnswerState(step: event.step!));
         } else {
           emit(MainGraphState());
         }
       } else if (event is MainCheckTaskEvent) {
-        StepData? firstStep = _toStepData();
+        // StepData? firstStep = _toStepData();
 
-        if (firstStep == null) {
-          _showError(event.context);
-        } else {}
+        // if (firstStep == null) {
+        //   _showError(event.context);
+        // } else {}
+        StepData firstStep = nextStep(
+          StepData(
+            func: {1: -5, 2: -4, 3: -3, 4: -2, 5: 3},
+            matrix: [
+              [
+                0.toFraction(),
+                1.toFraction(),
+                2.toFraction(),
+                3.toFraction(),
+                4.toFraction(),
+                5.toFraction(),
+                0.toFraction()
+              ],
+              [
+                6.toFraction(),
+                2.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                (-1).toFraction(),
+                3.toFraction()
+              ],
+              [
+                7.toFraction(),
+                1.toFraction(),
+                (-1).toFraction(),
+                0.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                1.toFraction()
+              ],
+              [
+                8.toFraction(),
+                (-2).toFraction(),
+                (-1).toFraction(),
+                (-1).toFraction(),
+                1.toFraction(),
+                0.toFraction(),
+                1.toFraction()
+              ],
+            ],
+          ),
+        );
+
+        _steps.add(firstStep);
+
+        add(MainSwitchPageEvent(index: 1, step: _steps.first));
       } else if (event is MainReloadAppEvent) {
         _showRemoveDialog(event.context);
       } else if (event is MainShowHelpEvent) {
