@@ -4,14 +4,28 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/fraction.dart';
 
+import 'enums.dart';
+
 class Task {
   int vars;
   int limits;
+  Map<int, String> func;
+  List<List<String>> matrix;
+  List<bool> basis;
+  NumberType numberType;
+  FuncType funcType;
+  AnswerType answerType;
   final List<StepData> steps;
 
   Task({
     required this.vars,
     required this.limits,
+    required this.func,
+    required this.matrix,
+    required this.basis,
+    required this.numberType,
+    required this.funcType,
+    required this.answerType,
     required this.steps,
   });
 
@@ -38,34 +52,65 @@ class Task {
   }
 
   Task copyWith({
-    List<StepData>? steps,
     int? vars,
     int? limits,
+    Map<int, String>? func,
+    List<List<String>>? matrix,
+    List<bool>? basis,
+    NumberType? numberType,
+    FuncType? funcType,
+    AnswerType? answerType,
+    List<StepData>? steps,
   }) {
     return Task(
-      steps: steps ?? this.steps,
       vars: vars ?? this.vars,
       limits: limits ?? this.limits,
+      func: func ?? this.func,
+      matrix: matrix ?? this.matrix,
+      basis: basis ?? this.basis,
+      numberType: numberType ?? this.numberType,
+      funcType: funcType ?? this.funcType,
+      answerType: answerType ?? this.answerType,
+      steps: steps ?? this.steps,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'steps': steps.map((x) => x.toMap()).toList(),
       'vars': vars,
       'limits': limits,
+      'func': func,
+      'matrix': matrix,
+      'basis': basis,
+      'numberType': numberType.toString().split('.')[1],
+      'funcType': funcType.toString().split('.')[1],
+      'answerType': answerType.toString().split('.')[1],
+      'steps': steps.map((x) => x.toMap()).toList(),
     };
   }
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
+      vars: map['vars'] as int,
+      limits: map['limits'] as int,
+      func: Map<int, String>.from((map['func'] as Map<int, String>)),
+      matrix: List<List<String>>.from(
+        (map['matrix'] as List<String>).map<String>(
+          (x) => x,
+        ),
+      ),
+      basis: List<bool>.from((map['basis'] as List<bool>)),
+      numberType: NumberType.values
+          .firstWhere((element) => element == map['numberType']),
+      funcType:
+          FuncType.values.firstWhere((element) => element == map['funcType']),
+      answerType: AnswerType.values
+          .firstWhere((element) => element == map['answerType']),
       steps: List<StepData>.from(
         (map['steps'] as List<int>).map<StepData>(
           (x) => StepData.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      vars: map['vars'] as int,
-      limits: map['limits'] as int,
     );
   }
 
@@ -75,19 +120,37 @@ class Task {
       Task.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'Task(steps: $steps, vars: $vars, limits: $limits)';
+  String toString() {
+    return 'Task(vars: $vars, limits: $limits, func: $func, matrix: $matrix, basis: $basis, numberType: $numberType, funcType: $funcType, answerType: $answerType, steps: $steps)';
+  }
 
   @override
   bool operator ==(covariant Task other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.steps, steps) &&
-        other.vars == vars &&
-        other.limits == limits;
+    return other.vars == vars &&
+        other.limits == limits &&
+        mapEquals(other.func, func) &&
+        listEquals(other.matrix, matrix) &&
+        listEquals(other.basis, basis) &&
+        other.numberType == numberType &&
+        other.funcType == funcType &&
+        other.answerType == answerType &&
+        listEquals(other.steps, steps);
   }
 
   @override
-  int get hashCode => steps.hashCode ^ vars.hashCode ^ limits.hashCode;
+  int get hashCode {
+    return vars.hashCode ^
+        limits.hashCode ^
+        func.hashCode ^
+        matrix.hashCode ^
+        basis.hashCode ^
+        numberType.hashCode ^
+        funcType.hashCode ^
+        answerType.hashCode ^
+        steps.hashCode;
+  }
 }
 
 class StepData {

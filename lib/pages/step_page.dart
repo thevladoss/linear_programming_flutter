@@ -86,7 +86,8 @@ class _StepPageState extends State<StepPage> {
           (j) => _buildTableItem(
             (j == 0)
                 ? 'x${widget.step.matrix[i + 1][j].toString()}'
-                : (context.read<MainBloc>().numberType == NumberType.decimal)
+                : (context.read<MainBloc>().task.numberType ==
+                        NumberType.decimal)
                     ? widget.step.matrix[i + 1][j].toDouble().toString()
                     : widget.step.matrix[i + 1][j].toString(),
             context,
@@ -111,7 +112,8 @@ class _StepPageState extends State<StepPage> {
           (j) => _buildTableItem(
               (j == 0)
                   ? ''
-                  : (context.read<MainBloc>().numberType == NumberType.decimal)
+                  : (context.read<MainBloc>().task.numberType ==
+                          NumberType.decimal)
                       ? widget.step.matrix.last[j].toDouble().toString()
                       : widget.step.matrix.last[j].toString(),
               context,

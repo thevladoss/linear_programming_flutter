@@ -97,6 +97,9 @@ class _MainPageState extends State<MainPage> {
                   switch (_selectedIndex) {
                     case 1:
                       if (context.read<MainBloc>().currentStep == 0) {
+                        context
+                            .read<MainBloc>()
+                            .add(MainSwitchPageEvent(index: 0));
                       } else {
                         context.read<MainBloc>().add(MainPrevStepEvent());
                       }

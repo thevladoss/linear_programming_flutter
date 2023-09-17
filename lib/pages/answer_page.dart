@@ -65,7 +65,8 @@ class AnswerPage extends StatelessWidget {
           (j) => _buildTableItem(
             (j == 0)
                 ? 'x${step.matrix[i + 1][j].toString()}'
-                : (context.read<MainBloc>().numberType == NumberType.decimal)
+                : (context.read<MainBloc>().task.numberType ==
+                        NumberType.decimal)
                     ? step.matrix[i + 1][j].toDouble().toString()
                     : step.matrix[i + 1][j].toString(),
             context,
@@ -84,7 +85,8 @@ class AnswerPage extends StatelessWidget {
           (j) => _buildTableItem(
               (j == 0)
                   ? ''
-                  : (context.read<MainBloc>().numberType == NumberType.decimal)
+                  : (context.read<MainBloc>().task.numberType ==
+                          NumberType.decimal)
                       ? step.matrix.last[j].toDouble().toString()
                       : step.matrix.last[j].toString(),
               context,

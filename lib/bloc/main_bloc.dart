@@ -9,27 +9,25 @@ part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  Map<int, String> _func = {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'};
-  List<List<String>> _matrix = [
-    ['0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0']
-  ];
-  List<bool> _basis = [false, false, false, false, false];
-  NumberType _numberType = NumberType.fraction;
-  FuncType _funcType = FuncType.min;
-  AnswerType _answerType = AnswerType.step;
+  final Task _task = Task(
+    func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
+    matrix: [
+      ['0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0']
+    ],
+    basis: [false, false, false, false, false],
+    numberType: NumberType.fraction,
+    funcType: FuncType.min,
+    answerType: AnswerType.step,
+    vars: 5,
+    limits: 3,
+    steps: [],
+  );
 
-  Task _task = Task(vars: 5, limits: 3, steps: []);
   int _currentStep = 0;
-  String _error = '';
 
-  get func => _func;
-  get matrix => _matrix;
-  get basis => _basis;
-  get numberType => _numberType;
-  get funcType => _funcType;
-  get answerType => _answerType;
+  String _error = '';
 
   get currentStep => _currentStep;
   get task => _task;
@@ -242,17 +240,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       for (int i = 1; i <= _task.vars; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
-        if (_func[i] == 0.toString()) {
+        if (_task.func[i] == 0.toString()) {
           _error = 'incorrectTaskData';
           break;
         }
-        startData.func[i] = Fraction.fromString(_func[i]!).toDouble();
+        startData.func[i] = Fraction.fromString(_task.func[i]!).toDouble();
       }
       startData.matrix[0].add(0.toFraction().reduce());
-      for (int i = 0; i < _matrix.length; i++) {
+      for (int i = 0; i < _task.matrix.length; i++) {
         startData.matrix.add([]);
-        for (int j = 0; j < _matrix[0].length; j++) {
-          startData.matrix[i + 1].add(_matrix[i][j].toFraction().reduce());
+        for (int j = 0; j < _task.matrix[0].length; j++) {
+          startData.matrix[i + 1].add(_task.matrix[i][j].toFraction().reduce());
         }
       }
       for (int i = 1; i < startData.matrix.length; i++) {
@@ -261,10 +259,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           _error = 'incorrectTaskData';
         }
       }
-      if (_basis.contains(true)) {
+      if (_task.basis.contains(true)) {
         startData = startData.copyWith(basis: []);
-        for (int i = 0; i < _basis.length; i++) {
-          if (_basis[i]) {
+        for (int i = 0; i < _task.basis.length; i++) {
+          if (_task.basis[i]) {
             startData.basis?.add(1.toFraction());
           } else {
             startData.basis?.add(0.toFraction());
@@ -274,13 +272,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       if (startData.basis == null) {
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i]
-              .insert(0, (_func.length + i).toFraction().reduce());
+              .insert(0, (_task.func.length + i).toFraction().reduce());
         }
       } else {
         int basisCount = 0;
         List<int> basisVars = [];
-        for (int i = 0; i < _basis.length; i++) {
-          if (_basis[i]) {
+        for (int i = 0; i < _task.basis.length; i++) {
+          if (_task.basis[i]) {
             basisCount += 1;
             basisVars.add(i + 1);
           }
@@ -557,12 +555,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
   void updateVars(int newVars) => task.vars = newVars;
   void updateLimits(int newLimits) => task.limits = newLimits;
-  void updateFunc(Map<int, String> newFunc) => _func = newFunc;
-  void updateMatrix(List<List<String>> newMatrix) => _matrix = newMatrix;
-  void updateBasis(List<bool> newBasis) => _basis = newBasis;
+  void updateFunc(Map<int, String> newFunc) => _task.func = newFunc;
+  void updateMatrix(List<List<String>> newMatrix) => _task.matrix = newMatrix;
+  void updateBasis(List<bool> newBasis) => _task.basis = newBasis;
   void updateNumberType(NumberType newNumberType) =>
-      _numberType = newNumberType;
-  void updateFuncType(FuncType newFuncType) => _funcType = newFuncType;
+      _task.numberType = newNumberType;
+  void updateFuncType(FuncType newFuncType) => _task.funcType = newFuncType;
   void updateAnswerType(AnswerType newAnswerType) =>
-      _answerType = newAnswerType;
+      _task.answerType = newAnswerType;
 }

@@ -22,9 +22,9 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
     _vars = context.read<MainBloc>().task.vars;
     _limits = context.read<MainBloc>().task.limits;
-    _func = context.read<MainBloc>().func;
-    _matrix = context.read<MainBloc>().matrix;
-    _basis = context.read<MainBloc>().basis;
+    _func = context.read<MainBloc>().task.func;
+    _matrix = context.read<MainBloc>().task.matrix;
+    _basis = context.read<MainBloc>().task.basis;
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -437,7 +437,7 @@ class _NumberTypeChoiceState extends State<NumberTypeChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _numberType = context.read<MainBloc>().numberType;
+    _numberType = context.read<MainBloc>().task.numberType;
     return SegmentedButton<NumberType>(
       segments: const <ButtonSegment<NumberType>>[
         ButtonSegment<NumberType>(
@@ -472,7 +472,7 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _funcType = context.read<MainBloc>().funcType;
+    _funcType = context.read<MainBloc>().task.funcType;
     return SegmentedButton<FuncType>(
       segments: const <ButtonSegment<FuncType>>[
         ButtonSegment<FuncType>(
@@ -507,7 +507,7 @@ class _AutomaticChoiceState extends State<AutomaticChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _answerType = context.read<MainBloc>().answerType;
+    _answerType = context.read<MainBloc>().task.answerType;
     return SegmentedButton<AnswerType>(
       segments: const <ButtonSegment<AnswerType>>[
         ButtonSegment<AnswerType>(
