@@ -220,9 +220,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     } catch (e) {
       _error = e.toString();
       return null;
-    } finally {
-      return startData;
     }
+    return startData;
   }
 
   StepData nextStep(StepData previousData) {
