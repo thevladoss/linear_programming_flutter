@@ -14,11 +14,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     ['0', '0', '0', '0', '0', '0'],
     ['0', '0', '0', '0', '0', '0']
   ];
-  List<String> _basis = ['0', '0', '0', '0', '0'];
+  List<bool> _basis = [false, false, false, false, false];
 
   get func => _func;
   get matrix => _matrix;
   get basis => _basis;
+  Object _error = '';
 
   MainBloc() : super(MainInitial()) {
     on<MainEvent>((event, emit) {
@@ -26,7 +27,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
   }
 
-  StepData toStepData() {
+  StepData? toStepData() {
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
     ], varsCount: _func.length, type: NumberType.fraction);
@@ -34,6 +35,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       for (int i = 1; i <= startData.varsCount; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
         if (_func[i - 1] == 0.toString()) {
+          _error = 'incorrectTaskData';
           break;
         }
         startData.func[i] = Fraction.fromString(_func[i - 1]!).toDouble();
@@ -47,7 +49,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
       for (int i = 1; i < startData.matrix.length; i++) {
         if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
-            0) {}
+            0) {
+          _error = 'incorrectTaskData';
+        }
       }
       if (startData.basis == null) {
         for (int i = 1; i < startData.matrix.length; i++) {
@@ -55,6 +59,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               .insert(0, (_func.length + i).toFraction().reduce());
         }
       }
+    } catch (e) {
+      _error = e;
+      return null;
     } finally {
       return startData;
     }
