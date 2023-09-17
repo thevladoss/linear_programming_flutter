@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
+
+import '../bloc/main_bloc.dart';
 
 class StepPage extends StatefulWidget {
   final StepData step;
@@ -82,7 +86,9 @@ class _StepPageState extends State<StepPage> {
           (j) => _buildTableItem(
             (j == 0)
                 ? 'x${widget.step.matrix[i + 1][j].toString()}'
-                : widget.step.matrix[i + 1][j].toString(),
+                : (context.read<MainBloc>().numberType == NumberType.decimal)
+                    ? widget.step.matrix[i + 1][j].toDouble().toString()
+                    : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
             color: (_activeElement.first == i + 1 && _activeElement.last == j)
@@ -103,8 +109,14 @@ class _StepPageState extends State<StepPage> {
         children: List.generate(
           widget.step.matrix.last.length,
           (j) => _buildTableItem(
-              (j == 0) ? '' : widget.step.matrix.last[j].toString(), context,
-              i: widget.step.matrix.length - 1, j: j),
+              (j == 0)
+                  ? ''
+                  : (context.read<MainBloc>().numberType == NumberType.decimal)
+                      ? widget.step.matrix.last[j].toDouble().toString()
+                      : widget.step.matrix.last[j].toString(),
+              context,
+              i: widget.step.matrix.length - 1,
+              j: j),
         ),
       ),
     );
