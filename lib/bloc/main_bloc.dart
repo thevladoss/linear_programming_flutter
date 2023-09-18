@@ -69,58 +69,57 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (firstStep == null) {
           _showError(event.context);
         } else {
-          _task.addStep(firstStep);
+          // _task.addStep(firstStep);
+          _task.addStep(nextStep(StepData(
+            func: {
+              1: (-5).toFraction(),
+              2: (-4).toFraction(),
+              3: (-3).toFraction(),
+              4: (-2).toFraction(),
+              5: 3.toFraction()
+            },
+            matrix: [
+              [
+                0.toFraction(),
+                1.toFraction(),
+                2.toFraction(),
+                3.toFraction(),
+                4.toFraction(),
+                5.toFraction(),
+                0.toFraction()
+              ],
+              [
+                6.toFraction(),
+                2.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                (-1).toFraction(),
+                3.toFraction()
+              ],
+              [
+                7.toFraction(),
+                1.toFraction(),
+                (-1).toFraction(),
+                0.toFraction(),
+                1.toFraction(),
+                1.toFraction(),
+                1.toFraction()
+              ],
+              [
+                8.toFraction(),
+                (-2).toFraction(),
+                (-1).toFraction(),
+                (-1).toFraction(),
+                1.toFraction(),
+                0.toFraction(),
+                1.toFraction()
+              ],
+            ],
+          )));
+
           add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
         }
-        /*_task.addStep(nextStep(StepData(
-          func: {
-            1: (-5).toFraction(),
-            2: (-4).toFraction(),
-            3: (-3).toFraction(),
-            4: (-2).toFraction(),
-            5: 3.toFraction()
-          },
-          matrix: [
-            [
-              0.toFraction(),
-              1.toFraction(),
-              2.toFraction(),
-              3.toFraction(),
-              4.toFraction(),
-              5.toFraction(),
-              0.toFraction()
-            ],
-            [
-              6.toFraction(),
-              2.toFraction(),
-              1.toFraction(),
-              1.toFraction(),
-              1.toFraction(),
-              (-1).toFraction(),
-              3.toFraction()
-            ],
-            [
-              7.toFraction(),
-              1.toFraction(),
-              (-1).toFraction(),
-              0.toFraction(),
-              1.toFraction(),
-              1.toFraction(),
-              1.toFraction()
-            ],
-            [
-              8.toFraction(),
-              (-2).toFraction(),
-              (-1).toFraction(),
-              (-1).toFraction(),
-              1.toFraction(),
-              0.toFraction(),
-              1.toFraction()
-            ],
-          ],
-        )));
-
-        add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));*/
       } else if (event is MainNextStepEvent) {
         _currentStep++;
 
