@@ -41,6 +41,14 @@ class Task {
     steps.clear();
   }
 
+  bool isBasisOnStart() {
+    for (StepData step in steps) {
+      if (step.basis == null) return false;
+    }
+    if (steps.isEmpty) return false;
+    return true;
+  }
+
   int getIndexOfBasis() {
     for (StepData step in steps) {
       if (step.basis != null) return steps.indexOf(step);

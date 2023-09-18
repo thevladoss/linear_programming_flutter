@@ -79,7 +79,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           _task.addStep(firstStep);
 
-          add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+          add(MainSwitchPageEvent(
+              index: (_task.isBasisOnStart()) ? 2 : 1,
+              step: _task.steps[_currentStep]));
           if (_task.answerType == AnswerType.auto) {
             _isAnimation = true;
             Future.delayed(const Duration(seconds: 1), () {
