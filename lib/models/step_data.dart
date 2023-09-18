@@ -270,11 +270,15 @@ class StepData {
           }
         }
       }
-      if (((basis == null && matrix[line][0].toDouble() > func.length) ||
-              basis != null) &&
-          matrix[line][matrix[0].length - 1] / matrix[line][column] ==
-              elementValue) {
-        return true;
+      if (matrix[line][column] > 0.toFraction()) {
+        if (((basis == null && matrix[line][0].toDouble() > func.length) ||
+                basis != null) &&
+            matrix[line][matrix[0].length - 1] / matrix[line][column] ==
+                elementValue) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
