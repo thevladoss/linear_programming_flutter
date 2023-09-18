@@ -92,7 +92,7 @@ class StepPage extends StatelessWidget {
                     : step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (step.element!.first == i + 1 && step.element!.last == j)
+            color: (step.element.first == i + 1 && step.element.last == j)
                 ? Colors.indigo.shade300
                 : (j != step.matrix[i + 1].length - 1 &&
                         step.isElementSupport(i + 1, j))

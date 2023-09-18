@@ -270,6 +270,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     //TODO check basis
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
+    ], element: [
+      0,
+      0
     ]);
     try {
       for (int i = 1; i <= _task.vars; i++) {
@@ -491,9 +494,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                         entry.key == nextData.matrix[i][0].toDouble().toInt())
                     .value;
       }
+      nextData.matrix[nextData.matrix.length - 1]
+              [nextData.matrix[0].length - 1] =
+          nextData.matrix[nextData.matrix.length - 1]
+                  [nextData.matrix[0].length - 1]
+              .reduce();
       nextData.matrix[0][0] = 0.toFraction();
     } else {
-      if (nextData.matrix[nextData.matrix.length - 1][0].toDouble() != 0) {
+      /*if (nextData.matrix[nextData.matrix.length - 1][0].toDouble() != 0) {
         nextData.matrix.add([0.toFraction()]);
         for (int i = 1; i < nextData.matrix[0].length; i++) {
           Fraction sum = 0.toFraction();
@@ -503,50 +511,48 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           nextData.matrix[nextData.matrix.length - 1]
               .add((-1).toFraction() * sum);
         }
-      } else {
-        nextData.matrix[0][0] += 1.toFraction();
-        Fraction swap = nextData.matrix[0][nextData.element![1]];
-        nextData.matrix[0][nextData.element![1]] =
-            nextData.matrix[nextData.element![0]][0];
-        nextData.matrix[nextData.element![0]][0] = swap;
-        nextData.matrix[nextData.element![0]][nextData.element![1]] = nextData
-            .matrix[nextData.element![0]][nextData.element![1]]
-            .inverse();
-        for (int i = 1; i < nextData.matrix[nextData.element![0]].length; i++) {
-          if (i != nextData.element![1]) {
-            nextData.matrix[nextData.element![0]][i] *=
-                nextData.matrix[nextData.element![0]][nextData.element![1]];
-          }
-          nextData.matrix[nextData.element![0]][i] =
-              nextData.matrix[nextData.element![0]][i].reduce();
+      } else {*/
+      nextData.matrix[0][0] += 1.toFraction();
+      Fraction swap = nextData.matrix[0][nextData.element[1]];
+      nextData.matrix[0][nextData.element[1]] =
+          nextData.matrix[nextData.element[0]][0];
+      nextData.matrix[nextData.element[0]][0] = swap;
+      nextData.matrix[nextData.element[0]][nextData.element[1]] =
+          nextData.matrix[nextData.element[0]][nextData.element[1]].inverse();
+      for (int i = 1; i < nextData.matrix[nextData.element[0]].length; i++) {
+        if (i != nextData.element[1]) {
+          nextData.matrix[nextData.element[0]][i] *=
+              nextData.matrix[nextData.element[0]][nextData.element[1]];
         }
-        for (int x = 1; x < nextData.matrix.length; x++) {
-          for (int y = 1; y < nextData.matrix[x].length; y++) {
-            if (x != nextData.element![0] && y != nextData.element![1]) {
-              nextData.matrix[x][y] -= nextData.matrix[x]
-                      [nextData.element![1]] *
-                  nextData.matrix[nextData.element![0]][y];
-              nextData.matrix[x][y] = nextData.matrix[x][y].reduce();
-            }
-          }
-        }
-        for (int i = 1; i < nextData.matrix.length; i++) {
-          if (i != nextData.element![0]) {
-            nextData.matrix[i][nextData.element![1]] *= (-1).toFraction() *
-                nextData.matrix[nextData.element![0]][nextData.element![1]];
-          }
-          nextData.matrix[i][nextData.element![1]] =
-              nextData.matrix[i][nextData.element![1]].reduce();
-        }
-        for (int i = 1; i < nextData.matrix[0].length; i++) {
-          if (nextData.matrix[0][i].toDouble() > nextData.func.length) {
-            for (int j = 0; j < nextData.matrix.length; j++) {
-              nextData.matrix[j].removeAt(i);
-            }
-            break;
+        nextData.matrix[nextData.element[0]][i] =
+            nextData.matrix[nextData.element[0]][i].reduce();
+      }
+      for (int x = 1; x < nextData.matrix.length; x++) {
+        for (int y = 1; y < nextData.matrix[x].length; y++) {
+          if (x != nextData.element[0] && y != nextData.element[1]) {
+            nextData.matrix[x][y] -= nextData.matrix[x][nextData.element[1]] *
+                nextData.matrix[nextData.element[0]][y];
+            nextData.matrix[x][y] = nextData.matrix[x][y].reduce();
           }
         }
       }
+      for (int i = 1; i < nextData.matrix.length; i++) {
+        if (i != nextData.element[0]) {
+          nextData.matrix[i][nextData.element[1]] *= (-1).toFraction() *
+              nextData.matrix[nextData.element[0]][nextData.element[1]];
+        }
+        nextData.matrix[i][nextData.element[1]] =
+            nextData.matrix[i][nextData.element[1]].reduce();
+      }
+      for (int i = 1; i < nextData.matrix[0].length; i++) {
+        if (nextData.matrix[0][i].toDouble() > nextData.func.length) {
+          for (int j = 0; j < nextData.matrix.length; j++) {
+            nextData.matrix[j].removeAt(i);
+          }
+          break;
+        }
+      }
+      //}
     }
     Fraction elementValue = 0.toFraction();
     nextData = nextData.copyWith(element: [0, 0]);
@@ -564,8 +570,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                     nextData.basis != null)) {
               elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
                   nextData.matrix[j][i];
-              nextData.element![0] = j;
-              nextData.element![1] = i;
+              nextData.element[0] = j;
+              nextData.element[1] = i;
             }
           }
         }
