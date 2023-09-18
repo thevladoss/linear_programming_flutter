@@ -108,7 +108,13 @@ class _MainPageState extends State<MainPage> {
                         }
                         break;
                       case 2:
-                        context.read<MainBloc>().add(MainPrevStepEvent());
+                        if (context.read<MainBloc>().currentStep == 0) {
+                          context
+                              .read<MainBloc>()
+                              .add(MainSwitchPageEvent(index: 0));
+                        } else {
+                          context.read<MainBloc>().add(MainPrevStepEvent());
+                        }
                         break;
                       case 3:
                         context.read<MainBloc>().add(MainPrevStepEvent());
@@ -159,12 +165,14 @@ class _MainPageState extends State<MainPage> {
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.one),
-        disabled: (context.read<MainBloc>().task.steps.isEmpty),
+        disabled: (context.read<MainBloc>().task.steps.isEmpty ||
+            context.read<MainBloc>().task.isBasisOnStart()),
         label: const Text('Базис'),
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.two),
-        disabled: (context.read<MainBloc>().task.getIndexOfBasis() == 0),
+        disabled: (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
+            !context.read<MainBloc>().task.isBasisOnStart()),
         label: const Text('Симплекс'),
       ),
       NavigationRailDestination(
