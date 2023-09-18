@@ -187,14 +187,15 @@ class StepData {
   List<int>? element;
   final List<Fraction>? basis;
   final Fraction? answer;
+  final bool isAnswerExist;
 
-  StepData({
-    required this.func,
-    required this.matrix,
-    this.element,
-    this.basis,
-    this.answer,
-  });
+  StepData(
+      {required this.func,
+      required this.matrix,
+      this.element,
+      this.basis,
+      this.answer,
+      required this.isAnswerExist});
 
   StepData copyWith({
     Map<int, Fraction>? func,
@@ -204,12 +205,12 @@ class StepData {
     Fraction? answer,
   }) {
     return StepData(
-      func: func ?? this.func,
-      matrix: matrix ?? this.matrix,
-      element: element ?? this.element,
-      basis: basis ?? this.basis,
-      answer: answer ?? this.answer,
-    );
+        func: func ?? this.func,
+        matrix: matrix ?? this.matrix,
+        element: element ?? this.element,
+        basis: basis ?? this.basis,
+        answer: answer ?? this.answer,
+        isAnswerExist: isAnswerExist ?? this.isAnswerExist);
   }
 
   Map<String, dynamic> toMap() {
