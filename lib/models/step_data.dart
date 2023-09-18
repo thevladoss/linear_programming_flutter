@@ -156,14 +156,14 @@ class Task {
 class StepData {
   final Map<int, Fraction> func;
   final List<List<Fraction>> matrix;
-  List<int>? element;
+  List<int> element;
   final List<Fraction>? basis;
   final double? answer;
 
   StepData({
     required this.func,
     required this.matrix,
-    this.element,
+    required this.element,
     this.basis,
     this.answer,
   });
@@ -202,9 +202,10 @@ class StepData {
           (x) => x,
         ),
       ),
-      element: map['element'] != null
+      element: [0, 0],
+      /*element: map['element'] != null
           ? List<int>.from((map['element'] as List<int>))
-          : null,
+          : null,*/
       basis: map['basis'] != null
           ? List<Fraction>.from((map['basis'] as List<Fraction>))
           : null,
