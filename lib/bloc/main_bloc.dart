@@ -221,6 +221,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               onPressed: () {
                 if (task != null) {
                   _task = task;
+                  _currentStep = _task.steps.length - 1;
                   add(MainSwitchPageEvent(index: 3, step: _task.steps.last));
                   Navigator.pop(context);
                 } else {
