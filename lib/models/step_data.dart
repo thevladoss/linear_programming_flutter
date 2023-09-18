@@ -156,7 +156,7 @@ class Task {
 class StepData {
   final Map<int, Fraction> func;
   final List<List<Fraction>> matrix;
-  final List<int>? element;
+  List<int>? element;
   final List<Fraction>? basis;
   final double? answer;
 
