@@ -88,7 +88,16 @@ class _StepPageState extends State<StepPage> {
                 ? 'x${widget.step.matrix[i + 1][j].toString()}'
                 : (context.read<MainBloc>().task.numberType ==
                         NumberType.decimal)
-                    ? widget.step.matrix[i + 1][j].toDouble().toString()
+                    ? (widget.step.matrix[i + 1][j]
+                                .toDouble()
+                                .toString()
+                                .split('.')[1]
+                                .length >=
+                            3)
+                        ? widget.step.matrix[i + 1][j]
+                            .toDouble()
+                            .toStringAsFixed(3)
+                        : widget.step.matrix[i + 1][j].toDouble().toString()
                     : widget.step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
@@ -115,7 +124,16 @@ class _StepPageState extends State<StepPage> {
                   ? ''
                   : (context.read<MainBloc>().task.numberType ==
                           NumberType.decimal)
-                      ? widget.step.matrix.last[j].toDouble().toString()
+                      ? (widget.step.matrix.last[j]
+                                  .toDouble()
+                                  .toString()
+                                  .split('.')[1]
+                                  .length >=
+                              3)
+                          ? widget.step.matrix.last[j]
+                              .toDouble()
+                              .toStringAsFixed(3)
+                          : widget.step.matrix.last[j].toDouble().toString()
                       : widget.step.matrix.last[j].toString(),
               context,
               i: widget.step.matrix.length - 1,
