@@ -162,7 +162,7 @@ class StepData {
   final List<List<Fraction>> matrix;
   List<int>? element;
   final List<Fraction>? basis;
-  final double? answer;
+  final Fraction? answer;
 
   StepData({
     required this.func,
@@ -177,7 +177,7 @@ class StepData {
     List<List<Fraction>>? matrix,
     List<int>? element,
     List<Fraction>? basis,
-    double? answer,
+    Fraction? answer,
   }) {
     return StepData(
       func: func ?? this.func,
@@ -222,7 +222,7 @@ class StepData {
       basis: map['basis'] != null
           ? List<Fraction>.from((map['basis'] as List<Fraction>))
           : null,
-      answer: map['answer'] != null ? map['answer'] as double : null,
+      answer: map['answer'] != null ? map['answer'] as Fraction : null,
     );
   }
 
