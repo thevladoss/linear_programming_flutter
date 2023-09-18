@@ -28,10 +28,12 @@ class AnswerPage extends StatelessWidget {
             height: 10,
           ),
           Text(
-            'Ответ: ${step.answer}',
+            (!step.isAnswerExist)
+                ? 'Решения не существует'
+                : 'Ответ: ${step.answer}',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          (step.basis != null)
+          (step.basis != null && step.isAnswerExist)
               ? Text(
                   'Базис: ${step.basis.toString().replaceAll('[', '<').replaceAll(']', '>')}',
                   style: Theme.of(context).textTheme.bodyLarge,
