@@ -124,8 +124,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           add(MainNextStepEvent());
         });
       }
-    } else if (_task.steps[_currentStep].basis != null &&
-        _task.steps[_currentStep].answer != null) {
+    } else if ((_task.steps[_currentStep].basis != null &&
+            _task.steps[_currentStep].answer != null) ||
+        !_task.steps[_currentStep].isAnswerExist) {
       _isAnimation = false;
       add(MainSwitchPageEvent(index: 3, step: _task.steps[_currentStep]));
     } else {
