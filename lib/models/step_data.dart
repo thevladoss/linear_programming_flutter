@@ -33,6 +33,10 @@ class Task {
     steps.add(step);
   }
 
+  removeStep(int i, int j) {
+    steps.removeRange(i, j);
+  }
+
   clear() {
     steps.clear();
   }

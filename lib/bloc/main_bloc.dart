@@ -133,7 +133,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
         _updateWhenSwitchStep();
       } else if (event is MainChangeElementEvent) {
+        debugPrint(_task.steps.toString());
         _task.steps[_currentStep].element = event.newElem;
+        _task.removeStep(_currentStep + 1, _task.steps.length);
+        debugPrint(_task.steps.toString());
+
         add(MainSwitchPageEvent(
             index: event.index, step: _task.steps[_currentStep]));
       } else if (event is MainReloadAppEvent) {
