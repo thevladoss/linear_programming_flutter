@@ -205,7 +205,7 @@ class _MainPageState extends State<MainPage> {
           focusElevation: 0,
           highlightElevation: 0,
           onPressed: () {
-            // TODO add save to file
+            debugPrint(context.read<MainBloc>().task.toJson());
           },
           child: const Icon(Icons.upload),
         ),

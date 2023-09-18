@@ -83,7 +83,7 @@ class Task {
     return <String, dynamic>{
       'vars': vars,
       'limits': limits,
-      'func': func,
+      'func': func.toString(),
       'matrix': matrix,
       'basis': basis,
       'numberType': numberType.toString().split('.')[1],
@@ -189,11 +189,21 @@ class StepData {
   }
 
   Map<String, dynamic> toMap() {
+    List<List<String>> newMatrix = [];
+    for (List<Fraction> i in matrix) {
+      List<String> newList = [];
+      for (Fraction j in i) {
+        newList.add(j.toString());
+      }
+      newMatrix.add(newList);
+    }
     return <String, dynamic>{
-      'func': func,
-      'matrix': matrix,
+      'func': func.toString(),
+      'matrix': newMatrix,
       'element': element,
-      'basis': basis,
+      'basis': (basis != null)
+          ? List.generate(basis!.length, (i) => basis![i].toString())
+          : null,
       'answer': answer,
     };
   }
