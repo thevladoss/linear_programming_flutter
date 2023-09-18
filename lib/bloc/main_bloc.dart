@@ -411,6 +411,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         element: previousData.element,
         basis: previousData.basis,
         answer: previousData.answer);
+
     if (nextData.matrix[nextData.matrix.length - 1]
                     [nextData.matrix[0].length - 1]
                 .toDouble() ==
@@ -533,11 +534,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     }
 
     for (int i = 1; i < nextData.matrix[0].length; i++) {
-      if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction() ||
-          nextData.basis == null) {
+      if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction()) {
         break;
       }
       if (i == nextData.matrix[0].length - 1) {
+        if (nextData.basis == null) {
+          print('s');
+        }
         nextData = nextData.copyWith(
             answer: ((-1).toFraction() *
                     nextData.matrix[nextData.matrix.length - 1][i])
