@@ -130,6 +130,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         _currentStep--;
 
         _updateWhenSwitchStep();
+      } else if (event is MainChangeElementEvent) {
+        _task.steps[_currentStep].element = event.newElem;
+        add(MainSwitchPageEvent(
+            index: event.index, step: _task.steps[_currentStep]));
       } else if (event is MainReloadAppEvent) {
         _showRemoveDialog(event.context);
       } else if (event is MainShowHelpEvent) {

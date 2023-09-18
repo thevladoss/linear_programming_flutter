@@ -20,6 +20,13 @@ final class MainNextStepEvent extends MainEvent {}
 
 final class MainPrevStepEvent extends MainEvent {}
 
+final class MainChangeElementEvent extends MainEvent {
+  final List<int> newElem;
+  final int index;
+
+  MainChangeElementEvent(this.index, {required this.newElem});
+}
+
 final class MainReloadAppEvent extends MainEvent {
   final BuildContext context;
 

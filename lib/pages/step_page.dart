@@ -5,24 +5,10 @@ import 'package:linear_flutter/models/step_data.dart';
 
 import '../bloc/main_bloc.dart';
 
-class StepPage extends StatefulWidget {
+class StepPage extends StatelessWidget {
   final StepData step;
 
   const StepPage({super.key, required this.step});
-
-  @override
-  State<StepPage> createState() => _StepPageState();
-}
-
-class _StepPageState extends State<StepPage> {
-  List<int> _activeElement = [1, 1];
-
-  @override
-  void initState() {
-    _activeElement =
-        (widget.step.element != null) ? widget.step.element! : _activeElement;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +18,24 @@ class _StepPageState extends State<StepPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Шаг ${widget.step.matrix[0][0]}',
+            'Шаг ${step.matrix[0][0]}',
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
           SizedBox(
-            height: (widget.step.basis != null) ? 10 : 0,
+            height: 10,
           ),
-          (widget.step.basis != null)
+          Text(
+            'Опорный элемент: ${step.matrix[step.element!.first][step.element!.last]}',
+          ),
+          SizedBox(
+            height: (step.basis != null) ? 10 : 0,
+          ),
+          (step.basis != null)
               ? Text(
-                  'Базис ${widget.step.basis}',
+                  'Базис ${step.basis}',
                 )
               : const SizedBox(),
           const SizedBox(
@@ -61,13 +53,13 @@ class _StepPageState extends State<StepPage> {
     List<TableRow> table = [
       TableRow(
         children: List.generate(
-          widget.step.matrix.first.length,
+          step.matrix.first.length,
           (j) => _buildTableItem(
             (j == 0)
-                ? 'x(${widget.step.matrix.first[j].toString()})'
-                : (j == widget.step.matrix.first.length - 1)
+                ? 'x(${step.matrix.first[j].toString()})'
+                : (j == step.matrix.first.length - 1)
                     ? ''
-                    : 'x${widget.step.matrix.first[j].toString()}',
+                    : 'x${step.matrix.first[j].toString()}',
             context,
             weight: FontWeight.bold,
             i: 0,
@@ -79,33 +71,31 @@ class _StepPageState extends State<StepPage> {
 
     table.addAll(
       List.generate(
-        widget.step.matrix.length - 2,
+        step.matrix.length - 2,
         (i) => TableRow(
             children: List.generate(
-          widget.step.matrix[i + 1].length,
+          step.matrix[i + 1].length,
           (j) => _buildTableItem(
             (j == 0)
-                ? 'x${widget.step.matrix[i + 1][j].toString()}'
+                ? 'x${step.matrix[i + 1][j].toString()}'
                 : (context.read<MainBloc>().task.numberType ==
                         NumberType.decimal)
-                    ? (widget.step.matrix[i + 1][j]
+                    ? (step.matrix[i + 1][j]
                                 .toDouble()
                                 .toString()
                                 .split('.')[1]
                                 .length >=
                             3)
-                        ? widget.step.matrix[i + 1][j]
-                            .toDouble()
-                            .toStringAsFixed(3)
-                        : widget.step.matrix[i + 1][j].toDouble().toString()
-                    : widget.step.matrix[i + 1][j].toString(),
+                        ? step.matrix[i + 1][j].toDouble().toStringAsFixed(3)
+                        : step.matrix[i + 1][j].toDouble().toString()
+                    : step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (_activeElement.first == i + 1 &&
-                    _activeElement.last == j) //TODO fix when page switching
+            color: (step.element!.first == i + 1 &&
+                    step.element!.last == j) //TODO fix when page switching
                 ? Colors.indigo.shade300
-                : (j != widget.step.matrix[i + 1].length - 1 &&
-                        widget.step.isElementSupport(i + 1, j))
+                : (j != step.matrix[i + 1].length - 1 &&
+                        step.isElementSupport(i + 1, j))
                     ? Colors.indigo.shade100
                     : Colors.transparent,
             i: i + 1,
@@ -118,25 +108,23 @@ class _StepPageState extends State<StepPage> {
     table.add(
       TableRow(
         children: List.generate(
-          widget.step.matrix.last.length,
+          step.matrix.last.length,
           (j) => _buildTableItem(
               (j == 0)
                   ? ''
                   : (context.read<MainBloc>().task.numberType ==
                           NumberType.decimal)
-                      ? (widget.step.matrix.last[j]
+                      ? (step.matrix.last[j]
                                   .toDouble()
                                   .toString()
                                   .split('.')[1]
                                   .length >=
                               3)
-                          ? widget.step.matrix.last[j]
-                              .toDouble()
-                              .toStringAsFixed(3)
-                          : widget.step.matrix.last[j].toDouble().toString()
-                      : widget.step.matrix.last[j].toString(),
+                          ? step.matrix.last[j].toDouble().toStringAsFixed(3)
+                          : step.matrix.last[j].toDouble().toString()
+                      : step.matrix.last[j].toString(),
               context,
-              i: widget.step.matrix.length - 1,
+              i: step.matrix.length - 1,
               j: j),
         ),
       ),
@@ -162,10 +150,13 @@ class _StepPageState extends State<StepPage> {
     return GestureDetector(
       onTap: () {
         if (color == Colors.indigo.shade100) {
-          setState(() {
-            // TODO add functionality and changing step
-            _activeElement = [i, j];
-          });
+          context.read<MainBloc>().add(MainChangeElementEvent(
+              (step.basis != null) ? 2 : 1,
+              newElem: [i, j]));
+          // setState(() {
+          //   // TODO add functionality and changing step
+          //   _activeElement = [i, j];
+          // });
         }
       },
       child: ColoredBox(
