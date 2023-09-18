@@ -322,6 +322,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           startData.matrix[i] = [
             for (var e in startData.matrix[i]) (e / del).reduce()
           ];
+
           for (int j = i + 1; j < startData.matrix.length; j++) {
             Fraction m = startData.matrix[j][task.vars - basisCount + i];
             for (int l = 1; l < startData.matrix[0].length; l++) {
@@ -393,6 +394,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } else {
         startData.element = [0, 0];
       }
+    } on FractionException {
+      _error =
+          'Неверный базис. Попробуйте изменить базис или поменять ограничения';
+      return null;
+    } on RangeError {
+      _error = 'Неверный базис';
+      return null;
     } catch (e) {
       _error = e.toString();
       return null;
@@ -534,27 +542,34 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     }
 
     for (int i = 1; i < nextData.matrix[0].length; i++) {
-      if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction()) {
-        break;
-      }
-      if (i == nextData.matrix[0].length - 1) {
-        if (nextData.basis == null) {
-          print('s');
+      if (i < nextData.matrix[0].length - 1) {
+        if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction()) {
+          break;
         }
-        nextData = nextData.copyWith(
-            answer: ((-1).toFraction() *
-                    nextData.matrix[nextData.matrix.length - 1][i])
-                .reduce(),
-            basis: []);
-        for (int i = 1; i <= nextData.func.length; i++) {
-          for (int j = 1; j < nextData.matrix.length - 1; j++) {
-            if (nextData.matrix[j][0].toDouble() == i) {
-              nextData.basis!.add(
-                  nextData.matrix[j][nextData.matrix[0].length - 1].reduce());
-              break;
-            }
-            if (j == nextData.matrix.length - 2) {
-              nextData.basis!.add(0.toFraction());
+      } else {
+        double s = nextData.matrix[nextData.matrix.length - 1].fold(
+            0, (previous, current) => previous + current.toDouble().abs());
+        if (nextData.basis == null) {
+          if (s > 0) {
+            print('s');
+            _error = 'Нет решения';
+          }
+        } else {
+          nextData = nextData.copyWith(
+              answer: ((-1).toFraction() *
+                      nextData.matrix[nextData.matrix.length - 1][i])
+                  .reduce(),
+              basis: []);
+          for (int i = 1; i <= nextData.func.length; i++) {
+            for (int j = 1; j < nextData.matrix.length - 1; j++) {
+              if (nextData.matrix[j][0].toDouble() == i) {
+                nextData.basis!.add(
+                    nextData.matrix[j][nextData.matrix[0].length - 1].reduce());
+                break;
+              }
+              if (j == nextData.matrix.length - 2) {
+                nextData.basis!.add(0.toFraction());
+              }
             }
           }
         }
