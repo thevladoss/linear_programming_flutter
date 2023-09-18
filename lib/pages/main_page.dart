@@ -9,6 +9,7 @@ import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
 import '../bloc/main_bloc.dart';
+import '../models/step_data.dart';
 import 'answer_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -252,8 +253,34 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: () {
-            // TODO add open from file
+          onPressed: () async {
+            const XTypeGroup typeGroup = XTypeGroup(
+              label: 'json',
+              extensions: <String>['json'],
+            );
+            final XFile? file =
+                await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+            if (file == null) {
+              return;
+            }
+
+            file.readAsString().then((value) {
+              try {
+                Task task = Task.fromJson(value);
+                context
+                    .read<MainBloc>()
+                    .add(MainReloadAppEvent(context: context, newTask: task));
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+                    content: Text('Ошибка! Файл не является решением задачи'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            });
           },
           child: const Icon(Icons.download),
         ),

@@ -9,7 +9,7 @@ part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  final Task _task = Task(
+  Task _task = Task(
     //func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
     func: {1: '-5', 2: '-4', 3: '-3', 4: '-2', 5: '3'},
     matrix: [
@@ -108,7 +108,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         add(MainSwitchPageEvent(
             index: event.index, step: _task.steps[_currentStep]));
       } else if (event is MainReloadAppEvent) {
-        _showRemoveDialog(event.context);
+        _showRemoveDialog(event.context, event.newTask);
       } else if (event is MainShowHelpEvent) {
         _showHelpBottomSheet(event.context);
       }
@@ -194,7 +194,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         });
   }
 
-  _showRemoveDialog(BuildContext context) {
+  _showRemoveDialog(BuildContext context, Task? task) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -218,7 +218,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             FilledButton(
               child: const Text('Да'),
               onPressed: () {
-                Phoenix.rebirth(context);
+                if (task != null) {
+                  _task = task;
+                  add(MainSwitchPageEvent(index: 3, step: _task.steps.last));
+                  Navigator.pop(context);
+                } else {
+                  Phoenix.rebirth(context);
+                }
               },
             ),
           ],

@@ -102,27 +102,43 @@ class Task {
   }
 
   factory Task.fromMap(Map<String, dynamic> map) {
+    Map<int, String> newFunc = {};
+    for (String k in map['func'].keys) {
+      newFunc.addAll({int.parse(k): map['func'][k].toString()});
+    }
+
+    List<List<String>> newMatrix = [];
+    for (List<dynamic> l in map['matrix']) {
+      List<String> newLine = [];
+      for (dynamic i in l) {
+        newLine.add(i.toString());
+      }
+      newMatrix.add(newLine);
+    }
+
+    List<bool> newBasis = [];
+    for (dynamic l in map['basis']) {
+      newBasis.add(l);
+    }
+
+    List<StepData> newSteps = [];
+    for (dynamic l in map['steps']) {
+      newSteps.add(StepData.fromMap(l));
+    }
+
     return Task(
       vars: map['vars'] as int,
       limits: map['limits'] as int,
-      func: Map<int, String>.from((map['func'] as Map<int, String>)),
-      matrix: List<List<String>>.from(
-        (map['matrix'] as List<String>).map<String>(
-          (x) => x,
-        ),
-      ),
-      basis: List<bool>.from((map['basis'] as List<bool>)),
-      numberType: NumberType.values
-          .firstWhere((element) => element == map['numberType']),
-      funcType:
-          FuncType.values.firstWhere((element) => element == map['funcType']),
-      answerType: AnswerType.values
-          .firstWhere((element) => element == map['answerType']),
-      steps: List<StepData>.from(
-        (map['steps'] as List<int>).map<StepData>(
-          (x) => StepData.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
+      func: newFunc,
+      matrix: newMatrix,
+      basis: newBasis,
+      numberType: NumberType.values.firstWhere(
+          (element) => element.toString() == 'NumberType.${map['numberType']}'),
+      funcType: FuncType.values.firstWhere(
+          (element) => element.toString() == 'FuncType.${map['funcType']}'),
+      answerType: AnswerType.values.firstWhere(
+          (element) => element.toString() == 'AnswerType.${map['answerType']}'),
+      steps: newSteps,
     );
   }
 
@@ -212,25 +228,49 @@ class StepData {
       'basis': (basis != null)
           ? List.generate(basis!.length, (i) => basis![i].toString())
           : null,
-      'answer': answer.toString(),
+      'answer': (answer != null) ? answer.toString() : null
     };
   }
 
   factory StepData.fromMap(Map<String, dynamic> map) {
+    Map<int, Fraction> newFunc = {};
+    for (String k in map['func'].keys) {
+      newFunc.addAll({int.parse(k): map['func'][k].toString().toFraction()});
+    }
+
+    List<List<Fraction>> newMatrix = [];
+    for (List<dynamic> l in map['matrix']) {
+      List<Fraction> newLine = [];
+      for (dynamic i in l) {
+        newLine.add(i.toString().toFraction());
+      }
+      newMatrix.add(newLine);
+    }
+
+    List<int>? newElement;
+    if (map['element'] != null) {
+      newElement = [];
+      for (dynamic l in map['element']) {
+        newElement.add(l);
+      }
+    }
+
+    List<Fraction>? newBasis;
+    if (map['basis'] != null) {
+      newBasis = [];
+      for (dynamic l in map['basis']) {
+        newBasis.add(l.toString().toFraction());
+      }
+    }
+
     return StepData(
-      func: Map<int, Fraction>.from((map['func'] as Map<int, double>)),
-      matrix: List<List<Fraction>>.from(
-        (map['matrix'] as List<List<Fraction>>).map<List<Fraction>>(
-          (x) => x,
-        ),
-      ),
-      element: map['element'] != null
-          ? List<int>.from((map['element'] as List<int>))
+      func: newFunc,
+      matrix: newMatrix,
+      element: newElement,
+      basis: newBasis,
+      answer: (map['answer'] != null)
+          ? map['answer'].toString().toFraction()
           : null,
-      basis: map['basis'] != null
-          ? List<Fraction>.from((map['basis'] as List<Fraction>))
-          : null,
-      answer: map['answer'] != null ? map['answer'] as Fraction : null,
     );
   }
 
