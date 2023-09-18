@@ -91,8 +91,7 @@ class StepPage extends StatelessWidget {
                     : step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
-            color: (step.element!.first == i + 1 &&
-                    step.element!.last == j) //TODO fix when page switching
+            color: (step.element!.first == i + 1 && step.element!.last == j)
                 ? Colors.indigo.shade300
                 : (j != step.matrix[i + 1].length - 1 &&
                         step.isElementSupport(i + 1, j))
@@ -153,10 +152,6 @@ class StepPage extends StatelessWidget {
           context.read<MainBloc>().add(MainChangeElementEvent(
               (step.basis != null) ? 2 : 1,
               newElem: [i, j]));
-          // setState(() {
-          //   // TODO add functionality and changing step
-          //   _activeElement = [i, j];
-          // });
         }
       },
       child: ColoredBox(
