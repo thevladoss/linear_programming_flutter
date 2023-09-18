@@ -540,8 +540,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
       if (i == nextData.matrix[0].length - 1) {
         nextData = nextData.copyWith(
-            answer:
-                -1 * nextData.matrix[nextData.matrix.length - 1][i].toDouble(),
+            answer: ((-1).toFraction() *
+                    nextData.matrix[nextData.matrix.length - 1][i])
+                .reduce(),
             basis: []);
         for (int i = 1; i <= nextData.func.length; i++) {
           for (int j = 1; j < nextData.matrix.length - 1; j++) {
