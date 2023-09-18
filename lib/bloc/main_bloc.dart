@@ -232,11 +232,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       [0.toFraction()]
     ]);
     try {
+      _error = '';
       for (int i = 1; i <= _task.vars; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
         if (_task.func[i] == 0.toString()) {
-          _error = 'incorrectTaskData';
-          break;
+          throw 'Функция не может содержать нули';
         }
         startData.func[i] = Fraction.fromString(_task.func[i]!);
         if (_task.funcType == FuncType.max) {
@@ -253,7 +253,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       for (int i = 1; i < startData.matrix.length; i++) {
         if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
             0) {
-          _error = 'incorrectTaskData';
+          throw 'Значения b не могут быть отрицательными';
         }
       }
       if (_task.basis.contains(true)) {
@@ -290,7 +290,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           }
         }
         if (basisCount != startData.matrix.length - 1) {
-          _error = 'incorrectBasis';
+          throw 'Количество зависимых переменных должно равнятся количеству ограничений';
         }
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i].insert(0, 0.toFraction().reduce());
@@ -378,7 +378,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
       }
-      if (startData.getPossibleElements().length > 0) {
+      if (startData.getPossibleElements().isNotEmpty) {
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
       } else {
