@@ -83,7 +83,7 @@ class Task {
     return <String, dynamic>{
       'vars': vars,
       'limits': limits,
-      'func': func.toString(),
+      'func': {for (int k in func.keys) k.toString(): func[k]},
       'matrix': matrix,
       'basis': basis,
       'numberType': numberType.toString().split('.')[1],
