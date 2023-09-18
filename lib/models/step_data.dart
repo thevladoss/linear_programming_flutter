@@ -195,7 +195,7 @@ class StepData {
       this.element,
       this.basis,
       this.answer,
-      required this.isAnswerExist});
+      this.isAnswerExist = true});
 
   StepData copyWith({
     Map<int, Fraction>? func,
@@ -203,6 +203,7 @@ class StepData {
     List<int>? element,
     List<Fraction>? basis,
     Fraction? answer,
+    bool? isAnswerExist,
   }) {
     return StepData(
         func: func ?? this.func,
@@ -229,7 +230,8 @@ class StepData {
       'basis': (basis != null)
           ? List.generate(basis!.length, (i) => basis![i].toString())
           : null,
-      'answer': (answer != null) ? answer.toString() : null
+      'answer': (answer != null) ? answer.toString() : null,
+      'isAnswerExist': isAnswerExist,
     };
   }
 
@@ -272,6 +274,7 @@ class StepData {
       answer: (map['answer'] != null)
           ? map['answer'].toString().toFraction()
           : null,
+      isAnswerExist: map['isAnswerExist'],
     );
   }
 
@@ -282,7 +285,7 @@ class StepData {
 
   @override
   String toString() {
-    return 'StepData(func: $func, matrix: $matrix, element: $element, basis: $basis, answer: $answer)';
+    return 'StepData(func: $func, matrix: $matrix, element: $element, basis: $basis, answer: $answer, isAnswerExist: $isAnswerExist)';
   }
 
   @override
@@ -293,7 +296,8 @@ class StepData {
         listEquals(other.matrix, matrix) &&
         listEquals(other.element, element) &&
         listEquals(other.basis, basis) &&
-        other.answer == answer;
+        other.answer == answer &&
+        other.isAnswerExist == isAnswerExist;
   }
 
   @override
@@ -302,7 +306,8 @@ class StepData {
         matrix.hashCode ^
         element.hashCode ^
         basis.hashCode ^
-        answer.hashCode;
+        answer.hashCode ^
+        isAnswerExist.hashCode;
   }
 
   bool isElementSupport(int line, int column) {
