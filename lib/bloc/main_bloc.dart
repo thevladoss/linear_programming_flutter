@@ -544,9 +544,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         break;
       }
       if (i == nextData.matrix[0].length - 1) {
-        if (nextData.basis == null) {
-          print('s');
-        }
         nextData = nextData.copyWith(
             answer: ((-1).toFraction() *
                     nextData.matrix[nextData.matrix.length - 1][i])
