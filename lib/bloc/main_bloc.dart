@@ -271,7 +271,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   StepData? _toStepData() {
-    //TODO check basis
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
     ], element: [
