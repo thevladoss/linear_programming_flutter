@@ -402,11 +402,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         startData.element = [0, 0];
       }
     } on FractionException {
-      _error =
-          'Неверный базис. Попробуйте изменить базис или поменять ограничения';
+      _error = 'Неверный ввод данных';
       return null;
     } on RangeError {
       _error = 'Неверный базис';
+      return null;
+    } on FormatException {
+      _error = 'Ввод задания возможен только обычными дробями';
       return null;
     } catch (e) {
       _error = e.toString();
