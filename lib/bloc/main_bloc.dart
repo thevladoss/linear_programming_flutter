@@ -403,7 +403,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } else {
         startData.element = [0, 0];
       }
-      print(startData);
     } catch (e) {
       _error = e.toString();
       return null;
