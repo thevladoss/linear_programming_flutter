@@ -212,7 +212,7 @@ class StepData {
       'basis': (basis != null)
           ? List.generate(basis!.length, (i) => basis![i].toString())
           : null,
-      'answer': answer,
+      'answer': answer.toString(),
     };
   }
 

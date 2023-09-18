@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -212,8 +215,32 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: () {
-            debugPrint(context.read<MainBloc>().task.toJson());
+          onPressed: () async {
+            var task = context.read<MainBloc>().task;
+            if (task.getIndexOfAnswer() != 0) {
+              String fileName =
+                  'task_${DateTime.now().millisecondsSinceEpoch}.json';
+              final FileSaveLocation? result =
+                  await getSaveLocation(suggestedName: fileName);
+              if (result == null) {
+                return;
+              }
+
+              final Uint8List fileData =
+                  Uint8List.fromList(task.toJson().codeUnits);
+              const String mimeType = 'application/json';
+              final XFile textFile =
+                  XFile.fromData(fileData, mimeType: mimeType, name: fileName);
+              await textFile.saveTo(result.path);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+                  content: Text('Задачу необходимо решить до конца'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
           },
           child: const Icon(Icons.upload),
         ),
