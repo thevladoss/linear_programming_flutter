@@ -10,12 +10,18 @@ part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
   final Task _task = Task(
-    func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
+    //func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
+    func: {1: '-5', 2: '-4', 3: '-3', 4: '-2', 5: '3'},
     matrix: [
+      ['2', '1', '1', '1', '-1', '3'],
+      ['1', '-1', '0', '1', '1', '1'],
+      ['-2', '-1', '-1', '1', '0', '1']
+    ],
+    /*matrix: [
       ['0', '0', '0', '0', '0', '0'],
       ['0', '0', '0', '0', '0', '0'],
       ['0', '0', '0', '0', '0', '0']
-    ],
+    ],*/
     basis: [false, false, false, false, false],
     numberType: NumberType.fraction,
     funcType: FuncType.min,
@@ -71,58 +77,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (firstStep == null) {
           _showError(event.context);
         } else {
-          // _task.addStep(firstStep);
-          _task.addStep(
-            nextStep(
-              StepData(func: {
-                1: (-5).toFraction(),
-                2: (-4).toFraction(),
-                3: (-3).toFraction(),
-                4: (-2).toFraction(),
-                5: 3.toFraction()
-              }, matrix: [
-                [
-                  0.toFraction(),
-                  1.toFraction(),
-                  2.toFraction(),
-                  3.toFraction(),
-                  4.toFraction(),
-                  5.toFraction(),
-                  0.toFraction()
-                ],
-                [
-                  6.toFraction(),
-                  2.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  3.toFraction()
-                ],
-                [
-                  7.toFraction(),
-                  1.toFraction(),
-                  (-1).toFraction(),
-                  0.toFraction(),
-                  1.toFraction(),
-                  1.toFraction(),
-                  1.toFraction()
-                ],
-                [
-                  8.toFraction(),
-                  (-2).toFraction(),
-                  (-1).toFraction(),
-                  (-1).toFraction(),
-                  1.toFraction(),
-                  0.toFraction(),
-                  1.toFraction()
-                ],
-              ], element: [
-                0,
-                0
-              ]),
-            ),
-          );
+          _task.addStep(firstStep);
 
           add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
           if (_task.answerType == AnswerType.auto) {
@@ -274,9 +229,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     //TODO check basis
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
-    ], element: [
-      0,
-      0
     ]);
     try {
       for (int i = 1; i <= _task.vars; i++) {
@@ -517,36 +469,36 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       } else {*/
       nextData.matrix[0][0] += 1.toFraction();
-      Fraction swap = nextData.matrix[0][nextData.element[1]];
-      nextData.matrix[0][nextData.element[1]] =
-          nextData.matrix[nextData.element[0]][0];
-      nextData.matrix[nextData.element[0]][0] = swap;
-      nextData.matrix[nextData.element[0]][nextData.element[1]] =
-          nextData.matrix[nextData.element[0]][nextData.element[1]].inverse();
-      for (int i = 1; i < nextData.matrix[nextData.element[0]].length; i++) {
-        if (i != nextData.element[1]) {
-          nextData.matrix[nextData.element[0]][i] *=
-              nextData.matrix[nextData.element[0]][nextData.element[1]];
+      Fraction swap = nextData.matrix[0][nextData.element![1]];
+      nextData.matrix[0][nextData.element![1]] =
+          nextData.matrix[nextData.element![0]][0];
+      nextData.matrix[nextData.element![0]][0] = swap;
+      nextData.matrix[nextData.element![0]][nextData.element![1]] =
+          nextData.matrix[nextData.element![0]][nextData.element![1]].inverse();
+      for (int i = 1; i < nextData.matrix[nextData.element![0]].length; i++) {
+        if (i != nextData.element![1]) {
+          nextData.matrix[nextData.element![0]][i] *=
+              nextData.matrix[nextData.element![0]][nextData.element![1]];
         }
-        nextData.matrix[nextData.element[0]][i] =
-            nextData.matrix[nextData.element[0]][i].reduce();
+        nextData.matrix[nextData.element![0]][i] =
+            nextData.matrix[nextData.element![0]][i].reduce();
       }
       for (int x = 1; x < nextData.matrix.length; x++) {
         for (int y = 1; y < nextData.matrix[x].length; y++) {
-          if (x != nextData.element[0] && y != nextData.element[1]) {
-            nextData.matrix[x][y] -= nextData.matrix[x][nextData.element[1]] *
-                nextData.matrix[nextData.element[0]][y];
+          if (x != nextData.element![0] && y != nextData.element![1]) {
+            nextData.matrix[x][y] -= nextData.matrix[x][nextData.element![1]] *
+                nextData.matrix[nextData.element![0]][y];
             nextData.matrix[x][y] = nextData.matrix[x][y].reduce();
           }
         }
       }
       for (int i = 1; i < nextData.matrix.length; i++) {
-        if (i != nextData.element[0]) {
-          nextData.matrix[i][nextData.element[1]] *= (-1).toFraction() *
-              nextData.matrix[nextData.element[0]][nextData.element[1]];
+        if (i != nextData.element![0]) {
+          nextData.matrix[i][nextData.element![1]] *= (-1).toFraction() *
+              nextData.matrix[nextData.element![0]][nextData.element![1]];
         }
-        nextData.matrix[i][nextData.element[1]] =
-            nextData.matrix[i][nextData.element[1]].reduce();
+        nextData.matrix[i][nextData.element![1]] =
+            nextData.matrix[i][nextData.element![1]].reduce();
       }
       for (int i = 1; i < nextData.matrix[0].length; i++) {
         if (nextData.matrix[0][i].toDouble() > nextData.func.length) {
@@ -574,8 +526,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                     nextData.basis != null)) {
               elementValue = nextData.matrix[j][nextData.matrix[0].length - 1] /
                   nextData.matrix[j][i];
-              nextData.element[0] = j;
-              nextData.element[1] = i;
+              nextData.element![0] = j;
+              nextData.element![1] = i;
             }
           }
         }
