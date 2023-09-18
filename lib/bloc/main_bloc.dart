@@ -117,7 +117,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           ],
         )));
 
-        add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+        add(MainSwitchPageEvent(
+            index: (_task.steps[_currentStep].basis != null) ? 2 : 1,
+            step: _task.steps[_currentStep]));
       } else if (event is MainNextStepEvent) {
         _currentStep++;
 
