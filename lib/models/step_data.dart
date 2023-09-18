@@ -198,7 +198,7 @@ class StepData {
       newMatrix.add(newList);
     }
     return <String, dynamic>{
-      'func': func.toString(),
+      'func': {for (int k in func.keys) k.toString(): func[k].toString()},
       'matrix': newMatrix,
       'element': element,
       'basis': (basis != null)
