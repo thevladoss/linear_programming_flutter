@@ -267,12 +267,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           throw ('Незаполнено ограничение ' + i.toString());
         }
       }
-      for (int i = 1; i < startData.matrix.length; i++) {
-        if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
-            0) {
-          throw 'Значения b не могут быть отрицательными';
-        }
-      }
       if (_task.basis.contains(true)) {
         startData = startData.copyWith(basis: []);
         for (int i = 0; i < _task.basis.length; i++) {
@@ -284,6 +278,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       }
       if (startData.basis == null) {
+        for (int i = 1; i < startData.matrix.length; i++) {
+          if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
+              0) {
+            throw 'Значения b не могут быть отрицательными';
+          }
+        }
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i]
               .insert(0, (_task.func.length + i).toFraction().reduce());
@@ -550,7 +550,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       }
     }
-
+    for (int i = 1; i < nextData.matrix.length - 1; i++) {
+      double lineSum = nextData.matrix[i]
+          .fold(0, (previous, current) => previous + current.toDouble().abs());
+      if (lineSum == nextData.matrix[i][0].toDouble() &&
+          nextData.matrix[i][0].toDouble() > nextData.func.length) {
+        nextData.matrix.removeAt(i);
+        i -= 1;
+      }
+    }
     for (int i = 1; i < nextData.matrix[0].length; i++) {
       if (i < nextData.matrix[0].length - 1) {
         if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction()) {
