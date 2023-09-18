@@ -12,7 +12,7 @@ Future<void> main() async {
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(1000, 500));
-    WindowManager.instance.setTitle('Linear solver');
+    WindowManager.instance.setTitle('Решение задач линейного программирования');
   }
   runApp(
     Phoenix(
