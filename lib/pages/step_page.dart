@@ -28,9 +28,9 @@ class StepPage extends StatelessWidget {
             height: 10,
           ),
           Text(
-            (step.element.first == 0 || step.element.last == 0)
+            (step.element!.first == 0 || step.element!.last == 0)
                 ? 'Опорный элемент не найден'
-                : 'Опорный элемент: ${step.matrix[step.element.first][step.element.last]}',
+                : 'Опорный элемент: ${step.matrix[step.element!.first][step.element!.last]}',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           (step.basis != null)
