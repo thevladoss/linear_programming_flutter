@@ -24,18 +24,19 @@ class StepPage extends StatelessWidget {
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Text(
-            'Опорный элемент: ${step.matrix[step.element!.first][step.element!.last]}',
-          ),
-          SizedBox(
-            height: (step.basis != null) ? 10 : 0,
+            (step.element!.first == 0 || step.element!.last == 0)
+                ? 'Опорный элемент не найден'
+                : 'Опорный элемент: ${step.matrix[step.element!.first][step.element!.last]}',
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           (step.basis != null)
               ? Text(
-                  'Базис ${step.basis}',
+                  'Базис: ${step.basis.toString().replaceAll('[', '<').replaceAll(']', '>')}',
+                  style: Theme.of(context).textTheme.bodyLarge,
                 )
               : const SizedBox(),
           const SizedBox(

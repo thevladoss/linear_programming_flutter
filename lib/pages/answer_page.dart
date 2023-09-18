@@ -24,7 +24,19 @@ class AnswerPage extends StatelessWidget {
                 .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
-          Text(step.answer!.toString()),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            'Ответ: ${step.answer}',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          (step.basis != null)
+              ? Text(
+                  'Базис: ${step.basis.toString().replaceAll('[', '<').replaceAll(']', '>')}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                )
+              : const SizedBox(),
           const SizedBox(
             height: 20,
           ),
