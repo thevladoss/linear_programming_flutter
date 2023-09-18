@@ -70,7 +70,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           _showError(event.context);
         } else {
           _task.addStep(firstStep);
-          add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+
+          add(MainSwitchPageEvent(
+              index: (_task.steps[_currentStep].basis != null) ? 2 : 1,
+              step: _task.steps[_currentStep]));
         }
         /*_task.addStep(nextStep(StepData(
           func: {
@@ -470,6 +473,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                         entry.key == nextData.matrix[i][0].toDouble().toInt())
                     .value;
       }
+      nextData.matrix[nextData.matrix.length - 1]
+              [nextData.matrix[0].length - 1] =
+          nextData.matrix[nextData.matrix.length - 1]
+                  [nextData.matrix[0].length - 1]
+              .reduce();
       nextData.matrix[0][0] = 0.toFraction();
     } else {
       if (nextData.matrix[nextData.matrix.length - 1][0].toDouble() != 0) {
