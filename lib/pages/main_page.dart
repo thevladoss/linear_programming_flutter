@@ -181,8 +181,9 @@ class _MainPageState extends State<MainPage> {
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.three),
-        disabled: (context.read<MainBloc>().task.getIndexOfAnswer() == 0),
-        label: const Text('Решение'),
+        disabled: (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
+            context.read<MainBloc>().task.isAnswerExist()),
+        label: const Text('Ответ'),
       ),
       const NavigationRailDestination(
         disabled: true,

@@ -18,7 +18,7 @@ class AnswerPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Решение',
+            'Ответ',
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
@@ -30,7 +30,7 @@ class AnswerPage extends StatelessWidget {
           Text(
             (!step.isAnswerExist)
                 ? 'Решения не существует'
-                : 'Ответ: ${step.answer}',
+                : 'Решение: ${step.answer}',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           (step.basis != null && step.isAnswerExist)

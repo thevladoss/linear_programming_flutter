@@ -49,6 +49,14 @@ class Task {
     return true;
   }
 
+  bool isAnswerExist() {
+    for (StepData step in steps) {
+      if (step.isAnswerExist == false) return false;
+    }
+    if (steps.isEmpty) return true;
+    return true;
+  }
+
   int getIndexOfBasis() {
     for (StepData step in steps) {
       if (step.basis != null) return steps.indexOf(step);
@@ -59,6 +67,7 @@ class Task {
   int getIndexOfAnswer() {
     for (StepData step in steps) {
       if (step.answer != null) return steps.indexOf(step);
+      if (step.isAnswerExist == false) return steps.indexOf(step);
     }
     return 0;
   }
