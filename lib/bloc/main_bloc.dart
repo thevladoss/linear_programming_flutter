@@ -64,12 +64,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           emit(MainGraphState());
         }
       } else if (event is MainCheckTaskEvent) {
-        // StepData? firstStep = _toStepData();
+        StepData? firstStep = _toStepData();
 
-        // if (firstStep == null) {
-        //   _showError(event.context);
-        // } else {}
-        _task.addStep(nextStep(StepData(
+        if (firstStep == null) {
+          _showError(event.context);
+        } else {
+          _task.addStep(firstStep);
+        }
+        /*_task.addStep(nextStep(StepData(
           func: {
             1: (-5).toFraction(),
             2: (-4).toFraction(),
@@ -115,7 +117,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               1.toFraction()
             ],
           ],
-        )));
+        )));*/
 
         add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
       } else if (event is MainNextStepEvent) {
@@ -283,6 +285,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i]
               .insert(0, (_task.func.length + i).toFraction().reduce());
+        }
+        startData.matrix.add([0.toFraction()]);
+        for (int i = 1; i < startData.matrix[0].length; i++) {
+          Fraction sum = 0.toFraction();
+          for (int j = 1; j < startData.matrix.length - 1; j++) {
+            sum += startData.matrix[j][i];
+          }
+          startData.matrix[startData.matrix.length - 1]
+              .add((-1).toFraction() * sum);
         }
       } else {
         int basisCount = 0;
