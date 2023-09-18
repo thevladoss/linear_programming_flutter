@@ -251,6 +251,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
       }
       for (int i = 1; i < startData.matrix.length; i++) {
+        double sum = 0;
+        for (int j = 0; j < startData.matrix[0].length - 2; j++) {
+          sum += startData.matrix[i][j].toDouble().abs();
+        }
+        if (sum == 0) {
+          throw ('Незаполнено ограничение ' + i.toString());
+        }
+      }
+      for (int i = 1; i < startData.matrix.length; i++) {
         if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
             0) {
           throw 'Значения b не могут быть отрицательными';
@@ -458,17 +467,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               .reduce();
       nextData.matrix[0][0] = 0.toFraction();
     } else {
-      /*if (nextData.matrix[nextData.matrix.length - 1][0].toDouble() != 0) {
-        nextData.matrix.add([0.toFraction()]);
-        for (int i = 1; i < nextData.matrix[0].length; i++) {
-          Fraction sum = 0.toFraction();
-          for (int j = 1; j < nextData.matrix.length - 1; j++) {
-            sum += nextData.matrix[j][i];
-          }
-          nextData.matrix[nextData.matrix.length - 1]
-              .add((-1).toFraction() * sum);
-        }
-      } else {*/
       nextData.matrix[0][0] += 1.toFraction();
       Fraction swap = nextData.matrix[0][nextData.element![1]];
       nextData.matrix[0][nextData.element![1]] =
@@ -509,7 +507,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           break;
         }
       }
-      //}
     }
     Fraction elementValue = 0.toFraction();
     nextData = nextData.copyWith(element: [0, 0]);
