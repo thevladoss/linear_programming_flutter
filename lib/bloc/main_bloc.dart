@@ -70,6 +70,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           _showError(event.context);
         } else {
           _task.addStep(firstStep);
+          add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
         }
         /*_task.addStep(nextStep(StepData(
           func: {
@@ -118,8 +119,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             ],
           ],
         )));*/
-
-        add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
       } else if (event is MainNextStepEvent) {
         _currentStep++;
 
@@ -396,6 +395,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
+      }
+      if (startData.getPossibleElements().length > 0) {
+        startData =
+            startData.copyWith(element: startData.getPossibleElements()[0]);
+      } else {
+        startData.element = [0, 0];
       }
       print(startData);
     } catch (e) {
