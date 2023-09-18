@@ -29,8 +29,9 @@ final class MainChangeElementEvent extends MainEvent {
 
 final class MainReloadAppEvent extends MainEvent {
   final BuildContext context;
+  final Task? newTask;
 
-  MainReloadAppEvent({required this.context});
+  MainReloadAppEvent({required this.context, this.newTask});
 }
 
 final class MainShowHelpEvent extends MainEvent {

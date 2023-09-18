@@ -265,9 +265,22 @@ class _MainPageState extends State<MainPage> {
               return;
             }
 
-            Task task = Task.fromJson(await file.readAsString());
-
-            debugPrint(task.toString());
+            file.readAsString().then((value) {
+              try {
+                Task task = Task.fromJson(value);
+                context
+                    .read<MainBloc>()
+                    .add(MainReloadAppEvent(context: context, newTask: task));
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+                    content: Text('Ошибка! Файл не является решением задачи'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            });
           },
           child: const Icon(Icons.download),
         ),
