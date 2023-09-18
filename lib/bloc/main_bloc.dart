@@ -26,11 +26,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   );
 
   int _currentStep = 0;
+  bool _isAnimation = false;
 
   String _error = '';
 
   get currentStep => _currentStep;
   get task => _task;
+  get isAnimation => _isAnimation;
 
   MainBloc() : super(MainTaskState()) {
     on<MainEvent>((event, emit) {
@@ -119,6 +121,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           )));
 
           add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+          if (_task.answerType == AnswerType.auto) {
+            _isAnimation = true;
+            Future.delayed(const Duration(seconds: 1), () {
+              add(MainNextStepEvent());
+            });
+          }
         }
       } else if (event is MainNextStepEvent) {
         _currentStep++;
@@ -132,11 +140,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         _currentStep--;
 
         _updateWhenSwitchStep();
-      } else if (event is MainChangeElementEvent) {
-        debugPrint(_task.steps.toString());
+      } else if (event is MainChangeElementEvent && !_isAnimation) {
         _task.steps[_currentStep].element = event.newElem;
         _task.removeStep(_currentStep + 1, _task.steps.length);
-        debugPrint(_task.steps.toString());
 
         add(MainSwitchPageEvent(
             index: event.index, step: _task.steps[_currentStep]));
@@ -152,11 +158,22 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     if (_task.steps[_currentStep].basis != null &&
         _task.steps[_currentStep].answer == null) {
       add(MainSwitchPageEvent(index: 2, step: _task.steps[_currentStep]));
+      if (_task.answerType == AnswerType.auto && _isAnimation) {
+        Future.delayed(const Duration(seconds: 1), () {
+          add(MainNextStepEvent());
+        });
+      }
     } else if (_task.steps[_currentStep].basis != null &&
         _task.steps[_currentStep].answer != null) {
+      _isAnimation = false;
       add(MainSwitchPageEvent(index: 3, step: _task.steps[_currentStep]));
     } else {
       add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+      if (_task.answerType == AnswerType.auto && _isAnimation) {
+        Future.delayed(const Duration(seconds: 1), () {
+          add(MainNextStepEvent());
+        });
+      }
     }
   }
 

@@ -50,12 +50,14 @@ class _MainPageState extends State<MainPage> {
                   selectedIndex: _selectedIndex,
                   groupAlignment: 0,
                   onDestinationSelected: (int index) {
-                    setState(() {
-                      _selectedIndex = index;
-                      context
-                          .read<MainBloc>()
-                          .add(MainSwitchPageEvent(index: _selectedIndex));
-                    });
+                    if (!context.read<MainBloc>().isAnimation) {
+                      setState(() {
+                        _selectedIndex = index;
+                        context
+                            .read<MainBloc>()
+                            .add(MainSwitchPageEvent(index: _selectedIndex));
+                      });
+                    }
                   },
                   labelType: NavigationRailLabelType.selected,
                   leading: _buildActionButton(context),
@@ -94,23 +96,24 @@ class _MainPageState extends State<MainPage> {
         (_selectedIndex != 0)
             ? FloatingActionButton.small(
                 onPressed: () {
-                  switch (_selectedIndex) {
-                    case 1:
-                      if (context.read<MainBloc>().currentStep == 0) {
-                        context
-                            .read<MainBloc>()
-                            .add(MainSwitchPageEvent(index: 0));
-                      } else {
+                  if (!context.read<MainBloc>().isAnimation) {
+                    switch (_selectedIndex) {
+                      case 1:
+                        if (context.read<MainBloc>().currentStep == 0) {
+                          context
+                              .read<MainBloc>()
+                              .add(MainSwitchPageEvent(index: 0));
+                        } else {
+                          context.read<MainBloc>().add(MainPrevStepEvent());
+                        }
+                        break;
+                      case 2:
                         context.read<MainBloc>().add(MainPrevStepEvent());
-                      }
-                      break;
-                    case 2:
-                      context.read<MainBloc>().add(MainPrevStepEvent());
-                      break;
-                    case 3:
-                      context.read<MainBloc>().add(MainPrevStepEvent());
-                      break;
-                    default:
+                        break;
+                      case 3:
+                        context.read<MainBloc>().add(MainPrevStepEvent());
+                        break;
+                    }
                   }
                 },
                 child: const Icon(Icons.navigate_before),
@@ -122,19 +125,20 @@ class _MainPageState extends State<MainPage> {
         (_selectedIndex != 3)
             ? FloatingActionButton.small(
                 onPressed: () {
-                  switch (_selectedIndex) {
-                    case 0:
-                      context
-                          .read<MainBloc>()
-                          .add(MainCheckTaskEvent(context: context));
-                      break;
-                    case 1:
-                      context.read<MainBloc>().add(MainNextStepEvent());
-                      break;
-                    case 2:
-                      context.read<MainBloc>().add(MainNextStepEvent());
-                      break;
-                    default:
+                  if (!context.read<MainBloc>().isAnimation) {
+                    switch (_selectedIndex) {
+                      case 0:
+                        context
+                            .read<MainBloc>()
+                            .add(MainCheckTaskEvent(context: context));
+                        break;
+                      case 1:
+                        context.read<MainBloc>().add(MainNextStepEvent());
+                        break;
+                      case 2:
+                        context.read<MainBloc>().add(MainNextStepEvent());
+                        break;
+                    }
                   }
                 },
                 child: const Icon(Icons.navigate_next),
