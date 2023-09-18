@@ -558,7 +558,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             0, (previous, current) => previous + current.toDouble().abs());
         if (nextData.basis == null) {
           if (s > 0) {
-            print('s');
+            nextData = nextData.copyWith(isAnswerExist: false);
             _error = 'Нет решения';
           }
         } else {
