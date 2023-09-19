@@ -22,5 +22,3 @@ final class MainAnswerState extends MainState {
 
   MainAnswerState({required this.step});
 }
-
-final class MainGraphState extends MainState {}

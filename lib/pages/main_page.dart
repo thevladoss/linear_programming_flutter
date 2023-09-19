@@ -4,7 +4,6 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
@@ -47,36 +46,79 @@ class _MainPageState extends State<MainPage> {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            body: Row(
-              children: [
-                NavigationRail(
-                  selectedIndex: _selectedIndex,
-                  groupAlignment: 0,
-                  onDestinationSelected: (int index) {
-                    if (!context.read<MainBloc>().isAnimation) {
-                      setState(() {
-                        _selectedIndex = index;
-                        context
-                            .read<MainBloc>()
-                            .add(MainSwitchPageEvent(index: _selectedIndex));
-                      });
-                    }
-                  },
-                  labelType: NavigationRailLabelType.selected,
-                  leading: _buildActionButton(context),
-                  destinations: _buildNavigationDestinations(context),
-                ),
-                const VerticalDivider(thickness: 1, width: 1),
-                Expanded(
-                  child: _buildPage(context, state),
-                )
-              ],
-            ),
-            floatingActionButton: _buildMoveButtons(context),
-          );
+          if (MediaQuery.of(context).size.width <= 500) {
+            return _buildMobileView(context, state);
+          } else {
+            return _buildDesktopView(context, state);
+          }
         },
       ),
+    );
+  }
+
+  Scaffold _buildMobileView(BuildContext context, MainState state) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton.filledTonal(
+            onPressed: () {
+              context
+                  .read<MainBloc>()
+                  .add(MainReloadAppEvent(context: context));
+            },
+            icon: const FaIcon(Icons.delete_outline),
+          ),
+          IconButton.filledTonal(
+            onPressed: () {
+              context
+                  .read<MainBloc>()
+                  .add(MainReloadAppEvent(context: context));
+            },
+            icon: const FaIcon(Icons.delete_outline),
+          ),
+          IconButton.filledTonal(
+            onPressed: () {
+              context
+                  .read<MainBloc>()
+                  .add(MainReloadAppEvent(context: context));
+            },
+            icon: const FaIcon(Icons.delete_outline),
+          ),
+        ],
+      ),
+      body: _buildPage(context, state),
+      floatingActionButton: _buildMoveButtons(context),
+    );
+  }
+
+  Scaffold _buildDesktopView(BuildContext context, MainState state) {
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            groupAlignment: 0,
+            onDestinationSelected: (int index) {
+              if (!context.read<MainBloc>().isAnimation) {
+                setState(() {
+                  _selectedIndex = index;
+                  context
+                      .read<MainBloc>()
+                      .add(MainSwitchPageEvent(index: _selectedIndex));
+                });
+              }
+            },
+            labelType: NavigationRailLabelType.selected,
+            leading: _buildActionButton(context),
+            destinations: _buildNavigationDestinations(context),
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(
+            child: _buildPage(context, state),
+          )
+        ],
+      ),
+      floatingActionButton: _buildMoveButtons(context),
     );
   }
 
@@ -184,14 +226,6 @@ class _MainPageState extends State<MainPage> {
         disabled: (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
             context.read<MainBloc>().task.isAnswerExist()),
         label: const Text('Ответ'),
-      ),
-      const NavigationRailDestination(
-        disabled: true,
-        icon: Icon(
-          Icons.show_chart,
-          size: 30,
-        ),
-        label: Text('График'),
       ),
     ];
   }
@@ -311,8 +345,6 @@ class _MainPageState extends State<MainPage> {
       return StepPage(step: state.step);
     } else if (state is MainAnswerState) {
       return AnswerPage(step: state.step);
-    } else if (state is MainGraphState) {
-      return const GraphPage();
     } else {
       return const TaskPage();
     }

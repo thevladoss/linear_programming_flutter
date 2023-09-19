@@ -10,12 +10,18 @@ part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
   Task _task = Task(
-    func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
+//func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
+    func: {1: '-5', 2: '-4', 3: '-3', 4: '-2', 5: '3'},
     matrix: [
+      ['2', '1', '1', '1', '-1', '3'],
+      ['1', '-1', '0', '1', '1', '1'],
+      ['-2', '-1', '-1', '1', '0', '1']
+    ],
+    /*matrix: [
       ['0', '0', '0', '0', '0', '0'],
       ['0', '0', '0', '0', '0', '0'],
       ['0', '0', '0', '0', '0', '0']
-    ],
+    ],*/
     basis: [false, false, false, false, false],
     numberType: NumberType.fraction,
     funcType: FuncType.min,
@@ -62,8 +68,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           } else {
             emit(MainAnswerState(step: event.step!));
           }
-        } else {
-          emit(MainGraphState());
         }
       } else if (event is MainCheckTaskEvent) {
         StepData? firstStep = _toStepData();

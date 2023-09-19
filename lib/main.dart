@@ -36,7 +36,10 @@ class MainApp extends StatelessWidget {
         },
       ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo,
+        useMaterial3: true,
+      ),
       home: MainPage(),
     );
   }
