@@ -19,10 +19,9 @@ class AnswerPage extends StatelessWidget {
         children: [
           Text(
             'Ответ',
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium!
-                .copyWith(fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 22, 126, 25)),
           ),
           const SizedBox(
             height: 10,
@@ -31,12 +30,18 @@ class AnswerPage extends StatelessWidget {
             (!step.isAnswerExist)
                 ? 'Решения не существует'
                 : 'Решение: ${step.answer}',
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: Color.fromARGB(255, 174, 59, 219)),
           ),
           (step.basis != null && step.isAnswerExist)
               ? Text(
                   'Базис: ${step.basis.toString().replaceAll('[', '<').replaceAll(']', '>')}',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Color.fromARGB(255, 174, 59, 219)),
                 )
               : const SizedBox(),
           const SizedBox(

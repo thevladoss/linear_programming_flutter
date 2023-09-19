@@ -19,10 +19,9 @@ class StepPage extends StatelessWidget {
         children: [
           Text(
             'Шаг ${step.matrix[0][0]}',
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium!
-                .copyWith(fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 22, 126, 25)),
           ),
           const SizedBox(
             height: 10,
@@ -31,7 +30,10 @@ class StepPage extends StatelessWidget {
             (step.element!.first == 0 || step.element!.last == 0)
                 ? 'Опорный элемент не найден'
                 : 'Опорный элемент: ${step.matrix[step.element!.first][step.element!.last]}',
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: Color.fromARGB(255, 174, 59, 219)),
           ),
           (step.basis != null)
               ? Text(
@@ -93,10 +95,10 @@ class StepPage extends StatelessWidget {
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
             color: (step.element!.first == i + 1 && step.element!.last == j)
-                ? Colors.indigo.shade300
+                ? Color.fromARGB(255, 155, 107, 194)
                 : (j != step.matrix[i + 1].length - 1 &&
                         step.isElementSupport(i + 1, j))
-                    ? Colors.indigo.shade100
+                    ? Color.fromARGB(255, 45, 214, 73)
                     : Colors.transparent,
             i: i + 1,
             j: j,
@@ -149,7 +151,7 @@ class StepPage extends StatelessWidget {
       required int j}) {
     return GestureDetector(
       onTap: () {
-        if (color == Colors.indigo.shade100) {
+        if (color == Color.fromARGB(255, 45, 214, 73)) {
           context.read<MainBloc>().add(MainChangeElementEvent(
               (step.basis != null) ? 2 : 1,
               newElem: [i, j]));
