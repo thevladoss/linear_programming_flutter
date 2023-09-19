@@ -5,10 +5,10 @@ import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
 
-part 'main_event.dart';
-part 'main_state.dart';
+part 'app_event.dart';
+part 'app_state.dart';
 
-class MainBloc extends Bloc<MainEvent, MainState> {
+class AppBloc extends Bloc<AppEvent, AppState> {
   Task _task = Task(
 //func: {1: '0', 2: '0', 3: '0', 4: '0', 5: '0'},
     func: {1: '-5', 2: '-4', 3: '-3', 4: '-2', 5: '3'},
@@ -40,36 +40,36 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   get task => _task;
   get isAnimation => _isAnimation;
 
-  MainBloc() : super(MainTaskState()) {
-    on<MainEvent>((event, emit) {
-      if (event is MainSwitchPageEvent) {
+  AppBloc() : super(AppTaskState()) {
+    on<AppEvent>((event, emit) {
+      if (event is AppSwitchPageEvent) {
         if (event.index == 0) {
           _currentStep = 0;
           _task.clear();
-          emit(MainTaskState());
+          emit(AppTaskState());
         } else if (event.index == 1) {
           if (event.step == null) {
             _currentStep = 0;
-            emit(MainBasisState(step: _task.steps.first));
+            emit(AppBasisState(step: _task.steps.first));
           } else {
-            emit(MainBasisState(step: event.step!));
+            emit(AppBasisState(step: event.step!));
           }
         } else if (event.index == 2) {
           if (event.step == null) {
             _currentStep = _task.getIndexOfBasis();
-            emit(MainSimplexState(step: _task.steps[_currentStep]));
+            emit(AppSimplexState(step: _task.steps[_currentStep]));
           } else {
-            emit(MainSimplexState(step: event.step!));
+            emit(AppSimplexState(step: event.step!));
           }
         } else if (event.index == 3) {
           if (event.step == null) {
             _currentStep = _task.getIndexOfAnswer();
-            emit(MainAnswerState(step: _task.steps[_currentStep]));
+            emit(AppAnswerState(step: _task.steps[_currentStep]));
           } else {
-            emit(MainAnswerState(step: event.step!));
+            emit(AppAnswerState(step: event.step!));
           }
         }
-      } else if (event is MainCheckTaskEvent) {
+      } else if (event is AppCheckTaskEvent) {
         StepData? firstStep = _toStepData();
 
         if (firstStep == null) {
@@ -77,17 +77,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           _task.addStep(firstStep);
 
-          add(MainSwitchPageEvent(
+          add(AppSwitchPageEvent(
               index: (_task.isBasisOnStart()) ? 2 : 1,
               step: _task.steps[_currentStep]));
           if (_task.answerType == AnswerType.auto) {
             _isAnimation = true;
             Future.delayed(const Duration(seconds: 1), () {
-              add(MainNextStepEvent());
+              add(AppNextStepEvent());
             });
           }
         }
-      } else if (event is MainNextStepEvent) {
+      } else if (event is AppNextStepEvent) {
         _currentStep++;
 
         if (_currentStep >= _task.steps.length) {
@@ -95,19 +95,19 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         }
 
         _updateWhenSwitchStep();
-      } else if (event is MainPrevStepEvent) {
+      } else if (event is AppPrevStepEvent) {
         _currentStep--;
 
         _updateWhenSwitchStep();
-      } else if (event is MainChangeElementEvent && !_isAnimation) {
+      } else if (event is AppChangeElementEvent && !_isAnimation) {
         _task.steps[_currentStep].element = event.newElem;
         _task.removeStep(_currentStep + 1, _task.steps.length);
 
-        add(MainSwitchPageEvent(
+        add(AppSwitchPageEvent(
             index: event.index, step: _task.steps[_currentStep]));
-      } else if (event is MainReloadAppEvent) {
+      } else if (event is AppReloadAppEvent) {
         _showRemoveDialog(event.context, event.newTask);
-      } else if (event is MainShowHelpEvent) {
+      } else if (event is AppShowHelpEvent) {
         _showHelpBottomSheet(event.context);
       }
     });
@@ -116,22 +116,22 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   _updateWhenSwitchStep() {
     if (_task.steps[_currentStep].basis != null &&
         _task.steps[_currentStep].answer == null) {
-      add(MainSwitchPageEvent(index: 2, step: _task.steps[_currentStep]));
+      add(AppSwitchPageEvent(index: 2, step: _task.steps[_currentStep]));
       if (_task.answerType == AnswerType.auto && _isAnimation) {
         Future.delayed(const Duration(seconds: 1), () {
-          add(MainNextStepEvent());
+          add(AppNextStepEvent());
         });
       }
     } else if ((_task.steps[_currentStep].basis != null &&
             _task.steps[_currentStep].answer != null) ||
         !_task.steps[_currentStep].isAnswerExist) {
       _isAnimation = false;
-      add(MainSwitchPageEvent(index: 3, step: _task.steps[_currentStep]));
+      add(AppSwitchPageEvent(index: 3, step: _task.steps[_currentStep]));
     } else {
-      add(MainSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
+      add(AppSwitchPageEvent(index: 1, step: _task.steps[_currentStep]));
       if (_task.answerType == AnswerType.auto && _isAnimation) {
         Future.delayed(const Duration(seconds: 1), () {
-          add(MainNextStepEvent());
+          add(AppNextStepEvent());
         });
       }
     }
@@ -173,7 +173,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
-                        'Количество перменных не превышает 16.\nKоличество ограничений строго меньше числа переменных.\nВводимые данные имеют следущие ограничения: все c <> 0, все b >= 0.\n\nИспользуйте боковые клавиши сверху для очистки, записи в файл и чтения из файла.\nИспользуйте боковые клавиши снизу для перемещения между этапами решения:\n   1 - для метода искусственного базиса\n   2 - основное решение\n   3 - финальный ответ\n\nВы можете выбрать зависимые переменные базиса.\nЕсли поля базиса останутся не заполненными, то задача будет решена методом искусственного базиса.\nПри введении базиса решение перейдёт сразу на 2 этап.\nИспользуйте автоматический режим для перехода сразу на 3 этап.\n\nИспользуйте стрелки для перемещения между шагами решения.',
+                        '1. Переменные и ограничения находятся в диапазоне от 1 до 16\n2. Kоличество ограничений строго меньше числа переменных\n3.Ограничения на вводимые данные: c != 0, b >= 0.\n\nДля очистки, записи в файл и чтения из файла используйте кнопки находяшиейся в меню сверху\nДля перемещения между этапами решения используйте кнопки, находящиейся справа снизу. Этапы:\n1. Метод искуственного базиса (может быть задан изначально)\n2. Решение задачи симплекс-методом\n3. Ответ\n\nЕсли поля базиса останутся не заполненными, то задача будет решена методом искусственного базиса\nПри введении базиса решение перейдёт сразу на 2 этап\n\nВ автоматическом режиме задача будет решена поэтапно',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
@@ -222,7 +222,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 if (task != null) {
                   _task = task;
                   _currentStep = _task.steps.length - 1;
-                  add(MainSwitchPageEvent(index: 3, step: _task.steps.last));
+                  add(AppSwitchPageEvent(index: 3, step: _task.steps.last));
                   Navigator.pop(context);
                 } else {
                   Phoenix.rebirth(context);

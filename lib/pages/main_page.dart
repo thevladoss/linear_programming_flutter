@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
-import '../bloc/main_bloc.dart';
+import '../bloc/app_bloc.dart';
 import '../models/step_data.dart';
 import 'answer_page.dart';
 
@@ -24,22 +24,22 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MainBloc(),
-      child: BlocConsumer<MainBloc, MainState>(
+      create: (context) => AppBloc(),
+      child: BlocConsumer<AppBloc, AppState>(
         listener: (context, state) {
-          if (state is MainTaskState && _selectedIndex != 0) {
+          if (state is AppTaskState && _selectedIndex != 0) {
             setState(() {
               _selectedIndex = 0;
             });
-          } else if (state is MainBasisState && _selectedIndex != 1) {
+          } else if (state is AppBasisState && _selectedIndex != 1) {
             setState(() {
               _selectedIndex = 1;
             });
-          } else if (state is MainSimplexState && _selectedIndex != 2) {
+          } else if (state is AppSimplexState && _selectedIndex != 2) {
             setState(() {
               _selectedIndex = 2;
             });
-          } else if (state is MainAnswerState && _selectedIndex != 3) {
+          } else if (state is AppAnswerState && _selectedIndex != 3) {
             setState(() {
               _selectedIndex = 3;
             });
@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Scaffold _buildMobileView(BuildContext context, MainState state) {
+  Scaffold _buildMobileView(BuildContext context, AppState state) {
     return Scaffold(
       appBar: AppBar(
         actions: _buildMobileActions(context),
@@ -64,22 +64,22 @@ class _MainPageState extends State<MainPage> {
       body: _buildPage(context, state),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
-          if (!context.read<MainBloc>().isAnimation) {
+          if (!context.read<AppBloc>().isAnimation) {
             if (index == 1 &&
-                (context.read<MainBloc>().task.steps.isEmpty ||
-                    context.read<MainBloc>().task.isBasisOnStart())) return;
+                (context.read<AppBloc>().task.steps.isEmpty ||
+                    context.read<AppBloc>().task.isBasisOnStart())) return;
             if (index == 2 &&
-                (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
-                    !context.read<MainBloc>().task.isBasisOnStart())) return;
+                (context.read<AppBloc>().task.getIndexOfBasis() == 0 &&
+                    !context.read<AppBloc>().task.isBasisOnStart())) return;
             if (index == 3 &&
-                (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
-                    context.read<MainBloc>().task.isAnswerExist())) return;
+                (context.read<AppBloc>().task.getIndexOfAnswer() == 0 &&
+                    context.read<AppBloc>().task.isAnswerExist())) return;
 
             setState(() {
               _selectedIndex = index;
               context
-                  .read<MainBloc>()
-                  .add(MainSwitchPageEvent(index: _selectedIndex));
+                  .read<AppBloc>()
+                  .add(AppSwitchPageEvent(index: _selectedIndex));
             });
           }
         },
@@ -100,8 +100,8 @@ class _MainPageState extends State<MainPage> {
       NavigationDestination(
         icon: FaIcon(
           FontAwesomeIcons.one,
-          color: (context.read<MainBloc>().task.steps.isEmpty ||
-                  context.read<MainBloc>().task.isBasisOnStart())
+          color: (context.read<AppBloc>().task.steps.isEmpty ||
+                  context.read<AppBloc>().task.isBasisOnStart())
               ? Colors.black26
               : Colors.black,
         ),
@@ -110,8 +110,8 @@ class _MainPageState extends State<MainPage> {
       NavigationDestination(
         icon: FaIcon(
           FontAwesomeIcons.two,
-          color: (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
-                  !context.read<MainBloc>().task.isBasisOnStart())
+          color: (context.read<AppBloc>().task.getIndexOfBasis() == 0 &&
+                  !context.read<AppBloc>().task.isBasisOnStart())
               ? Colors.black26
               : Colors.black,
         ),
@@ -120,8 +120,8 @@ class _MainPageState extends State<MainPage> {
       NavigationDestination(
         icon: FaIcon(
           FontAwesomeIcons.three,
-          color: (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
-                  context.read<MainBloc>().task.isAnswerExist())
+          color: (context.read<AppBloc>().task.getIndexOfAnswer() == 0 &&
+                  context.read<AppBloc>().task.isAnswerExist())
               ? Colors.black26
               : Colors.black,
         ),
@@ -134,7 +134,7 @@ class _MainPageState extends State<MainPage> {
     return [
       IconButton.filledTonal(
         onPressed: () {
-          context.read<MainBloc>().add(MainReloadAppEvent(context: context));
+          context.read<AppBloc>().add(AppReloadAppEvent(context: context));
         },
         icon: const FaIcon(Icons.delete_outline),
       ),
@@ -152,7 +152,7 @@ class _MainPageState extends State<MainPage> {
     ];
   }
 
-  Scaffold _buildDesktopView(BuildContext context, MainState state) {
+  Scaffold _buildDesktopView(BuildContext context, AppState state) {
     return Scaffold(
       body: Row(
         children: [
@@ -160,12 +160,12 @@ class _MainPageState extends State<MainPage> {
             selectedIndex: _selectedIndex,
             groupAlignment: 0,
             onDestinationSelected: (int index) {
-              if (!context.read<MainBloc>().isAnimation) {
+              if (!context.read<AppBloc>().isAnimation) {
                 setState(() {
                   _selectedIndex = index;
                   context
-                      .read<MainBloc>()
-                      .add(MainSwitchPageEvent(index: _selectedIndex));
+                      .read<AppBloc>()
+                      .add(AppSwitchPageEvent(index: _selectedIndex));
                 });
               }
             },
@@ -192,7 +192,7 @@ class _MainPageState extends State<MainPage> {
         ),
         FloatingActionButton.small(
           onPressed: () {
-            context.read<MainBloc>().add(MainShowHelpEvent(context: context));
+            context.read<AppBloc>().add(AppShowHelpEvent(context: context));
           },
           child: const Icon(
             Icons.question_mark,
@@ -203,28 +203,28 @@ class _MainPageState extends State<MainPage> {
         (_selectedIndex != 0)
             ? FloatingActionButton.small(
                 onPressed: () {
-                  if (!context.read<MainBloc>().isAnimation) {
+                  if (!context.read<AppBloc>().isAnimation) {
                     switch (_selectedIndex) {
                       case 1:
-                        if (context.read<MainBloc>().currentStep == 0) {
+                        if (context.read<AppBloc>().currentStep == 0) {
                           context
-                              .read<MainBloc>()
-                              .add(MainSwitchPageEvent(index: 0));
+                              .read<AppBloc>()
+                              .add(AppSwitchPageEvent(index: 0));
                         } else {
-                          context.read<MainBloc>().add(MainPrevStepEvent());
+                          context.read<AppBloc>().add(AppPrevStepEvent());
                         }
                         break;
                       case 2:
-                        if (context.read<MainBloc>().currentStep == 0) {
+                        if (context.read<AppBloc>().currentStep == 0) {
                           context
-                              .read<MainBloc>()
-                              .add(MainSwitchPageEvent(index: 0));
+                              .read<AppBloc>()
+                              .add(AppSwitchPageEvent(index: 0));
                         } else {
-                          context.read<MainBloc>().add(MainPrevStepEvent());
+                          context.read<AppBloc>().add(AppPrevStepEvent());
                         }
                         break;
                       case 3:
-                        context.read<MainBloc>().add(MainPrevStepEvent());
+                        context.read<AppBloc>().add(AppPrevStepEvent());
                         break;
                     }
                   }
@@ -238,18 +238,18 @@ class _MainPageState extends State<MainPage> {
         (_selectedIndex != 3)
             ? FloatingActionButton.small(
                 onPressed: () {
-                  if (!context.read<MainBloc>().isAnimation) {
+                  if (!context.read<AppBloc>().isAnimation) {
                     switch (_selectedIndex) {
                       case 0:
                         context
-                            .read<MainBloc>()
-                            .add(MainCheckTaskEvent(context: context));
+                            .read<AppBloc>()
+                            .add(AppCheckTaskEvent(context: context));
                         break;
                       case 1:
-                        context.read<MainBloc>().add(MainNextStepEvent());
+                        context.read<AppBloc>().add(AppNextStepEvent());
                         break;
                       case 2:
-                        context.read<MainBloc>().add(MainNextStepEvent());
+                        context.read<AppBloc>().add(AppNextStepEvent());
                         break;
                     }
                   }
@@ -272,20 +272,20 @@ class _MainPageState extends State<MainPage> {
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.one),
-        disabled: (context.read<MainBloc>().task.steps.isEmpty ||
-            context.read<MainBloc>().task.isBasisOnStart()),
+        disabled: (context.read<AppBloc>().task.steps.isEmpty ||
+            context.read<AppBloc>().task.isBasisOnStart()),
         label: const Text('Базис'),
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.two),
-        disabled: (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
-            !context.read<MainBloc>().task.isBasisOnStart()),
+        disabled: (context.read<AppBloc>().task.getIndexOfBasis() == 0 &&
+            !context.read<AppBloc>().task.isBasisOnStart()),
         label: const Text('Симплекс'),
       ),
       NavigationRailDestination(
         icon: const FaIcon(FontAwesomeIcons.three),
-        disabled: (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
-            context.read<MainBloc>().task.isAnswerExist()),
+        disabled: (context.read<AppBloc>().task.getIndexOfAnswer() == 0 &&
+            context.read<AppBloc>().task.isAnswerExist()),
         label: const Text('Ответ'),
       ),
     ];
@@ -300,7 +300,7 @@ class _MainPageState extends State<MainPage> {
           focusElevation: 0,
           highlightElevation: 0,
           onPressed: () {
-            context.read<MainBloc>().add(MainReloadAppEvent(context: context));
+            context.read<AppBloc>().add(AppReloadAppEvent(context: context));
           },
           child: const FaIcon(Icons.delete_outline),
         ),
@@ -346,8 +346,8 @@ class _MainPageState extends State<MainPage> {
       try {
         Task task = Task.fromJson(value);
         context
-            .read<MainBloc>()
-            .add(MainReloadAppEvent(context: context, newTask: task));
+            .read<AppBloc>()
+            .add(AppReloadAppEvent(context: context, newTask: task));
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -363,7 +363,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   _onUploadTap(BuildContext context) async {
-    var task = context.read<MainBloc>().task;
+    var task = context.read<AppBloc>().task;
     if (task.getIndexOfAnswer() != 0) {
       String fileName = 'task_${DateTime.now().millisecondsSinceEpoch}.json';
       final FileSaveLocation? result =
@@ -390,14 +390,14 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  Widget _buildPage(BuildContext ctx, MainState state) {
-    if (state is MainBasisState) {
+  Widget _buildPage(BuildContext ctx, AppState state) {
+    if (state is AppBasisState) {
       return StepPage(
         step: state.step,
       );
-    } else if (state is MainSimplexState) {
+    } else if (state is AppSimplexState) {
       return StepPage(step: state.step);
-    } else if (state is MainAnswerState) {
+    } else if (state is AppAnswerState) {
       return AnswerPage(step: state.step);
     } else {
       return const TaskPage();

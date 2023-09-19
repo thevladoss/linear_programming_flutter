@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
 
-import '../bloc/main_bloc.dart';
+import '../bloc/app_bloc.dart';
 
 class StepPage extends StatelessWidget {
   final StepData step;
@@ -79,7 +79,7 @@ class StepPage extends StatelessWidget {
           (j) => _buildTableItem(
             (j == 0)
                 ? 'x${step.matrix[i + 1][j].toString()}'
-                : (context.read<MainBloc>().task.numberType ==
+                : (context.read<AppBloc>().task.numberType ==
                         NumberType.decimal)
                     ? (step.matrix[i + 1][j]
                             .toDouble()
@@ -119,7 +119,7 @@ class StepPage extends StatelessWidget {
           (j) => _buildTableItem(
               (j == 0)
                   ? ''
-                  : (context.read<MainBloc>().task.numberType ==
+                  : (context.read<AppBloc>().task.numberType ==
                           NumberType.decimal)
                       ? (step.matrix.last[j]
                               .toDouble()
@@ -164,7 +164,7 @@ class StepPage extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (color == Colors.indigo.shade100) {
-          context.read<MainBloc>().add(MainChangeElementEvent(
+          context.read<AppBloc>().add(AppChangeElementEvent(
               (step.basis != null) ? 2 : 1,
               newElem: [i, j]));
         }

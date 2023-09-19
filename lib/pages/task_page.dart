@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:linear_flutter/bloc/main_bloc.dart';
+import 'package:linear_flutter/bloc/app_bloc.dart';
 import 'package:linear_flutter/models/enums.dart';
 
 class TaskPage extends StatefulWidget {
@@ -33,11 +33,11 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _vars = context.read<MainBloc>().task.vars;
-    _limits = context.read<MainBloc>().task.limits;
-    _func = context.read<MainBloc>().task.func;
-    _matrix = context.read<MainBloc>().task.matrix;
-    _basis = context.read<MainBloc>().task.basis;
+    _vars = context.read<AppBloc>().task.vars;
+    _limits = context.read<AppBloc>().task.limits;
+    _func = context.read<AppBloc>().task.func;
+    _matrix = context.read<AppBloc>().task.matrix;
+    _basis = context.read<AppBloc>().task.basis;
 
     return (MediaQuery.of(context).size.width <= 500)
         ? _buildMobile(context)
@@ -85,23 +85,21 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
     );
   }
 
-  Expanded _buildRightSide(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Входные данные',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          Expanded(
-            child: _buildLimitsInputTable(_limits, _vars + 2),
-          ),
-        ],
-      ),
+  Column _buildRightSide(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Входные данные',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(
+          height: 4,
+        ),
+        Expanded(
+          child: _buildLimitsInputTable(_limits, _vars + 2),
+        ),
+      ],
     );
   }
 
@@ -144,10 +142,10 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
                     }
                     _matrix = newList;
                   }
-                  context.read<MainBloc>().updateVars(_vars);
-                  context.read<MainBloc>().updateFunc(_func);
-                  context.read<MainBloc>().updateMatrix(_matrix);
-                  context.read<MainBloc>().updateBasis(_basis);
+                  context.read<AppBloc>().updateVars(_vars);
+                  context.read<AppBloc>().updateFunc(_func);
+                  context.read<AppBloc>().updateMatrix(_matrix);
+                  context.read<AppBloc>().updateBasis(_basis);
                 });
               }
             },
@@ -173,8 +171,8 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
                   } else {
                     _matrix.removeLast();
                   }
-                  context.read<MainBloc>().updateLimits(_limits);
-                  context.read<MainBloc>().updateMatrix(_matrix);
+                  context.read<AppBloc>().updateLimits(_limits);
+                  context.read<AppBloc>().updateMatrix(_matrix);
                 });
               }
             },
@@ -247,7 +245,7 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
                 const SizedBox(
                   width: 40,
                 ),
-                _buildRightSide(context),
+                Expanded(child: _buildRightSide(context)),
               ],
             ),
           ),
@@ -384,7 +382,7 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
                         setState(() {
                           _basis[column - 1] = value!;
 
-                          context.read<MainBloc>().updateBasis(_basis);
+                          context.read<AppBloc>().updateBasis(_basis);
                         });
                       },
                     ),
@@ -415,10 +413,10 @@ class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
           onChanged: (value) {
             if (i == 1) {
               _func[j] = value;
-              context.read<MainBloc>().updateFunc(_func);
+              context.read<AppBloc>().updateFunc(_func);
             } else {
               _matrix[i - 3][j - 1] = value;
-              context.read<MainBloc>().updateMatrix(_matrix);
+              context.read<AppBloc>().updateMatrix(_matrix);
             }
           },
         ),
@@ -504,7 +502,7 @@ class _NumberTypeChoiceState extends State<NumberTypeChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _numberType = context.read<MainBloc>().task.numberType;
+    _numberType = context.read<AppBloc>().task.numberType;
     return SegmentedButton<NumberType>(
       segments: const <ButtonSegment<NumberType>>[
         ButtonSegment<NumberType>(
@@ -520,7 +518,7 @@ class _NumberTypeChoiceState extends State<NumberTypeChoice> {
       selected: <NumberType>{_numberType},
       onSelectionChanged: (Set<NumberType> newSelection) {
         setState(() {
-          context.read<MainBloc>().updateNumberType(newSelection.first);
+          context.read<AppBloc>().updateNumberType(newSelection.first);
         });
       },
     );
@@ -539,7 +537,7 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _funcType = context.read<MainBloc>().task.funcType;
+    _funcType = context.read<AppBloc>().task.funcType;
     return SegmentedButton<FuncType>(
       segments: const <ButtonSegment<FuncType>>[
         ButtonSegment<FuncType>(
@@ -555,7 +553,7 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
       selected: <FuncType>{_funcType},
       onSelectionChanged: (Set<FuncType> newSelection) {
         setState(() {
-          context.read<MainBloc>().updateFuncType(newSelection.first);
+          context.read<AppBloc>().updateFuncType(newSelection.first);
         });
       },
     );
@@ -574,7 +572,7 @@ class _AutomaticChoiceState extends State<AutomaticChoice> {
 
   @override
   Widget build(BuildContext context) {
-    _answerType = context.read<MainBloc>().task.answerType;
+    _answerType = context.read<AppBloc>().task.answerType;
     return SegmentedButton<AnswerType>(
       segments: const <ButtonSegment<AnswerType>>[
         ButtonSegment<AnswerType>(
@@ -590,7 +588,7 @@ class _AutomaticChoiceState extends State<AutomaticChoice> {
       selected: <AnswerType>{_answerType},
       onSelectionChanged: (Set<AnswerType> newSelection) {
         setState(() {
-          context.read<MainBloc>().updateAnswerType(newSelection.first);
+          context.read<AppBloc>().updateAnswerType(newSelection.first);
         });
       },
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:linear_flutter/bloc/main_bloc.dart';
+import 'package:linear_flutter/bloc/app_bloc.dart';
 
 import '../models/enums.dart';
 import '../models/step_data.dart';
@@ -79,7 +79,7 @@ class AnswerPage extends StatelessWidget {
           (j) => _buildTableItem(
             (j == 0)
                 ? 'x${step.matrix[i + 1][j].toString()}'
-                : (context.read<MainBloc>().task.numberType ==
+                : (context.read<AppBloc>().task.numberType ==
                         NumberType.decimal)
                     ? (step.matrix[i + 1][j]
                             .toDouble()
@@ -113,7 +113,7 @@ class AnswerPage extends StatelessWidget {
           (j) => _buildTableItem(
               (j == 0)
                   ? ''
-                  : (context.read<MainBloc>().task.numberType ==
+                  : (context.read<AppBloc>().task.numberType ==
                           NumberType.decimal)
                       ? (step.matrix.last[j]
                               .toDouble()
