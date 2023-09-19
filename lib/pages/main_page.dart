@@ -8,7 +8,7 @@ import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
 import '../bloc/app_bloc.dart';
-import '../models/step_data.dart';
+import '../models/task.dart';
 import 'answer_page.dart';
 
 class MainPage extends StatefulWidget {

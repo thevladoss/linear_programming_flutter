@@ -5,6 +5,8 @@ import 'package:fraction/fraction.dart';
 import 'package:linear_flutter/models/enums.dart';
 import 'package:linear_flutter/models/step_data.dart';
 
+import '../models/task.dart';
+
 part 'app_event.dart';
 part 'app_state.dart';
 
@@ -574,9 +576,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           }
         } else {
           nextData = nextData.copyWith(
-              answer: ((-1).toFraction() *
-                      nextData.matrix[nextData.matrix.length - 1][i])
-                  .reduce(),
+              answer: (_task.funcType == FuncType.max)
+                  ? nextData.matrix[nextData.matrix.length - 1][i].reduce()
+                  : ((-1).toFraction() *
+                          nextData.matrix[nextData.matrix.length - 1][i])
+                      .reduce(),
               basis: []);
           for (int i = 1; i <= nextData.func.length; i++) {
             for (int j = 1; j < nextData.matrix.length - 1; j++) {
