@@ -63,7 +63,7 @@ class _MainPageState extends State<MainPage> {
                     }
                   },
                   labelType: NavigationRailLabelType.selected,
-                  leading: _buildActionButton(context),
+                  //leading: _buildActionButton(context),
                   destinations: _buildNavigationDestinations(context),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
