@@ -86,15 +86,6 @@ class _MainPageState extends State<MainPage> {
         const SizedBox(
           width: 115,
         ),
-        FloatingActionButton.small(
-          onPressed: () {
-            context.read<MainBloc>().add(MainShowHelpEvent(context: context));
-          },
-          child: const Icon(
-            Icons.question_mark,
-            size: 20,
-          ),
-        ),
         const Spacer(),
         (_selectedIndex != 0)
             ? FloatingActionButton.small(
@@ -198,7 +189,7 @@ class _MainPageState extends State<MainPage> {
           onPressed: () {
             context.read<MainBloc>().add(MainReloadAppEvent(context: context));
           },
-          child: const FaIcon(Icons.delete_outline),
+          child: const FaIcon(Icons.cached),
         ),
         const SizedBox(
           height: 8,
@@ -235,7 +226,7 @@ class _MainPageState extends State<MainPage> {
               );
             }
           },
-          child: const Icon(Icons.upload),
+          child: const Icon(Icons.upload_file),
         ),
         const SizedBox(
           height: 8,
@@ -274,8 +265,20 @@ class _MainPageState extends State<MainPage> {
               }
             });
           },
-          child: const Icon(Icons.download),
+          child: const Icon(Icons.download_outlined),
         ),
+        const SizedBox(
+          height: 8,
+        ),
+        FloatingActionButton.small(
+          onPressed: () {
+            context.read<MainBloc>().add(MainShowHelpEvent(context: context));
+          },
+          child: const Icon(
+            Icons.question_mark_outlined,
+            size: 20,
+          ),
+        )
       ],
     );
   }

@@ -152,12 +152,6 @@ class _TaskPageState extends State<TaskPage> {
                         height: 4,
                       ),
                       const AutomaticChoice(),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      const Text(
-                        'Базис заполнять необязательно',
-                      ),
                     ],
                   ),
                 ),
@@ -345,6 +339,10 @@ class _TaskPageState extends State<TaskPage> {
         child: CupertinoTextField(
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.w500, color: Colors.white),
           controller: TextEditingController(
             text: (i == 1) ? _func[j] : _matrix[i - 3][j - 1],
           ),
