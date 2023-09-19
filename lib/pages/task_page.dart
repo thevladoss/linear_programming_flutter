@@ -11,12 +11,25 @@ class TaskPage extends StatefulWidget {
   State<TaskPage> createState() => _TaskPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _TaskPageState extends State<TaskPage> with TickerProviderStateMixin {
   int _vars = 1;
   int _limits = 1;
   Map<int, String> _func = {};
   List<List<String>> _matrix = [];
   List<bool> _basis = [];
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +39,191 @@ class _TaskPageState extends State<TaskPage> {
     _matrix = context.read<MainBloc>().task.matrix;
     _basis = context.read<MainBloc>().task.basis;
 
+    return (MediaQuery.of(context).size.width <= 500)
+        ? _buildMobile(context)
+        : _buildDesktop(context);
+  }
+
+  Padding _buildMobile(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Введите задачу',
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium!
+                .copyWith(fontWeight: FontWeight.w500),
+          ),
+          TabBar(
+            controller: _tabController,
+            tabs: const <Widget>[
+              Tab(
+                text: 'Настройки',
+              ),
+              Tab(
+                text: 'Данные',
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                _buildLeftSide(context),
+                _buildRightSide(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Expanded _buildRightSide(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Входные данные',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Expanded(
+            child: _buildLimitsInputTable(_limits, _vars + 2),
+          ),
+        ],
+      ),
+    );
+  }
+
+  SingleChildScrollView _buildLeftSide(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Переменные',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          NumberStepper(
+            initialValue: _vars,
+            minValue: _limits + 1,
+            maxValue: 16,
+            step: 1,
+            onChanged: (value) {
+              if (_vars != value) {
+                setState(() {
+                  _vars = value;
+                  if (_vars > _func.length) {
+                    _func.addAll({_vars: '0'});
+                    _basis.add(false);
+                    List<List<String>> newList = [];
+                    for (List<String> list in _matrix) {
+                      List<String> l = list.toList();
+                      l.add('0');
+                      newList.add(l);
+                    }
+                    _matrix = newList;
+                  } else {
+                    _func.removeWhere((key, value) => key == _func.length);
+                    _basis.removeLast();
+                    List<List<String>> newList = [];
+                    for (List<String> list in _matrix) {
+                      List<String> l = list.toList();
+                      l.removeLast();
+                      newList.add(l);
+                    }
+                    _matrix = newList;
+                  }
+                  context.read<MainBloc>().updateVars(_vars);
+                  context.read<MainBloc>().updateFunc(_func);
+                  context.read<MainBloc>().updateMatrix(_matrix);
+                  context.read<MainBloc>().updateBasis(_basis);
+                });
+              }
+            },
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            'Ограничения',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          NumberStepper(
+            initialValue: _limits,
+            minValue: 1,
+            maxValue: _vars - 1,
+            step: 1,
+            onChanged: (value) {
+              if (_limits != value) {
+                setState(() {
+                  _limits = value;
+                  if (_limits > _matrix.length) {
+                    _matrix.add(List.filled(_vars + 1, '0'));
+                  } else {
+                    _matrix.removeLast();
+                  }
+                  context.read<MainBloc>().updateLimits(_limits);
+                  context.read<MainBloc>().updateMatrix(_matrix);
+                });
+              }
+            },
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            'Дроби',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          const NumberTypeChoice(),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            'Функция',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          const FuncTypeChoice(),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            'Способ решения',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          const AutomaticChoice(),
+          const SizedBox(
+            height: 8,
+          ),
+          const Text(
+            'Базис заполнять необязательно',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildDesktop(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -45,142 +243,11 @@ class _TaskPageState extends State<TaskPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Переменные',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      NumberStepper(
-                        initialValue: _vars,
-                        minValue: _limits + 1,
-                        maxValue: 16,
-                        step: 1,
-                        onChanged: (value) {
-                          if (_vars != value) {
-                            setState(() {
-                              _vars = value;
-                              if (_vars > _func.length) {
-                                _func.addAll({_vars: '0'});
-                                _basis.add(false);
-                                List<List<String>> newList = [];
-                                for (List<String> list in _matrix) {
-                                  List<String> l = list.toList();
-                                  l.add('0');
-                                  newList.add(l);
-                                }
-                                _matrix = newList;
-                              } else {
-                                _func.removeWhere(
-                                    (key, value) => key == _func.length);
-                                _basis.removeLast();
-                                List<List<String>> newList = [];
-                                for (List<String> list in _matrix) {
-                                  List<String> l = list.toList();
-                                  l.removeLast();
-                                  newList.add(l);
-                                }
-                                _matrix = newList;
-                              }
-                              context.read<MainBloc>().updateVars(_vars);
-                              context.read<MainBloc>().updateFunc(_func);
-                              context.read<MainBloc>().updateMatrix(_matrix);
-                              context.read<MainBloc>().updateBasis(_basis);
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Ограничения',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      NumberStepper(
-                        initialValue: _limits,
-                        minValue: 1,
-                        maxValue: _vars - 1,
-                        step: 1,
-                        onChanged: (value) {
-                          if (_limits != value) {
-                            setState(() {
-                              _limits = value;
-                              if (_limits > _matrix.length) {
-                                _matrix.add(List.filled(_vars + 1, '0'));
-                              } else {
-                                _matrix.removeLast();
-                              }
-                              context.read<MainBloc>().updateLimits(_limits);
-                              context.read<MainBloc>().updateMatrix(_matrix);
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Дроби',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      const NumberTypeChoice(),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Функция',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      const FuncTypeChoice(),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Способ решения',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      const AutomaticChoice(),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      const Text(
-                        'Базис заполнять необязательно',
-                      ),
-                    ],
-                  ),
-                ),
+                _buildLeftSide(context),
                 const SizedBox(
                   width: 40,
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Таблица',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Expanded(
-                        child: _buildLimitsInputTable(_limits, _vars + 2),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildRightSide(context),
               ],
             ),
           ),
