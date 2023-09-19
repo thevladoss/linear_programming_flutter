@@ -241,36 +241,49 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     StepData startData = StepData(func: {}, matrix: [
       [0.toFraction()]
     ]);
+
     try {
       _error = '';
+
       for (int i = 1; i <= _task.vars; i++) {
         startData.matrix[0].add(i.toFraction().reduce());
+
         if (_task.func[i] == 0.toString()) {
           throw 'Функция не может содержать нули';
         }
+
         startData.func[i] = Fraction.fromString(_task.func[i]!);
+
         if (_task.funcType == FuncType.max) {
           startData.func[i] = (-1).toFraction() * startData.func[i]!;
         }
       }
+
       startData.matrix[0].add(0.toFraction().reduce());
+
       for (int i = 0; i < _task.matrix.length; i++) {
         startData.matrix.add([]);
+
         for (int j = 0; j < _task.matrix[0].length; j++) {
           startData.matrix[i + 1].add(_task.matrix[i][j].toFraction().reduce());
         }
       }
+
       for (int i = 1; i < startData.matrix.length; i++) {
         double sum = 0;
+
         for (int j = 0; j < startData.matrix[0].length - 2; j++) {
           sum += startData.matrix[i][j].toDouble().abs();
         }
+
         if (sum == 0) {
-          throw ('Незаполнено ограничение ' + i.toString());
+          throw ('Не заполнено ограничение $i');
         }
       }
+
       if (_task.basis.contains(true)) {
         startData = startData.copyWith(basis: []);
+
         for (int i = 0; i < _task.basis.length; i++) {
           if (_task.basis[i]) {
             startData.basis?.add(1.toFraction());
@@ -279,6 +292,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           }
         }
       }
+
       if (startData.basis == null) {
         for (int i = 1; i < startData.matrix.length; i++) {
           if (startData.matrix[i][startData.matrix[i].length - 1].toDouble() <
@@ -286,36 +300,46 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             throw 'Значения b не могут быть отрицательными';
           }
         }
+
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i]
               .insert(0, (_task.func.length + i).toFraction().reduce());
         }
+
         startData.matrix.add([0.toFraction()]);
+
         for (int i = 1; i < startData.matrix[0].length; i++) {
           Fraction sum = 0.toFraction();
+
           for (int j = 1; j < startData.matrix.length - 1; j++) {
             sum += startData.matrix[j][i];
           }
+
           startData.matrix[startData.matrix.length - 1]
               .add((-1).toFraction() * sum);
         }
       } else {
         int basisCount = 0;
         List<int> basisVars = [];
+
         for (int i = 0; i < _task.basis.length; i++) {
           if (_task.basis[i]) {
             basisCount += 1;
             basisVars.add(i + 1);
           }
         }
+
         if (basisCount != startData.matrix.length - 1) {
-          throw 'Количество зависимых переменных должно равнятся количеству ограничений';
+          throw 'Количество зависимых переменных должно равняться количеству ограничений';
         }
+
         for (int i = 1; i < startData.matrix.length; i++) {
           startData.matrix[i].insert(0, 0.toFraction().reduce());
         }
+
         for (int i = 0; i < basisCount; i++) {
           startData.matrix[0].insert(task.vars + 1, basisVars[i].toFraction());
+
           for (int j = 1; j < startData.matrix.length; j++) {
             startData.matrix[j].insert(
                 task.vars + 1,
@@ -324,9 +348,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             startData.matrix[j].removeAt(
                 startData.matrix[0].indexOf((basisVars[i].toFraction())));
           }
+
           startData.matrix[0].removeAt(
               startData.matrix[0].indexOf((basisVars[i].toFraction())));
         }
+
         for (int i = 1; i <= basisCount; i++) {
           Fraction del = startData.matrix[i][task.vars - basisCount + i];
           startData.matrix[i] = [
@@ -335,35 +361,43 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
           for (int j = i + 1; j < startData.matrix.length; j++) {
             Fraction m = startData.matrix[j][task.vars - basisCount + i];
+
             for (int l = 1; l < startData.matrix[0].length; l++) {
               startData.matrix[j][l] -= startData.matrix[i][l] * m;
               startData.matrix[j][l].reduce();
             }
           }
         }
+
         for (int i = basisCount; i > 1; i--) {
           for (int j = 1; j < i; j++) {
             Fraction m = startData.matrix[j][task.vars - basisCount + i];
+
             for (int l = 1; l < startData.matrix[0].length; l++) {
               startData.matrix[j][l] -= startData.matrix[i][l] * m;
               startData.matrix[j][l] = startData.matrix[j][l].reduce();
             }
           }
         }
+
         for (int i = 0; i < basisCount; i++) {
           startData.matrix[i + 1][0] = basisVars[i].toFraction();
           startData.basis![basisVars[i] - 1] =
               startData.matrix[i + 1][startData.matrix[0].length - 1];
         }
+
         for (int i = task.vars - basisCount + 1; i <= task.vars; i++) {
           for (int j = 0; j < startData.matrix.length; j++) {
             startData.matrix[j].removeAt(task.vars - basisCount + 1);
           }
         }
+
         startData.matrix.add([]);
+
         for (int i = 0; i < startData.matrix[0].length; i++) {
           startData.matrix[startData.matrix.length - 1].add(0.toFraction());
         }
+
         for (int i = 1; i < startData.matrix[0].length - 1; i++) {
           startData.matrix[startData.matrix.length - 1][i] += startData
               .func.entries
@@ -385,6 +419,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           startData.matrix[startData.matrix.length - 1][i] =
               startData.matrix[startData.matrix.length - 1][i].reduce();
         }
+
         for (int i = 1; i < startData.matrix.length - 1; i++) {
           startData.matrix[startData.matrix.length - 1]
               [startData.matrix[0].length - 1] += (-1)
@@ -395,9 +430,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                       entry.key == startData.matrix[i][0].toDouble().toInt())
                   .value;
         }
+
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
       }
+
       if (startData.getPossibleElements().isNotEmpty) {
         startData =
             startData.copyWith(element: startData.getPossibleElements()[0]);
@@ -422,9 +459,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   StepData nextStep(StepData previousData) {
     List<List<Fraction>> newMatrix = [];
+
     for (List<Fraction> elem in previousData.matrix) {
       newMatrix.add([...elem]);
     }
+
     StepData nextData = StepData(
         func: previousData.func,
         matrix: newMatrix,
@@ -439,6 +478,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         nextData.matrix[nextData.matrix.length - 1][0].toDouble() == 0) {
       if (nextData.basis == null) {
         nextData = nextData.copyWith(basis: []);
+
         for (int i = 1; i <= nextData.func.length; i++) {
           for (int j = 1; j < nextData.matrix.length - 1; j++) {
             if (nextData.matrix[j][0].toDouble() == i) {
@@ -446,12 +486,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                   nextData.matrix[j][nextData.matrix[0].length - 1].reduce());
               break;
             }
+
             if (j == nextData.matrix.length - 2) {
               nextData.basis!.add(0.toFraction());
             }
           }
         }
       }
+
       for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
         nextData.matrix[nextData.matrix.length - 1][i] += nextData.func.entries
             .firstWhere((entry) =>
@@ -468,9 +510,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                       entry.key == nextData.matrix[j][0].toDouble().toInt())
                   .value;
         }
+
         nextData.matrix[nextData.matrix.length - 1][i] =
             nextData.matrix[nextData.matrix.length - 1][i].reduce();
       }
+
       for (int i = 1; i < nextData.matrix.length - 1; i++) {
         nextData.matrix[nextData.matrix.length - 1]
                 [nextData.matrix[0].length - 1] +=
@@ -481,11 +525,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                         entry.key == nextData.matrix[i][0].toDouble().toInt())
                     .value;
       }
+
       nextData.matrix[nextData.matrix.length - 1]
               [nextData.matrix[0].length - 1] =
           nextData.matrix[nextData.matrix.length - 1]
                   [nextData.matrix[0].length - 1]
               .reduce();
+
       nextData.matrix[0][0] = 0.toFraction();
     } else {
       nextData.matrix[0][0] += 1.toFraction();
@@ -495,11 +541,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       nextData.matrix[nextData.element![0]][0] = swap;
       nextData.matrix[nextData.element![0]][nextData.element![1]] =
           nextData.matrix[nextData.element![0]][nextData.element![1]].inverse();
+
       for (int i = 1; i < nextData.matrix[nextData.element![0]].length; i++) {
         if (i != nextData.element![1]) {
           nextData.matrix[nextData.element![0]][i] *=
               nextData.matrix[nextData.element![0]][nextData.element![1]];
         }
+
         nextData.matrix[nextData.element![0]][i] =
             nextData.matrix[nextData.element![0]][i].reduce();
       }
@@ -512,11 +560,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           }
         }
       }
+
       for (int i = 1; i < nextData.matrix.length; i++) {
         if (i != nextData.element![0]) {
           nextData.matrix[i][nextData.element![1]] *= (-1).toFraction() *
               nextData.matrix[nextData.element![0]][nextData.element![1]];
         }
+
         nextData.matrix[i][nextData.element![1]] =
             nextData.matrix[i][nextData.element![1]].reduce();
       }
@@ -529,8 +579,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         }
       }
     }
+
     Fraction elementValue = 0.toFraction();
     nextData = nextData.copyWith(element: [0, 0]);
+
     for (int i = 1; i < nextData.matrix[0].length - 1; i++) {
       if (nextData.matrix[nextData.matrix.length - 1][i].toDouble() < 0) {
         for (int j = 1; j < nextData.matrix.length - 1; j++) {
@@ -552,6 +604,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         }
       }
     }
+
     for (int i = 1; i < nextData.matrix.length - 1; i++) {
       double lineSum = nextData.matrix[i]
           .fold(0, (previous, current) => previous + current.toDouble().abs());
@@ -561,6 +614,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         i -= 1;
       }
     }
+
     for (int i = 1; i < nextData.matrix[0].length; i++) {
       if (i < nextData.matrix[0].length - 1) {
         if (nextData.matrix[nextData.matrix.length - 1][i] < 0.toFraction()) {
@@ -582,6 +636,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                           nextData.matrix[nextData.matrix.length - 1][i])
                       .reduce(),
               basis: []);
+
           for (int i = 1; i <= nextData.func.length; i++) {
             for (int j = 1; j < nextData.matrix.length - 1; j++) {
               if (nextData.matrix[j][0].toDouble() == i) {
@@ -589,6 +644,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                     nextData.matrix[j][nextData.matrix[0].length - 1].reduce());
                 break;
               }
+
               if (j == nextData.matrix.length - 2) {
                 nextData.basis!.add(0.toFraction());
               }
