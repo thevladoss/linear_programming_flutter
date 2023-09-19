@@ -170,7 +170,10 @@ class _TaskPageState extends State<TaskPage> {
                     children: [
                       Text(
                         'Таблица',
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.white),
                       ),
                       const SizedBox(
                         height: 4,
@@ -195,16 +198,16 @@ class _TaskPageState extends State<TaskPage> {
         children: List.generate(
           columns,
           (column) => (column == 0)
-              ? Container()
+              ? Container(
+                  color: Colors.white,
+                )
               : (column == columns - 1)
                   ? const SizedBox()
                   : Center(
                       child: Text(
                         'c$column',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(fontWeight: FontWeight.w500),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.white),
                       ),
                     ),
         ),
@@ -231,7 +234,9 @@ class _TaskPageState extends State<TaskPage> {
         children: List.generate(
           columns,
           (column) => (column == 0)
-              ? Container()
+              ? Container(
+                  color: Colors.white,
+                )
               : (column == columns - 1)
                   ? Center(
                       child: Text(
@@ -264,10 +269,8 @@ class _TaskPageState extends State<TaskPage> {
                 ? Center(
                     child: Text(
                       'f${row + 1}(x)',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.w500),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.white),
                     ),
                   )
                 : _buildInputMatrixItem(row + 3, column),

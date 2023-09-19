@@ -4,7 +4,6 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:linear_flutter/pages/graph_page.dart';
 import 'package:linear_flutter/pages/step_page.dart';
 import 'package:linear_flutter/pages/task_page.dart';
 
@@ -185,14 +184,6 @@ class _MainPageState extends State<MainPage> {
             context.read<MainBloc>().task.isAnswerExist()),
         label: const Text('Ответ'),
       ),
-      const NavigationRailDestination(
-        disabled: true,
-        icon: Icon(
-          Icons.show_chart,
-          size: 30,
-        ),
-        label: Text('График'),
-      ),
     ];
   }
 
@@ -311,8 +302,6 @@ class _MainPageState extends State<MainPage> {
       return StepPage(step: state.step);
     } else if (state is MainAnswerState) {
       return AnswerPage(step: state.step);
-    } else if (state is MainGraphState) {
-      return const GraphPage();
     } else {
       return const TaskPage();
     }

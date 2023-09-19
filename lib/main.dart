@@ -13,7 +13,8 @@ Future<void> main() async {
   if (!kIsWeb && Platform.isWindows) {
     await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(1000, 500));
-    WindowManager.instance.setTitle('Решение задач линейного программирования');
+    WindowManager.instance.setTitle(
+        'Лабораторная работа для решения задач на линейное программирование');
   }
   runApp(
     Phoenix(
@@ -28,15 +29,22 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Решение задач линейного программирования',
+      title:
+          'Лабораторная работа для решения задач на линейное программирование',
       scrollBehavior: ScrollConfiguration.of(context).copyWith(
         dragDevices: {
           PointerDeviceKind.touch,
           PointerDeviceKind.mouse,
         },
       ),
+      theme: ThemeData(
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
       home: MainPage(),
     );
   }
