@@ -69,20 +69,12 @@ class _MainPageState extends State<MainPage> {
             icon: const FaIcon(Icons.delete_outline),
           ),
           IconButton.filledTonal(
-            onPressed: () {
-              context
-                  .read<MainBloc>()
-                  .add(MainReloadAppEvent(context: context));
-            },
-            icon: const FaIcon(Icons.delete_outline),
+            onPressed: _onUploadTap(context),
+            icon: const Icon(Icons.upload),
           ),
           IconButton.filledTonal(
-            onPressed: () {
-              context
-                  .read<MainBloc>()
-                  .add(MainReloadAppEvent(context: context));
-            },
-            icon: const FaIcon(Icons.delete_outline),
+            onPressed: _onDownloadTap(context),
+            icon: const Icon(Icons.download),
           ),
         ],
       ),
@@ -251,33 +243,7 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: () async {
-            var task = context.read<MainBloc>().task;
-            if (task.getIndexOfAnswer() != 0) {
-              String fileName =
-                  'task_${DateTime.now().millisecondsSinceEpoch}.json';
-              final FileSaveLocation? result =
-                  await getSaveLocation(suggestedName: fileName);
-              if (result == null) {
-                return;
-              }
-
-              final Uint8List fileData =
-                  Uint8List.fromList(task.toJson().codeUnits);
-              const String mimeType = 'application/json';
-              final XFile textFile =
-                  XFile.fromData(fileData, mimeType: mimeType, name: fileName);
-              await textFile.saveTo(result.path);
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
-                  content: Text('Задачу необходимо решить до конца'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          },
+          onPressed: _onUploadTap(context),
           child: const Icon(Icons.upload),
         ),
         const SizedBox(
@@ -288,39 +254,67 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: () async {
-            const XTypeGroup typeGroup = XTypeGroup(
-              label: 'json',
-              extensions: <String>['json'],
-            );
-            final XFile? file =
-                await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-
-            if (file == null) {
-              return;
-            }
-
-            file.readAsString().then((value) {
-              try {
-                Task task = Task.fromJson(value);
-                context
-                    .read<MainBloc>()
-                    .add(MainReloadAppEvent(context: context, newTask: task));
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
-                    content: Text('Ошибка! Файл не является решением задачи'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            });
-          },
+          onPressed: _onDownloadTap(context),
           child: const Icon(Icons.download),
         ),
       ],
     );
+  }
+
+  _onDownloadTap(BuildContext context) async {
+    const XTypeGroup typeGroup = XTypeGroup(
+      label: 'json',
+      extensions: <String>['json'],
+    );
+    final XFile? file =
+        await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+    if (file == null) {
+      return;
+    }
+
+    file.readAsString().then((value) {
+      try {
+        Task task = Task.fromJson(value);
+        context
+            .read<MainBloc>()
+            .add(MainReloadAppEvent(context: context, newTask: task));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+            content: Text('Ошибка! Файл не является решением задачи'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+  }
+
+  _onUploadTap(BuildContext context) async {
+    var task = context.read<MainBloc>().task;
+    if (task.getIndexOfAnswer() != 0) {
+      String fileName = 'task_${DateTime.now().millisecondsSinceEpoch}.json';
+      final FileSaveLocation? result =
+          await getSaveLocation(suggestedName: fileName);
+      if (result == null) {
+        return;
+      }
+
+      final Uint8List fileData = Uint8List.fromList(task.toJson().codeUnits);
+      const String mimeType = 'application/json';
+      final XFile textFile =
+          XFile.fromData(fileData, mimeType: mimeType, name: fileName);
+      await textFile.saveTo(result.path);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
+          content: Text('Задачу необходимо решить до конца'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Widget _errorPage() {
