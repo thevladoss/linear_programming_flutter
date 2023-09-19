@@ -40,9 +40,8 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
+      darkTheme:
+          ThemeData(brightness: Brightness.dark, primarySwatch: Colors.green),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       home: MainPage(),

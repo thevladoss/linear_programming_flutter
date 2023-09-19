@@ -567,11 +567,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             _error = 'Нет решения';
           }
         } else {
-          nextData = nextData.copyWith(
-              answer: ((-1).toFraction() *
-                      nextData.matrix[nextData.matrix.length - 1][i])
-                  .reduce(),
-              basis: []);
+          if (_task.funcType == FuncType.min) {
+            nextData = nextData.copyWith(
+                answer: ((-1).toFraction() *
+                        nextData.matrix[nextData.matrix.length - 1][i])
+                    .reduce(),
+                basis: []);
+          } else {
+            nextData = nextData.copyWith(
+                answer: nextData.matrix[nextData.matrix.length - 1][i].reduce(),
+                basis: []);
+          }
           for (int i = 1; i <= nextData.func.length; i++) {
             for (int j = 1; j < nextData.matrix.length - 1; j++) {
               if (nextData.matrix[j][0].toDouble() == i) {

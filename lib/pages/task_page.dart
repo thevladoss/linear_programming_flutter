@@ -36,7 +36,7 @@ class _TaskPageState extends State<TaskPage> {
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!
-                .copyWith(fontWeight: FontWeight.w500),
+                .copyWith(fontWeight: FontWeight.w500, color: Colors.green),
           ),
           const SizedBox(
             height: 20,
@@ -478,11 +478,11 @@ class _FuncTypeChoiceState extends State<FuncTypeChoice> {
       segments: const <ButtonSegment<FuncType>>[
         ButtonSegment<FuncType>(
           value: FuncType.min,
-          label: Text('Минимизировать'),
+          label: Text('MIN'),
         ),
         ButtonSegment<FuncType>(
           value: FuncType.max,
-          label: Text('Максимизировать'),
+          label: Text('MAX'),
         ),
       ],
       showSelectedIcon: false,

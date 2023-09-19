@@ -63,7 +63,6 @@ class _MainPageState extends State<MainPage> {
                     }
                   },
                   labelType: NavigationRailLabelType.selected,
-                  //leading: _buildActionButton(context),
                   destinations: _buildNavigationDestinations(context),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
@@ -86,6 +85,7 @@ class _MainPageState extends State<MainPage> {
         const SizedBox(
           width: 115,
         ),
+        _buildActionButton(context),
         const Spacer(),
         (_selectedIndex != 0)
             ? FloatingActionButton.small(
@@ -178,8 +178,8 @@ class _MainPageState extends State<MainPage> {
     ];
   }
 
-  Column _buildActionButton(BuildContext context) {
-    return Column(
+  Row _buildActionButton(BuildContext context) {
+    return Row(
       children: [
         FloatingActionButton.small(
           elevation: 0,
@@ -192,7 +192,7 @@ class _MainPageState extends State<MainPage> {
           child: const FaIcon(Icons.cached),
         ),
         const SizedBox(
-          height: 8,
+          width: 8,
         ),
         FloatingActionButton.small(
           elevation: 0,
@@ -229,7 +229,7 @@ class _MainPageState extends State<MainPage> {
           child: const Icon(Icons.upload_file),
         ),
         const SizedBox(
-          height: 8,
+          width: 8,
         ),
         FloatingActionButton.small(
           elevation: 0,
@@ -268,7 +268,7 @@ class _MainPageState extends State<MainPage> {
           child: const Icon(Icons.download_outlined),
         ),
         const SizedBox(
-          height: 8,
+          width: 8,
         ),
         FloatingActionButton.small(
           onPressed: () {
