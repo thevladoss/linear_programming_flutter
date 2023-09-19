@@ -31,13 +31,6 @@ class _TaskPageState extends State<TaskPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Введите задачу',
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium!
-                .copyWith(fontWeight: FontWeight.w500, color: Colors.green),
-          ),
           const SizedBox(
             height: 20,
           ),
@@ -45,6 +38,29 @@ class _TaskPageState extends State<TaskPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Таблица',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Expanded(
+                        child: _buildLimitsInputTable(_limits, _vars + 2),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 40,
+                ),
                 SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,29 +168,6 @@ class _TaskPageState extends State<TaskPage> {
                         height: 4,
                       ),
                       const AutomaticChoice(),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 40,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Таблица',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Expanded(
-                        child: _buildLimitsInputTable(_limits, _vars + 2),
-                      ),
                     ],
                   ),
                 ),
