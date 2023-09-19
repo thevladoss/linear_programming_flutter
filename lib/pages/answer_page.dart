@@ -81,7 +81,21 @@ class AnswerPage extends StatelessWidget {
                 ? 'x${step.matrix[i + 1][j].toString()}'
                 : (context.read<MainBloc>().task.numberType ==
                         NumberType.decimal)
-                    ? step.matrix[i + 1][j].toDouble().toString()
+                    ? (step.matrix[i + 1][j]
+                            .toDouble()
+                            .toString()
+                            .contains('.'))
+                        ? (step.matrix[i + 1][j]
+                                    .toDouble()
+                                    .toString()
+                                    .split('.')[1]
+                                    .length >=
+                                3)
+                            ? step.matrix[i + 1][j]
+                                .toDouble()
+                                .toStringAsFixed(3)
+                            : step.matrix[i + 1][j].toDouble().toString()
+                        : step.matrix[i + 1][j].toDouble().toString()
                     : step.matrix[i + 1][j].toString(),
             context,
             weight: (j == 0) ? FontWeight.bold : FontWeight.normal,
@@ -101,7 +115,21 @@ class AnswerPage extends StatelessWidget {
                   ? ''
                   : (context.read<MainBloc>().task.numberType ==
                           NumberType.decimal)
-                      ? step.matrix.last[j].toDouble().toString()
+                      ? (step.matrix.last[j]
+                              .toDouble()
+                              .toString()
+                              .contains('.'))
+                          ? (step.matrix.last[j]
+                                      .toDouble()
+                                      .toString()
+                                      .split('.')[1]
+                                      .length >=
+                                  3)
+                              ? step.matrix.last[j]
+                                  .toDouble()
+                                  .toStringAsFixed(3)
+                              : step.matrix.last[j].toDouble().toString()
+                          : step.matrix.last[j].toDouble().toString()
                       : step.matrix.last[j].toString(),
               context,
               i: step.matrix.length - 1,

@@ -59,28 +59,97 @@ class _MainPageState extends State<MainPage> {
   Scaffold _buildMobileView(BuildContext context, MainState state) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton.filledTonal(
-            onPressed: () {
-              context
-                  .read<MainBloc>()
-                  .add(MainReloadAppEvent(context: context));
-            },
-            icon: const FaIcon(Icons.delete_outline),
-          ),
-          IconButton.filledTonal(
-            onPressed: _onUploadTap(context),
-            icon: const Icon(Icons.upload),
-          ),
-          IconButton.filledTonal(
-            onPressed: _onDownloadTap(context),
-            icon: const Icon(Icons.download),
-          ),
-        ],
+        actions: _buildMobileActions(context),
       ),
       body: _buildPage(context, state),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          if (!context.read<MainBloc>().isAnimation) {
+            if (index == 1 &&
+                (context.read<MainBloc>().task.steps.isEmpty ||
+                    context.read<MainBloc>().task.isBasisOnStart())) return;
+            if (index == 2 &&
+                (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
+                    !context.read<MainBloc>().task.isBasisOnStart())) return;
+            if (index == 3 &&
+                (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
+                    context.read<MainBloc>().task.isAnswerExist())) return;
+
+            setState(() {
+              _selectedIndex = index;
+              context
+                  .read<MainBloc>()
+                  .add(MainSwitchPageEvent(index: _selectedIndex));
+            });
+          }
+        },
+        selectedIndex: _selectedIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        destinations: _buildMobileDestinations(context),
+      ),
       floatingActionButton: _buildMoveButtons(context),
     );
+  }
+
+  List<Widget> _buildMobileDestinations(BuildContext context) {
+    return <Widget>[
+      NavigationDestination(
+        icon: FaIcon(FontAwesomeIcons.f),
+        label: 'Задача',
+      ),
+      NavigationDestination(
+        icon: FaIcon(
+          FontAwesomeIcons.one,
+          color: (context.read<MainBloc>().task.steps.isEmpty ||
+                  context.read<MainBloc>().task.isBasisOnStart())
+              ? Colors.black26
+              : Colors.black,
+        ),
+        label: 'Базис',
+      ),
+      NavigationDestination(
+        icon: FaIcon(
+          FontAwesomeIcons.two,
+          color: (context.read<MainBloc>().task.getIndexOfBasis() == 0 &&
+                  !context.read<MainBloc>().task.isBasisOnStart())
+              ? Colors.black26
+              : Colors.black,
+        ),
+        label: 'Симплекс',
+      ),
+      NavigationDestination(
+        icon: FaIcon(
+          FontAwesomeIcons.three,
+          color: (context.read<MainBloc>().task.getIndexOfAnswer() == 0 &&
+                  context.read<MainBloc>().task.isAnswerExist())
+              ? Colors.black26
+              : Colors.black,
+        ),
+        label: 'Ответ',
+      ),
+    ];
+  }
+
+  List<Widget> _buildMobileActions(BuildContext context) {
+    return [
+      IconButton.filledTonal(
+        onPressed: () {
+          context.read<MainBloc>().add(MainReloadAppEvent(context: context));
+        },
+        icon: const FaIcon(Icons.delete_outline),
+      ),
+      IconButton.filledTonal(
+        onPressed: () => _onUploadTap(context),
+        icon: const Icon(Icons.upload),
+      ),
+      IconButton.filledTonal(
+        onPressed: () => _onDownloadTap(context),
+        icon: const Icon(Icons.download),
+      ),
+      const SizedBox(
+        width: 10,
+      )
+    ];
   }
 
   Scaffold _buildDesktopView(BuildContext context, MainState state) {
@@ -118,8 +187,8 @@ class _MainPageState extends State<MainPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const SizedBox(
-          width: 115,
+        SizedBox(
+          width: (MediaQuery.of(context).size.width <= 500) ? 30 : 115,
         ),
         FloatingActionButton.small(
           onPressed: () {
@@ -243,7 +312,7 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: _onUploadTap(context),
+          onPressed: () => _onUploadTap(context),
           child: const Icon(Icons.upload),
         ),
         const SizedBox(
@@ -254,7 +323,7 @@ class _MainPageState extends State<MainPage> {
           hoverElevation: 0,
           focusElevation: 0,
           highlightElevation: 0,
-          onPressed: _onDownloadTap(context),
+          onPressed: () => _onDownloadTap(context),
           child: const Icon(Icons.download),
         ),
       ],
