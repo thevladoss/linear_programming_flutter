@@ -140,7 +140,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   _showError(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        margin: const EdgeInsets.only(right: 60, left: 145, bottom: 15),
+        margin: (MediaQuery.of(context).size.width <= 500)
+            ? null
+            : const EdgeInsets.only(right: 60, left: 145, bottom: 15),
         content: Text(_error),
         behavior: SnackBarBehavior.floating,
       ),

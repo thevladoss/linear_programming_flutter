@@ -93,7 +93,7 @@ class _MainPageState extends State<MainPage> {
 
   List<Widget> _buildMobileDestinations(BuildContext context) {
     return <Widget>[
-      NavigationDestination(
+      const NavigationDestination(
         icon: FaIcon(FontAwesomeIcons.f),
         label: 'Задача',
       ),
@@ -138,10 +138,10 @@ class _MainPageState extends State<MainPage> {
         },
         icon: const FaIcon(Icons.delete_outline),
       ),
-      IconButton.filledTonal(
-        onPressed: () => _onUploadTap(context),
-        icon: const Icon(Icons.upload),
-      ),
+      // IconButton.filledTonal(
+      //   onPressed: () => _onUploadTap(context),
+      //   icon: const Icon(Icons.upload),
+      // ),
       IconButton.filledTonal(
         onPressed: () => _onDownloadTap(context),
         icon: const Icon(Icons.download),
@@ -350,9 +350,11 @@ class _MainPageState extends State<MainPage> {
             .add(MainReloadAppEvent(context: context, newTask: task));
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
-            content: Text('Ошибка! Файл не является решением задачи'),
+          SnackBar(
+            margin: (MediaQuery.of(context).size.width <= 500)
+                ? null
+                : const EdgeInsets.only(right: 60, left: 145, bottom: 15),
+            content: const Text('Ошибка! Файл не является решением задачи'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -377,26 +379,15 @@ class _MainPageState extends State<MainPage> {
       await textFile.saveTo(result.path);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          margin: EdgeInsets.only(right: 60, left: 145, bottom: 15),
-          content: Text('Задачу необходимо решить до конца'),
+        SnackBar(
+          margin: (MediaQuery.of(context).size.width <= 500)
+              ? null
+              : const EdgeInsets.only(right: 60, left: 145, bottom: 15),
+          content: const Text('Задачу необходимо решить до конца'),
           behavior: SnackBarBehavior.floating,
         ),
       );
     }
-  }
-
-  Widget _errorPage() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Text(
-        'Базис был задан изначально',
-        style: Theme.of(context)
-            .textTheme
-            .headlineMedium!
-            .copyWith(fontWeight: FontWeight.w500),
-      ),
-    );
   }
 
   Widget _buildPage(BuildContext ctx, MainState state) {
